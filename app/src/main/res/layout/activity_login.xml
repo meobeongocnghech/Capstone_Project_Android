@@ -147,7 +147,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="50px"
-        android:drawableLeft="@mipmap/ic_facebook"
+        android:drawableLeft="@drawable/ic_facebook"
         app:layout_constraintHorizontal_weight="1"
         android:background="@drawable/radius_border_facebook"
         android:text="Facebook"
