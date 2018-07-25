@@ -14,11 +14,11 @@
 
     <ImageView
         android:id="@+id/imgNavAvatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
         android:contentDescription="@string/nav_header_desc"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@mipmap/ic_launcher_round" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/avatar_default" />
 
     <TextView
         android:id="@+id/tvNavName"

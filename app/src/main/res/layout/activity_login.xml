@@ -4,15 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
-
-    <ImageView
-        android:id="@+id/imgBG1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:translationZ="-3dp"
-        android:src="@drawable/cover_1"
-        android:scaleType="center"/>
+    tools:context=".controller.LoginActivity"
+    android:id="@+id/loginLayout">
 
     <ImageView
         android:id="@+id/imgBG2"
@@ -27,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:translationZ="-1dp"
-        android:background="@color/colorAlpha50Black"/>
+        android:background="@color/colorAlpha20Black"/>
 
     <TextView
         android:id="@+id/tvBottom"
@@ -49,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/white_border"
-        android:padding="15px"
+        android:padding="7dp"
         android:text="Ứng dụng cộng đồng leo núi"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
@@ -65,10 +58,10 @@
         android:hint="Email"
         android:textColor="@color/colorAlpha80White"
         android:inputType="textEmailAddress"
-        android:paddingBottom="30px"
-        android:paddingLeft="50px"
-        android:paddingRight="50px"
-        android:paddingTop="30px"
+        android:paddingBottom="15dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="15dp"
         android:textColorHint="@color/colorAlpha80White"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,26 +77,28 @@
         android:background="@color/colorAlpha50Black"
         android:hint="Mật khẩu"
         android:inputType="textPassword"
-        android:paddingBottom="30px"
-        android:paddingLeft="50px"
-        android:paddingRight="50px"
-        android:paddingTop="30px"
+        android:paddingBottom="15dp"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="15dp"
         android:textColorHint="@color/colorAlpha80White"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginEmail" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        app:backgroundTint="@android:color/transparent"
         android:text="Quên mật khẩu"
-        android:textAllCaps="false"
+        app:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginPassword"
-        app:layout_constraintBottom_toTopOf="@id/btnLogin"/>
+        app:layout_constraintBottom_toTopOf="@id/btnLogin"
+        android:letterSpacing="0.01"
+        app:rippleColor="@android:color/transparent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/loginGuideline"
@@ -112,20 +107,23 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.8"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="50px"
-        android:background="@drawable/radius_border"
+        android:layout_height="0dp"
+        android:layout_marginLeft="25dp"
         android:text="Đăng nhập"
-        android:textAllCaps="false"
+        app:textAllCaps="false"
+        app:backgroundTint="@color/colorPrimary"
         android:textColor="@android:color/white"
+        app:cornerRadius="5dp"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintEnd_toStartOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/loginGuideline" />
+        app:layout_constraintTop_toTopOf="@id/btnWithFacebook"
+        app:layout_constraintBottom_toBottomOf="@id/btnWithFacebook"
+        android:letterSpacing="0.01"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -142,20 +140,26 @@
         app:layout_constraintRight_toRightOf="@id/btnWithFacebook"
         app:layout_constraintBottom_toBottomOf="@id/btnLogin"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnWithFacebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="50px"
-        android:drawableLeft="@drawable/ic_facebook"
+        android:layout_marginRight="25dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="9dp"
+        app:iconPadding="0dp"
+        app:icon="@drawable/ic_facebook"
+        app:iconGravity="start"
         app:layout_constraintHorizontal_weight="1"
-        android:background="@drawable/radius_border_facebook"
+        app:cornerRadius="5dp"
+        app:backgroundTint="@color/colorFacebook"
         android:text="Facebook"
-        android:textAllCaps="false"
+        app:textAllCaps="false"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@id/btnLogin" />
+        app:layout_constraintBottom_toTopOf="@id/loginGuideline"
+        android:letterSpacing="0.01"/>
 
     <TextView
         android:id="@+id/tvQuestion"
@@ -169,20 +173,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/loginGuideline" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        app:backgroundTint="@android:color/transparent"
         android:minHeight="0px"
         android:minWidth="0px"
         android:text="Đăng ký"
-        android:textAllCaps="false"
+        app:textAllCaps="false"
         android:textColor="@color/colorPrimary"
+        android:padding="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvQuestion"
-        app:layout_constraintTop_toTopOf="@id/loginGuideline" />
+        app:layout_constraintTop_toTopOf="@id/loginGuideline"
+        android:letterSpacing="0.01"
+        app:rippleColor="@android:color/transparent"/>
 
 
 </android.support.constraint.ConstraintLayout>

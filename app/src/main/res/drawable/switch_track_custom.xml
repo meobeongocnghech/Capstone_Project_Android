@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:gravity="center_vertical|fill_horizontal">
+        <shape android:shape="rectangle"
+            android:tint="@color/switch_track_color">
+            <corners android:radius="4dp" />
+            <size android:height="40dp" />
+            <padding android:right="15dp" android:left="15dp" />
+            <stroke android:width="33dp" android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>

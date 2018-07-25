@@ -1,117 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/white">
+    app:cardUseCompatPadding="false"
+    android:background="@color/colorDefaultBackground"
+    android:layout_marginBottom="10dp"
+    app:cardElevation="2dp">
 
-    <ImageView
-        android:id="@+id/imgPostAvatar"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:layout_marginLeft="16dp"
-        android:padding="8dp"
-        android:src="@drawable/avatar_default"/>
-
-    <android.support.constraint.Barrier
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/avatarBarrier"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imgPostAvatar"/>
+        android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/tvPostUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imgPostAvatar"
-        app:layout_constraintBottom_toTopOf="@id/tvTime"
-        app:layout_constraintVertical_chainStyle="spread"
-        android:layout_marginLeft="16dp"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:text="User"/>
+        <ImageView
+            android:id="@+id/imgPostAvatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="16dp"
+            android:adjustViewBounds="true"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default" />
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/tvPostUserName"
-        app:layout_constraintTop_toBottomOf="@id/tvPostUserName"
-        app:layout_constraintBottom_toBottomOf="@id/avatarBarrier"
-        android:textSize="15sp"
-        android:text="20 m"/>
+        <android.support.constraint.Barrier
+            android:id="@+id/avatarBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="imgPostAvatar" />
 
-    <TextView
-        android:id="@+id/tvPostCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chuyên mục khác"
-        app:layout_constraintTop_toBottomOf="@id/btnPostOption"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@drawable/radius_border"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_marginRight="16dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:paddingRight="8dp"
-        android:paddingLeft="8dp"/>
+        <TextView
+            android:id="@+id/tvPostUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="User"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/tvTime"
+            app:layout_constraintStart_toEndOf="@id/imgPostAvatar"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
 
-    <ImageButton
-        android:id="@+id/btnPostOption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_vstyle_down"
-        android:background="@android:color/transparent"
-        android:layout_marginRight="16dp"
-        app:layout_constraintTop_toTopOf="@id/tvPostUserName"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20 m"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/avatarBarrier"
+            app:layout_constraintStart_toStartOf="@id/tvPostUserName"
+            app:layout_constraintTop_toBottomOf="@id/tvPostUserName" />
 
-    <TextView
-        android:id="@+id/tvPostContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/avatarBarrier"
-        android:textColor="@android:color/black"
-        android:text="@string/pseudo_para"
-        android:lines="4"
-        android:maxLines="8"
-        android:textSize="15sp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp" />
+        <TextView
+            android:id="@+id/tvPostCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/radius_border"
+            android:paddingBottom="2dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="2dp"
+            android:text="Chuyên mục khác"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnPostOption" />
 
-    <Button
-        android:id="@+id/btnPostLike"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_like"
-        android:background="@android:color/transparent"
-        android:text="Like"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="48dp"
-        android:paddingRight="48dp"
-        app:layout_constraintTop_toBottomOf="@id/tvPostContent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnPostComment"/>
+        <ImageButton
+            android:id="@+id/btnPostOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_vstyle_down"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
 
-    <Button
-        android:id="@+id/btnPostComment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_comment"
-        android:background="@android:color/transparent"
-        android:text="Comment"
-        android:layout_marginTop="16dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="32dp"
-        app:layout_constraintTop_toBottomOf="@id/tvPostContent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnPostLike"/>
+        <TextView
+            android:id="@+id/tvPostContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:lines="4"
+            android:maxLines="8"
+            android:text="@string/pseudo_para"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/avatarBarrier" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/btnPostLike"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/like_button_default"
+            android:paddingLeft="80dp"
+            android:text="Like"
+            app:layout_constraintEnd_toStartOf="@id/btnPostComment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvPostContent" />
+
+        <Button
+            android:id="@+id/btnPostComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/comment_button_default"
+            android:paddingLeft="55dp"
+            android:paddingRight="10dp"
+            android:text="Comment"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnPostLike"
+            app:layout_constraintTop_toBottomOf="@id/tvPostContent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
