@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="36dp"
                     android:text="Bài đăng"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/colorTextFieldInput"
                     android:textSize="20sp" />
             </androidx.appcompat.widget.Toolbar>
 
@@ -62,7 +62,7 @@
                     android:id="@+id/tabPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_newsfeed" />
+                    android:icon="@drawable/ic_post" />
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabPlan"
@@ -96,7 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorDefaultBackground"
-            android:textColor="@android:color/black"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </LinearLayout>
 
@@ -109,6 +108,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

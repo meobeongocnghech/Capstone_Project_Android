@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/firstnameLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:textColorHint="@color/colorTextFieldLabel"
+        android:transitionGroup="true"
+        app:hintTextAppearance="@style/TextInputLayoutStyle"
+        app:hintEnabled="true"
+        app:hintAnimationEnabled="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:errorTextAppearance="@style/ErrorStyle"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper_firstname">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtFirstname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:singleLine="true"
+            android:hint="@string/hint_firstname"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextFieldInput" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/lastnameLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:textColorHint="@color/colorTextFieldLabel"
+        android:transitionGroup="true"
+        app:hintEnabled="true"
+        app:hintAnimationEnabled="true"
+        app:hintTextAppearance="@style/TextInputLayoutStyle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstnameLayout"
+        app:errorTextAppearance="@style/ErrorStyle"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper_lastname">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtLastname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_lastname"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextFieldInput" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:id="@+id/birthdateLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="16dp"
+        android:textColorHint="@color/colorTextFieldLabel"
+        android:transitionGroup="true"
+        app:layout_constraintTop_toBottomOf="@id/lastnameLayout"
+        app:layout_constraintEnd_toStartOf="@id/radGroupGender"
+        app:layout_constraintStart_toStartOf="parent"
+        app:hintEnabled="true"
+        app:hintAnimationEnabled="true"
+        app:hintTextAppearance="@style/TextInputLayoutStyle"
+        app:errorTextAppearance="@style/ErrorStyle"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper_birthdate">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtDoB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorGreyHint"
+            android:hint="@string/hint_birthdate"
+            android:inputType="date"
+            android:singleLine="true"
+            android:textSize="15sp"
+            android:textColor="@color/colorTextFieldInput" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/genderLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:transitionGroup="true"
+        app:layout_constraintStart_toStartOf="@id/radGroupGender"
+        app:layout_constraintEnd_toEndOf="@id/radGroupGender"
+        app:layout_constraintTop_toTopOf="@id/birthdateLayout"
+        app:layout_constraintBottom_toBottomOf="@id/birthdateLayout"
+        android:background="@android:color/white"
+        app:errorTextAppearance="@style/ErrorStyle"
+        app:helperTextEnabled="true"
+        app:helperText="@string/helper_gender">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:focusable="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/radGroupGender"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="@id/birthdateLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/birthdateLayout"
+        app:layout_constraintBottom_toBottomOf="@id/birthdateLayout">
+
+        <RadioButton
+            android:id="@+id/radioMale"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextFieldLabel"
+            android:text="@string/hint_male"
+            android:theme="@style/RadioStyle"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"/>
+        <RadioButton
+            android:id="@+id/radioFemale"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorTextFieldLabel"
+            android:text="@string/hint_female"
+            android:theme="@style/RadioStyle"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="8dp"/>
+    </RadioGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

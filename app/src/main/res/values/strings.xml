@@ -11,6 +11,7 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="loading">Loading Image</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -25,6 +26,44 @@
     </string-array>
     <string name="title_activity_place_detail">PlaceDetailActivity</string>
 
-    <string name="error">Lỗi</string>
+    <string name="title_post">Bài đăng</string>
+    <string name="title_place">Địa điểm</string>
+    <string name="title_newsfeed">Bảng tin</string>
+    <string name="title_plan">Kế hoạch</string>
+    <string name="title_notification">Thông báo</string>
+    <string name="title_message">Tin nhắn</string>
+    <string name="title_search">Tìm kiếm</string>
+    <string name="title_register">Đăng ký</string>
+    <string name="title_forgot_password">Quên mật khẩu</string>
 
+    <string name="button_next">Tiếp</string>
+    <string name="button_register">Đăng ký</string>
+    <string name="button_submit">Gửi</string>
+
+    <string name="helper_firstname">Nhập họ của bạn</string>
+    <string name="helper_lastname">Nhập tên của bạn</string>
+    <string name="helper_birthdate">Ngày/tháng/năm</string>
+    <string name="helper_gender">Giới tính</string>
+    <string name="helper_email">Tên tài khoản</string>
+    <string name="helper_password">Mật khẩu ít nhất 8 kí tự trở lên</string>
+
+    <string name="hint_firstname">Họ</string>
+    <string name="hint_lastname">Tên</string>
+    <string name="hint_birthdate">Ngày sinh</string>
+    <string name="hint_email">Địa chỉ email</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="hint_repassword">Nhập lại mật khẩu</string>
+    <string name="hint_male">Nam</string>
+    <string name="hint_female">Nữ</string>
+
+    <string name="error_firstname">Hãy nhập họ của bạn</string>
+    <string name="error_lastname">Hãy nhập tên của bạn</string>
+    <string name="error_birthdate_empty">Hãy nhập ngày sinh</string>
+    <string name="error_birthdate_restrict">Nguời dùng phải trên 13 tuổi</string>
+    <string name="error_birthdate_format">Sai định dạng</string>
+    <string name="error_gender">Chọn giới tính</string>
+    <string name="error_email_empty">Hãy nhập email của bạn</string>
+    <string name="error_email_format">Sai định dạng</string>
+    <string name="error_password">Mật khẩu quá ngắn</string>
+    <string name="error_repassword">Nhập lại chưa chính xác</string>
 </resources>

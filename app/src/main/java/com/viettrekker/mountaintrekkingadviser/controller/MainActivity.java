@@ -3,6 +3,7 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,11 +12,12 @@ import android.widget.TextView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
-import com.viettrekker.mountaintrekkingadviser.util.transformation.CircleTransform;
+import com.viettrekker.mountaintrekkingadviser.animator.CircleTransform;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -46,18 +48,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         imgAvatar = (ImageView) findViewById(R.id.imgMainAvatar);
-        imgAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawer.openDrawer(GravityCompat.START);
-            }
-        });
-
-        Picasso.get().load("https://imgur.com/jKq7grX123.png").transform(new CircleTransform()).placeholder(R.drawable.avatar_default).into(imgAvatar);
+        imgAvatar.setOnClickListener((v) -> drawer.openDrawer(GravityCompat.START));
 
         View header = navigationView.getHeaderView(0);
         ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
-        Picasso.get().load("https://imgur.com/jKq7grX123.png").transform(new CircleTransform()).placeholder(R.drawable.avatar_default).into(imgNavAvatar);
+
+        if (user.getGallery() != null) {
+            Picasso.get().load("https://imgur.com/jKq7grX123.png")
+                    .transform(new CircleTransform())
+                    .placeholder(R.drawable.avatar_default)
+                    .into(imgAvatar);
+
+            Picasso.get().load("https://imgur.com/jKq7grX123.png")
+                    .transform(new CircleTransform())
+                    .placeholder(R.drawable.avatar_default)
+                    .into(imgNavAvatar);
+        }
 
         TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
         tvNavName.setText(user.getLastName() + " " + user.getFirstName());
@@ -92,11 +98,17 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                PostFragment fragment = (PostFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + viewPager.getCurrentItem());
-                fragment.scrollToTop();
+
             }
         });
 
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

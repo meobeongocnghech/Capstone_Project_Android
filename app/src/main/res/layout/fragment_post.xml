@@ -8,13 +8,13 @@
     android:orientation="vertical"
     tools:context=".controller.post.PostFragment">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:elevation="2dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="16dp">
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
 
         <Spinner
             android:id="@+id/spnCategory"
@@ -29,10 +29,10 @@
             android:paddingLeft="5dp"
             android:popupBackground="@android:color/white"
             android:spinnerMode="dropdown"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            app:layout_constraintLeft_toLeftOf="parent" />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,13 +56,28 @@
             app:switchTextAppearance="@style/SwitchTheme"
             app:track="@drawable/switch_track_custom" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/placeViewPager"
+    <in.srain.cube.views.ptr.PtrFrameLayout
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/post_ptr_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        cube_ptr:ptr_duration_to_close="300"
+        cube_ptr:ptr_duration_to_close_header="2000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.4"
         android:background="@android:color/white">
 
-    </androidx.viewpager.widget.ViewPager>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/placeViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
+
+        </androidx.viewpager.widget.ViewPager>
+
+    </in.srain.cube.views.ptr.PtrFrameLayout>
 </LinearLayout>

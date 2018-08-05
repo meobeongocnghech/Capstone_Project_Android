@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#00C853</color>
+    <color name="colorPrimary">#00c853</color>
     <color name="colorPrimaryDark">#43A047</color>
-    <color name="colorAccent">#EF5350</color>
+    <color name="colorSecondary">#EF5350</color>
+    <color name="colorAccent">#00c853</color>
     <color name="colorHyperLink">#18243c</color>
     <color name="colorFacebook">#648AD3</color>
     <color name="colorAlpha20Black">#33000000</color>
@@ -11,9 +12,9 @@
     <color name="colorGreyHint">#BDBDBD</color>
     <color name="colorBlack">#000000</color>
     <color name="colorDefaultBackground">#EEEEEE</color>
-    <color name="colorTextFieldContainer">#1F000000</color>
-    <color name="colorTextFieldLabel">#99000000</color>
-    <color name="colorTextFieldInput">#DE000000</color>
+    <color name="colorTextFieldContainer">#1F000000</color> <!--black 12% alpha -->
+    <color name="colorTextFieldLabel">#99000000</color> <!--black 60% alpha -->
+    <color name="colorTextFieldInput">#DE000000</color> <!--black 87% alpha -->
     <color name="colorError">#fd9726</color>
     <color name="colorCorrect">#67c95a</color>
 

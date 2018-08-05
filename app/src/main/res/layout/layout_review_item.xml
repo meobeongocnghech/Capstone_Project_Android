@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,7 +9,7 @@
     app:cardElevation="2dp"
     app:cardCornerRadius="4dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="16dp"
@@ -97,7 +98,7 @@
             android:maxLines="2"
             android:text="@string/pseudo_para"/>
 
-        <android.support.constraint.ConstraintLayout
+        <GridLayout
             android:id="@+id/gridGuidePicture"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -106,49 +107,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/guideMap"
             app:layout_constraintTop_toBottomOf="@id/tvGuideDescription"
-            app:layout_constraintHorizontal_chainStyle="spread">
+            app:layout_constraintHorizontal_chainStyle="spread"
+            android:orientation="horizontal"
+            android:columnCount="2"
+            android:rowCount="3"
+            >
 
-            <ImageView
-                android:id="@+id/imgPreview1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/mini_picture"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imgPreview2"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/imgPreview3"
-                app:layout_constraintVertical_chainStyle="spread"/>
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_gravity="left|top"-->
+                <!--android:textColorLink="@color/colorPrimary"-->
+                <!--android:text="B1"/>-->
+
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_gravity="left|top"-->
+                <!--android:textColorLink="@color/colorPrimary"-->
+                <!--android:text="B1"/>-->
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="left|top"
+                app:cardCornerRadius="5dp"
+                android:clipToPadding="false">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/imgPreview1"
+                    android:src="@drawable/mini_picture"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
 
             <ImageView
                 android:id="@+id/imgPreview2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:src="@drawable/mini_picture"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imgPreview1"/>
+                android:layout_gravity="right|top"/>
 
             <ImageView
                 android:id="@+id/imgPreview3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="left|bottom"
                 android:src="@drawable/mini_picture"
                 android:scaleType="centerCrop"
-                app:layout_constraintTop_toBottomOf="@id/imgPreview1"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/preview4"
-                app:layout_constraintHorizontal_chainStyle="spread"/>
+                android:layout_marginTop="8dp"/>
 
             <FrameLayout
                 android:id="@+id/preview4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/imgPreview2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imgPreview3">
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="right|bottom">
 
                 <ImageView
                     android:layout_height="wrap_content"
@@ -168,7 +181,7 @@
 
             </FrameLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </GridLayout>
 
         <ImageView
             android:id="@+id/guideMap"
@@ -182,6 +195,6 @@
             android:src="@drawable/maps_test"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

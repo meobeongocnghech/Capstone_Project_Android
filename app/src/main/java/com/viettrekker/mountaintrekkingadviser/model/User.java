@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+/**
+ * @author LongNC
+ * 25/07/2018
+ */
 public class User {
     @SerializedName("id")
     @Expose
@@ -24,9 +28,14 @@ public class User {
     @SerializedName("birthdate")
     @Expose
     private Date birthDate;
+
     @SerializedName("gender")
     @Expose
     private int gender;
+
+    @SerializedName("gallery")
+    @Expose
+    private MyGallery gallery;
 
     @SerializedName("tokenId")
     @Expose
@@ -94,6 +103,14 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public MyGallery getGallery() {
+        return gallery;
+    }
+
+    public void setGallery(MyGallery gallery) {
+        this.gallery = gallery;
     }
 
     @Override
