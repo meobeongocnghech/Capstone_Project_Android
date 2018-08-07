@@ -8,76 +8,80 @@
     android:orientation="vertical"
     tools:context=".controller.post.PostFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:elevation="2dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp">
-
-        <Spinner
-            android:id="@+id/spnCategory"
-            style="@style/spinner_style"
-            android:layout_width="200dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="16dp"
-            android:background="@drawable/radius_border_black"
-            android:drawSelectorOnTop="true"
-            android:dropDownVerticalOffset="43dp"
-            android:entries="@array/category"
-            android:paddingLeft="5dp"
-            android:popupBackground="@android:color/white"
-            android:spinnerMode="dropdown"
-            android:visibility="invisible"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="spnCategory" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/swtMode"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginRight="16dp"
-            android:background="@android:color/transparent"
-            android:checked="false"
-            android:paddingLeft="5dp"
-            android:textColor="@color/switch_thumb_color"
-            android:thumb="@drawable/switch_thumb_custom"
-            app:layout_constraintBottom_toBottomOf="@id/barrier"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/spnCategory"
-            app:switchMinWidth="80dp"
-            app:switchTextAppearance="@style/SwitchTheme"
-            app:track="@drawable/switch_track_custom" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <in.srain.cube.views.ptr.PtrFrameLayout
-        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+    <in.srain.cube.views.ptr.PtrFrameLayout xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/post_ptr_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         cube_ptr:ptr_duration_to_close="300"
         cube_ptr:ptr_duration_to_close_header="2000"
         cube_ptr:ptr_keep_header_when_refresh="true"
         cube_ptr:ptr_pull_to_fresh="false"
         cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
-        cube_ptr:ptr_resistance="1.4"
-        android:background="@android:color/white">
+        cube_ptr:ptr_resistance="1.4">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/placeViewPager"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp">
 
-        </androidx.viewpager.widget.ViewPager>
+                <Spinner
+                    android:id="@+id/spnCategory"
+                    style="@style/spinner_style"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/radius_border_black"
+                    android:drawSelectorOnTop="true"
+                    android:dropDownVerticalOffset="43dp"
+                    android:entries="@array/category"
+                    android:paddingLeft="5dp"
+                    android:popupBackground="@android:color/white"
+                    android:spinnerMode="dropdown"
+                    android:visibility="invisible"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="spnCategory" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/swtMode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@android:color/transparent"
+                    android:checked="false"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/switch_thumb_color"
+                    android:thumb="@drawable/switch_thumb_custom"
+                    app:layout_constraintBottom_toBottomOf="@id/barrier"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/spnCategory"
+                    app:switchMinWidth="80dp"
+                    app:switchTextAppearance="@style/SwitchTheme"
+                    app:track="@drawable/switch_track_custom" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/placeViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white">
+
+            </androidx.viewpager.widget.ViewPager>
+        </LinearLayout>
 
     </in.srain.cube.views.ptr.PtrFrameLayout>
 </LinearLayout>

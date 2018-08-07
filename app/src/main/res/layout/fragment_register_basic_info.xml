@@ -6,7 +6,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/firstnameLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="40dp"
@@ -27,16 +27,19 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtFirstname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:inputType="text"
             android:singleLine="true"
             android:hint="@string/hint_firstname"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextFieldInput" />
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorTextFieldInput"
+            android:textCursorDrawable="@drawable/input_cursor"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/lastnameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -58,23 +61,26 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtLastname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:hint="@string/hint_lastname"
             android:inputType="text"
             android:singleLine="true"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextFieldInput" />
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorTextFieldInput"
+            android:textCursorDrawable="@drawable/input_cursor"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/birthdateLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="16dp"
         android:textColorHint="@color/colorTextFieldLabel"
         android:transitionGroup="true"
         app:layout_constraintTop_toBottomOf="@id/lastnameLayout"
@@ -90,18 +96,22 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtDoB"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:backgroundTint="@color/colorGreyHint"
             android:hint="@string/hint_birthdate"
             android:inputType="date"
             android:singleLine="true"
-            android:textSize="15sp"
-            android:textColor="@color/colorTextFieldInput" />
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/colorTextFieldInput"
+            android:focusable="false"
+            android:textCursorDrawable="@drawable/input_cursor"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/genderLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:transitionGroup="true"
@@ -116,8 +126,10 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:layout_height="40dp"
+            android:textSize="13sp"
+            android:textStyle="normal"
+            android:fontFamily="sans-serif"
             android:focusable="false" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -126,7 +138,7 @@
         android:id="@+id/radGroupGender"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="@id/birthdateLayout"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,6 +152,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorTextFieldLabel"
             android:text="@string/hint_male"
+            android:textSize="13sp"
             android:theme="@style/RadioStyle"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"/>
@@ -150,9 +163,11 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorTextFieldLabel"
             android:text="@string/hint_female"
+            android:textSize="13sp"
             android:theme="@style/RadioStyle"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="8dp"/>
     </RadioGroup>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:scaleY="1.2"
+        android:scaleY="1"
         app:layout_constraintBottom_toBottomOf="@id/loading"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

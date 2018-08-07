@@ -2,15 +2,42 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="LoginTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/colorBlack</item>
+    </style>
+
+    <style name="DialogStyle" parent="Base.Theme.AppCompat.Light.Dialog">
+        <!--Other custom stuff if needed-->
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="NumberPickerStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textSize">14sp</item>
+        <!--<item name="android:textColorPrimary">@color/colorAccent</item>-->
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:colorAccent">@android:color/white</item>
+        <item name="android:colorPrimary">@android:color/white</item>
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorAccent">@android:color/white</item>
+    </style>
+
     <style name="Toolbar">
         <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarTitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="ToolbarSubtitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="SwitchTheme" parent="Theme.MaterialComponents.Light">

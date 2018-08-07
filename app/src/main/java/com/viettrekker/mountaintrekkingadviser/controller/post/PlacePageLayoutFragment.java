@@ -78,7 +78,13 @@ public class PlacePageLayoutFragment extends Fragment {
         imgCover.getLayoutParams().height = (int) (size.x * 1.5 / 3);
         imgCover.requestLayout();
 
-        btnViewDetail.setOnClickListener((v) -> startActivity(new Intent(view.getContext(), PlaceDetailActivity.class)));
+        btnViewDetail.setOnClickListener((v) -> {
+            Intent i = new Intent(view.getContext(), PlaceDetailActivity.class);
+            i.putExtra("id", place.getId());
+            i.putExtra("name", place.getName());
+            i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
+            startActivity(i);
+        });
 
         bindData();
     }

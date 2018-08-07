@@ -1,11 +1,15 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +22,9 @@ import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActiv
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -65,13 +72,10 @@ public class LoginActivity extends AppCompatActivity {
                 String email = edtLoginEmail.getText().toString();
                 String password = edtLoginPassword.getText().toString();
                 APIService mWebService = APIUtils.getWebService();
-                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
-                progressDialog.setTitle("");
-                progressDialog.setMessage("");
-                progressDialog.getWindow().setLayout(-2, -2);
+                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.DialogStyle);
                 progressDialog.setCancelable(false);
                 progressDialog.show();
-                mWebService.postLogin("linhnt@gmail.com", "linhnt").enqueue(new Callback<User>() {
+                mWebService.postLogin(email, password).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         ConstraintLayout view = findViewById(R.id.loginLayout);
@@ -96,8 +100,30 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
-    }
 
+        KeyboardVisibilityEvent.setEventListener(
+                this,
+                new KeyboardVisibilityEventListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean isOpen) {
+                        if (isOpen) {
+                            runOnUiThread(() -> {
+                                btnForgotPassword.setVisibility(View.GONE);
+                                findViewById(R.id.tvQuestion).setVisibility(View.GONE);
+                                btnRegister.setVisibility(View.GONE);
+//                    ((ConstraintLayout.LayoutParams) edtLoginEmail.getLayoutParams()).verticalBias = 0.5f;
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                btnForgotPassword.setVisibility(View.VISIBLE);
+                                findViewById(R.id.tvQuestion).setVisibility(View.VISIBLE);
+                                btnRegister.setVisibility(View.VISIBLE);
+//                    ((ConstraintLayout.LayoutParams) edtLoginEmail.getLayoutParams()).verticalBias = 0.4f;
+                            });
+                        }
+                    }
+                });
+    }
 
     @Override
     protected void onResume() {

@@ -20,7 +20,8 @@
         <activity android:name=".controller.MainActivity" />
         <activity
             android:name=".controller.LoginActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:theme="@style/LoginTheme"/>
         <activity android:name=".controller.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +32,9 @@
         <activity android:name=".controller.ForgotPasswordActivity" />
         <activity
             android:name=".controller.register.RegisterActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+
+        </activity>
         <activity android:name=".controller.post.PlaceDetailActivity" />
         <activity android:name=".TestActivity">
 

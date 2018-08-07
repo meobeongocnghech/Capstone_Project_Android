@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:foreground="@color/colorAlpha50Black"
         android:scaleType="centerCrop"
-        android:src="@drawable/cover_4"
-        android:translationZ="-1dp" />
+        android:src="@drawable/cover_4" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAlpha50Black" />
     <TextView
         android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
@@ -25,13 +27,13 @@
         android:text="mta"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
-        android:textSize="60sp"
+        android:textSize="48sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tvAppDesc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvAppDesc"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/tvAppDesc"
@@ -39,13 +41,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/white_border"
         android:padding="7dp"
+        android:textSize="12sp"
         android:text="Ứng dụng cộng đồng leo núi"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/edtLoginEmail"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAppName"
-        app:layout_constraintBottom_toTopOf="@id/edtLoginEmail"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvAppName" />
 
     <EditText
         android:id="@+id/edtLoginEmail"
@@ -60,12 +64,12 @@
         android:paddingBottom="15dp"
         android:textColor="@color/colorAlpha80White"
         android:textColorHint="@color/colorAlpha80White"
-        android:textSize="16sp"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4"/>
+        app:layout_constraintVertical_bias="0.5" />
 
     <EditText
         android:id="@+id/edtLoginPassword"
@@ -80,7 +84,7 @@
         android:paddingBottom="15dp"
         android:textColor="@color/colorAlpha80White"
         android:textColorHint="@color/colorAlpha80White"
-        android:textSize="16sp"
+        android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginEmail" />
 
     <com.google.android.material.button.MaterialButton
@@ -92,7 +96,8 @@
         android:minHeight="0dp"
         android:text="Quên mật khẩu"
         android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
+        android:textSize="12sp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         app:backgroundTint="@android:color/transparent"
         app:layout_constraintBottom_toTopOf="@id/buttonGroup"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -101,7 +106,6 @@
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintVertical_chainStyle="spread"
         app:rippleColor="@android:color/transparent"
-        app:strokeWidth="0dp"
         app:textAllCaps="false" />
 
     <com.google.android.material.button.MaterialButton
@@ -112,7 +116,7 @@
         android:letterSpacing="0.01"
         android:text="Đăng nhập"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="@id/btnWithFacebook"
@@ -128,6 +132,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="hoặc"
+        android:textSize="12sp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@id/btnLogin"
@@ -146,7 +151,7 @@
         android:paddingRight="9dp"
         android:text="Facebook"
         android:textColor="@android:color/white"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:backgroundTint="@color/colorFacebook"
         app:cornerRadius="5dp"
         app:icon="@drawable/ic_facebook"
@@ -165,9 +170,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="btnLogin, textView2, btnWithFacebook"
-        app:layout_constraintBottom_toBottomOf="@id/tvQuestion"
-        app:layout_constraintTop_toTopOf="@id/btnForgotPassword"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintBottom_toTopOf="@id/tvQuestion"
+        app:layout_constraintTop_toBottomOf="@id/btnForgotPassword" />
 
     <TextView
         android:id="@+id/tvQuestion"
@@ -180,24 +184,27 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonGroup"
-        app:layout_constraintVertical_bias="0.8" />
+        app:layout_constraintVertical_bias="0.8"
+        android:textSize="12sp"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="0.01"
-        android:minWidth="0px"
-        android:minHeight="0px"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
         android:padding="0dp"
         android:text="Đăng ký"
         android:textColor="@color/colorPrimary"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         app:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvQuestion"
         app:layout_constraintTop_toTopOf="@id/tvQuestion"
         app:rippleColor="@android:color/transparent"
-        app:textAllCaps="false" />
+        app:textAllCaps="false"
+        android:textSize="12sp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

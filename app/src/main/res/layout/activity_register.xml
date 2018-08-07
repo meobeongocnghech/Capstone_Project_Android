@@ -1,54 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    tools:context=".controller.register.RegisterActivity"
-    android:id="@+id/registerLayout">
+    android:background="@android:color/white"
+    tools:context=".controller.register.RegisterActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/regToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/regToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:title="@string/title_register"
-            app:titleTextColor="@android:color/white"
-            android:theme="@style/Toolbar">
-        </androidx.appcompat.widget.Toolbar>
+        android:layout_height="@dimen/appbar_height"
+        android:background="@color/colorPrimary"
+        android:theme="@style/Toolbar"
+        app:subtitleTextAppearance="@style/ToolbarSubtitleTheme"
+        app:title="@string/title_register"
+        app:titleTextAppearance="@style/ToolbarTitleTheme">
 
-        <FrameLayout
-            android:id="@+id/regFragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/regToolbar">
-        </FrameLayout>
+    </androidx.appcompat.widget.Toolbar>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegNext"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:minHeight="0dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/colorPrimary"
-            app:cornerRadius="5dp"
-            android:textColor="@android:color/white"
-            app:textAllCaps="false"
-            android:text="@string/button_next"
-            android:letterSpacing="0.01"/>
+    <FrameLayout
+        android:id="@+id/regFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/regToolbar"></FrameLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegNext"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:letterSpacing="0.01"
+        android:minHeight="0dp"
+        android:text="@string/button_next"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:cornerRadius="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:textAllCaps="false" />
 
-</androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

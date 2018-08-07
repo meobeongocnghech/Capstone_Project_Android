@@ -1,15 +1,19 @@
 package com.viettrekker.mountaintrekkingadviser.controller.register;
 
 import android.app.ProgressDialog;
+import android.app.Service;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,15 +26,23 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+
 import java.lang.reflect.Field;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.transition.Slide;
@@ -53,6 +65,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Fragment fragmentRegisterAccountInfo;
     private ProgressDialog progress;
 
+    private Toolbar toolbar;
+
     public RegisterActivity() {
         isNext = true;
     }
@@ -62,14 +76,15 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.regToolbar);
+        toolbar = (Toolbar) findViewById(R.id.regToolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        submit = (MaterialButton) findViewById(R.id.btnRegNext);
+        loadInitialFragment();
 
+        submit = (MaterialButton) findViewById(R.id.btnRegNext);
         submit.setOnClickListener((v) -> {
             if (isNext) {
                 if (validateBasicInfoData()) {
@@ -82,7 +97,20 @@ public class RegisterActivity extends AppCompatActivity {
                 valiteAccountInfo();
             }
         });
-        loadInitialFragment();
+
+        KeyboardVisibilityEvent.setEventListener(
+                this,
+                new KeyboardVisibilityEventListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean isOpen) {
+                        if (isOpen) {
+                            toolbar.setVisibility(View.GONE);
+                        } else {
+                            toolbar.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
     }
 
     private void loadInitialFragment() {
@@ -152,8 +180,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (!rbMale.isChecked() && !rbFemale.isChecked()) {
             setFailStatus(null, genderLayout, "Chọn giới tính");
             isValidated = false;
-            rbMale.setOnCheckedChangeListener((compoundButton, b) -> {if(genderLayout.isErrorEnabled()) genderLayout.setErrorEnabled(false);});
-            rbFemale.setOnCheckedChangeListener((compoundButton, b) -> {if(genderLayout.isErrorEnabled()) genderLayout.setErrorEnabled(false);});
+            rbMale.setOnCheckedChangeListener((compoundButton, b) -> {
+                if (genderLayout.isErrorEnabled()) genderLayout.setErrorEnabled(false);
+            });
+            rbFemale.setOnCheckedChangeListener((compoundButton, b) -> {
+                if (genderLayout.isErrorEnabled()) genderLayout.setErrorEnabled(false);
+            });
         } else {
             gender = rbMale.isChecked() ? 1 : 0;
         }
@@ -162,13 +194,13 @@ public class RegisterActivity extends AppCompatActivity {
         sDoB = edtDoB.getText().toString().trim();
         layout = (TextInputLayout) findViewById(R.id.birthdateLayout);
         if (sDoB.isEmpty()) {
-            setFailStatus(edtDoB, layout, "Hãy nhập ngày sinh");
+            setFailStatus(edtDoB, layout, "Hãy chọn ngày sinh");
             edtDoB.addTextChangedListener(new MyTextWatcher(layout, edtDoB));
             isValidated = false;
         } else {
             try {
-                if (DateTimeUtils.calculateAge(sDoB) < 13) {
-                    setFailStatus(edtDoB, layout, "Người dùng phải trên 13 tuổi");
+                if (DateTimeUtils.calculateAge(sDoB) < 15) {
+                    setFailStatus(edtDoB, layout, "Người dùng phải trên 15 tuổi");
                     edtDoB.addTextChangedListener(new MyTextWatcher(layout, edtDoB));
                     isValidated = false;
                 } else {
@@ -323,7 +355,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if(layout.isErrorEnabled()) {
+            if (layout.isErrorEnabled()) {
                 layout.setErrorEnabled(false);
                 edt.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }

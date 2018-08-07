@@ -42,7 +42,7 @@
 
     <string name="helper_firstname">Nhập họ của bạn</string>
     <string name="helper_lastname">Nhập tên của bạn</string>
-    <string name="helper_birthdate">Ngày/tháng/năm</string>
+    <string name="helper_birthdate">Chọn ngày sinh</string>
     <string name="helper_gender">Giới tính</string>
     <string name="helper_email">Tên tài khoản</string>
     <string name="helper_password">Mật khẩu ít nhất 8 kí tự trở lên</string>
@@ -55,6 +55,7 @@
     <string name="hint_repassword">Nhập lại mật khẩu</string>
     <string name="hint_male">Nam</string>
     <string name="hint_female">Nữ</string>
+    <string name="hint_show_password">Hiện mật khẩu</string>
 
     <string name="error_firstname">Hãy nhập họ của bạn</string>
     <string name="error_lastname">Hãy nhập tên của bạn</string>

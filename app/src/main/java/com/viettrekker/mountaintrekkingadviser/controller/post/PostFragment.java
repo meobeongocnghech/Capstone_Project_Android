@@ -90,7 +90,7 @@ public class PostFragment extends Fragment {
 
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
-                placeAdapter.load(placeAdapter.getCount() == 0 ? 3 : placeAdapter.getCount(), frame);
+                placeAdapter.load(placeAdapter.getCount() == 0 ? 5 : placeAdapter.getCount(), frame);
             }
         });
     }
