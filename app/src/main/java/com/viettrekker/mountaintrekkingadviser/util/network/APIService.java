@@ -2,6 +2,7 @@ package com.viettrekker.mountaintrekkingadviser.util.network;
 
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
+import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
@@ -61,4 +62,14 @@ public interface APIService {
                                 @Query("page") int page,
                                 @Query("pageSize") int size,
                                 @Query("orderBy") String order);
+
+    @GET("noti?newerThanId=1&newest=true")
+    Call<List<Notification>> getNoti(@Header("AUTH_TOKEN_ID") String token);
+
+    @GET("noti")
+    Call<List<Notification>> getOldNoti(@Header("AUTH_TOKEN_ID") String token,
+                                     @Query("olderThanId") int id);
+
+
+
 }
