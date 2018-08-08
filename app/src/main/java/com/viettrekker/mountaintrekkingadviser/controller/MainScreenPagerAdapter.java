@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
+import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 
@@ -15,7 +16,7 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return position == 0 ? new PostFragment() : new PlanFragment();
+        return position == 0 ? new PostFragment() : new NotificationFragment();
     }
 
     @Override
