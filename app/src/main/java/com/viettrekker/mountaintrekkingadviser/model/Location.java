@@ -9,10 +9,10 @@ public class Location {
     private int id;
     @SerializedName("lat")
     @Expose
-    private long latitude;
+    private double lat;
     @SerializedName("lng")
     @Expose
-    private long longitude;
+    private double lng;
 
     public int getId() {
         return id;
@@ -22,19 +22,19 @@ public class Location {
         this.id = id;
     }
 
-    public long getLatitude() {
-        return latitude;
+    public double getLat() {
+        return lat;
     }
 
-    public void setLatitude(long latitude) {
-        this.latitude = latitude;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
-    public long getLongitude() {
-        return longitude;
+    public double getLng() {
+        return lng;
     }
 
-    public void setLongitude(long longitude) {
-        this.longitude = longitude;
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }

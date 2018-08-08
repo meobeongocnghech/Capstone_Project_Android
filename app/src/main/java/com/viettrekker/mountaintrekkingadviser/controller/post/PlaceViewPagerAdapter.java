@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -78,7 +79,7 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
 
             @Override
             public void onFailure(Call<List<Place>> call, Throwable t) {
-
+                Log.e("err", t.getMessage());
             }
         });
     }

@@ -13,6 +13,9 @@ public class Place {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("location")
+    @Expose
+    private Location location;
     @SerializedName("gallery")
     @Expose
     private MyGallery gallery;
@@ -48,5 +51,13 @@ public class Place {
 
     public void setGallery(MyGallery gallery) {
         this.gallery = gallery;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

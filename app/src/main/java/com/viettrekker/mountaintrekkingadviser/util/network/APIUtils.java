@@ -24,6 +24,8 @@ public class APIUtils {
      */
     public static final String BASE_URL_API = "http://192.168.124.20:8088/api/";
 
+
+
     /**
      * Create service interface using Retrofit library
      *
