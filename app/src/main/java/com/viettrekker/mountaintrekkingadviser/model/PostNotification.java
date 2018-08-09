@@ -3,12 +3,12 @@ package com.viettrekker.mountaintrekkingadviser.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PostNoti {
+public class PostNotification {
     @SerializedName("id")
     @Expose
     int id;
 
-    public PostNoti(int id) {
+    public PostNotification(int id) {
         this.id = id;
     }
 

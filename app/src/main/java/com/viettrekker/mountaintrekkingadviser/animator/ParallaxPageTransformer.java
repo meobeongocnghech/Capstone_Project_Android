@@ -7,7 +7,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.viewpager.widget.ViewPager;
+import android.support.v4.view.ViewPager;
 
 public class ParallaxPageTransformer implements ViewPager.PageTransformer {
 

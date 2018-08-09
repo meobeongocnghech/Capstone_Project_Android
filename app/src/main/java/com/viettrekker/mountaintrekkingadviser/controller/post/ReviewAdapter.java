@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.GuideViewHolder> {
 

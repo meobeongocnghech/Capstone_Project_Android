@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/loginLayout"
@@ -87,7 +87,7 @@
         android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginEmail" />
 
-    <com.google.android.material.button.MaterialButton
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
         app:rippleColor="@android:color/transparent"
         app:textAllCaps="false" />
 
-    <com.google.android.material.button.MaterialButton
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -141,7 +141,7 @@
         app:layout_constraintStart_toEndOf="@+id/btnLogin"
         app:layout_constraintTop_toTopOf="@id/btnLogin" />
 
-    <com.google.android.material.button.MaterialButton
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnWithFacebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
         app:layout_constraintTop_toTopOf="@id/buttonGroup"
         app:textAllCaps="false" />
 
-    <androidx.constraintlayout.widget.Group
+    <android.support.constraint.Group
         android:id="@+id/buttonGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
         app:layout_constraintVertical_bias="0.8"
         android:textSize="12sp"/>
 
-    <com.google.android.material.button.MaterialButton
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -202,9 +202,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvQuestion"
         app:layout_constraintTop_toTopOf="@id/tvQuestion"
+        app:layout_constraintBottom_toBottomOf="@id/tvQuestion"
         app:rippleColor="@android:color/transparent"
         app:textAllCaps="false"
         android:textSize="12sp"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

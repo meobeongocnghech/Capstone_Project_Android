@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/registerLayout"
@@ -8,7 +8,7 @@
     android:background="@android:color/white"
     tools:context=".controller.register.RegisterActivity">
 
-    <androidx.appcompat.widget.Toolbar
+    <android.support.v7.widget.Toolbar
         android:id="@+id/regToolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/appbar_height"
@@ -18,7 +18,7 @@
         app:title="@string/title_register"
         app:titleTextAppearance="@style/ToolbarTitleTheme">
 
-    </androidx.appcompat.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/regFragmentContainer"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/regToolbar"></FrameLayout>
 
-    <com.google.android.material.button.MaterialButton
+    <android.support.design.button.MaterialButton
         android:id="@+id/btnRegNext"
         android:layout_width="0dp"
         android:layout_height="@dimen/button_height"
@@ -48,4 +48,4 @@
         app:textAllCaps="false" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

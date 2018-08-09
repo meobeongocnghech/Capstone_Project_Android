@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import android.support.design.widget.Snackbar;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
 import com.viettrekker.mountaintrekkingadviser.model.User;
@@ -26,8 +26,8 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.constraint.ConstraintLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,35 +69,39 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = edtLoginEmail.getText().toString();
-                String password = edtLoginPassword.getText().toString();
-                APIService mWebService = APIUtils.getWebService();
-                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.DialogStyle);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                mWebService.postLogin(email, password).enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        ConstraintLayout view = findViewById(R.id.loginLayout);
-                        progressDialog.dismiss();
-                        if (response.body() == null) {
-                            Snackbar.make(view, "Email không tồn tại", Snackbar.LENGTH_LONG).show();
-                        } else {
-                            User user = response.body();
-                            MainActivity.user = user;
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                String email = edtLoginEmail.getText().toString().trim();
+                String password = edtLoginPassword.getText().toString().trim();
+                final ConstraintLayout view = findViewById(R.id.loginLayout);
+                if (email.isEmpty() || password.isEmpty()) {
+                    Snackbar.make(view, "Không được để trống", Snackbar.LENGTH_LONG).show();
+                } else {
+                    APIService mWebService = APIUtils.getWebService();
+                    final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.DialogStyle);
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    mWebService.postLogin(email, password).enqueue(new Callback<User>() {
+                        @Override
+                        public void onResponse(Call<User> call, Response<User> response) {
+                            progressDialog.dismiss();
+                            if (response.body() == null) {
+                                Snackbar.make(view, "Sai email hoặc mật khẩu", Snackbar.LENGTH_LONG).show();
+                            } else {
+                                User user = response.body();
+                                MainActivity.user = user;
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable throwable) {
-                        progressDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<User> call, Throwable throwable) {
+                            progressDialog.dismiss();
+                            Toast.makeText(LoginActivity.this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         });
 

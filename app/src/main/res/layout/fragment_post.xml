@@ -8,23 +8,11 @@
     android:orientation="vertical"
     tools:context=".controller.post.PostFragment">
 
-    <in.srain.cube.views.ptr.PtrFrameLayout xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/post_ptr_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        cube_ptr:ptr_duration_to_close="300"
-        cube_ptr:ptr_duration_to_close_header="2000"
-        cube_ptr:ptr_keep_header_when_refresh="true"
-        cube_ptr:ptr_pull_to_fresh="false"
-        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
-        cube_ptr:ptr_resistance="1.4">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/white"
@@ -48,14 +36,14 @@
                     android:visibility="invisible"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
-                <androidx.constraintlayout.widget.Barrier
+                <android.support.constraint.Barrier
                     android:id="@+id/barrier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="bottom"
                     app:constraint_referenced_ids="spnCategory" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swtMode"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
@@ -72,16 +60,14 @@
                     app:switchTextAppearance="@style/SwitchTheme"
                     app:track="@drawable/switch_track_custom" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </android.support.constraint.ConstraintLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <android.support.v4.view.ViewPager
                 android:id="@+id/placeViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/white">
 
-            </androidx.viewpager.widget.ViewPager>
+            </android.support.v4.view.ViewPager>
         </LinearLayout>
-
-    </in.srain.cube.views.ptr.PtrFrameLayout>
 </LinearLayout>

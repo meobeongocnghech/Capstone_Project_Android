@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,7 +8,7 @@
     android:background="@color/colorDefaultBackground"
     app:cardElevation="2dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/constrainlayout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,7 +51,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvNotiTitle" />
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/btnNotiOption"
             android:layout_width="32dp"
             android:layout_height="24dp"
@@ -60,7 +60,7 @@
             app:layout_constraintTop_toTopOf="@id/tvNotiTitle"
             android:src="@drawable/ic_more_vert_black_24dp"
             android:backgroundTint="@android:color/transparent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout
+    </android.support.constraint.ConstraintLayout
        >
 
-</com.google.android.material.card.MaterialCardView>
+</android.support.design.card.MaterialCardView>

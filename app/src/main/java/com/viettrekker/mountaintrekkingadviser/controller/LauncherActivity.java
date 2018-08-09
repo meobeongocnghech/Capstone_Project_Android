@@ -13,8 +13,8 @@ import android.widget.ProgressBar;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 
 public class LauncherActivity extends AppCompatActivity {
 

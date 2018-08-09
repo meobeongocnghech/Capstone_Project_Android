@@ -6,8 +6,8 @@ import android.widget.ImageButton;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 

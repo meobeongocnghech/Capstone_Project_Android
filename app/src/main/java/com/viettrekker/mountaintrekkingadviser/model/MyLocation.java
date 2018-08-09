@@ -3,16 +3,16 @@ package com.viettrekker.mountaintrekkingadviser.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Location {
+public class MyLocation {
     @SerializedName("id")
     @Expose
     private int id;
     @SerializedName("lat")
     @Expose
-    private long latitude;
+    private double latitude;
     @SerializedName("lng")
     @Expose
-    private long longitude;
+    private double longitude;
 
     public int getId() {
         return id;
@@ -22,19 +22,19 @@ public class Location {
         this.id = id;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

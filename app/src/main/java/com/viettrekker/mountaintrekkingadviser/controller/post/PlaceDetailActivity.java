@@ -7,16 +7,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Callback;
+import android.support.design.widget.CollapsingToolbarLayout;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 public class PlaceDetailActivity extends AppCompatActivity {
     private RecyclerView rvGuide;

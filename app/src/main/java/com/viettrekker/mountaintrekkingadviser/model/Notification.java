@@ -32,12 +32,12 @@ public class Notification {
     private SourceNotification source;
     @SerializedName("post")
     @Expose
-    private PostNoti post;
+    private PostNotification post;
     @SerializedName("updated_at")
     @Expose
     private Date updated_at;
 
-    public Notification(int oldestId, int oldestIdinHistoryId, int typeId, int sourceId, int targetId, String content, int state, SourceNotification source, PostNoti post, Date updated_at) {
+    public Notification(int oldestId, int oldestIdinHistoryId, int typeId, int sourceId, int targetId, String content, int state, SourceNotification source, PostNotification post, Date updated_at) {
         this.oldestId = oldestId;
         this.oldestIdinHistoryId = oldestIdinHistoryId;
         this.typeId = typeId;
@@ -103,11 +103,11 @@ public class Notification {
         this.source = source;
     }
 
-    public PostNoti getPost() {
+    public PostNotification getPost() {
         return post;
     }
 
-    public void setPost(PostNoti post) {
+    public void setPost(PostNotification post) {
         this.post = post;
     }
 

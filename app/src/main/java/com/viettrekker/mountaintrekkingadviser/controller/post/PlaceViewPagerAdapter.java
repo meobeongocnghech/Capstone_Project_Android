@@ -11,12 +11,12 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +27,6 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
     private final int PAGE_SIZE = 5;
     private int page = 1;
     private final String orderById = "id";
-    private ViewGroup layout;
 
     public PlaceViewPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -51,14 +50,18 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
         return listPlace.size();
     }
 
-    public void load(int size, ViewGroup layout) {
-        this.layout = layout;
+//    public void load(int size, ViewGroup layout) {
+//        this.layout = layout;
+//        load(size, 1, orderById);
+//    }
+
+    public void load(int size) {
         load(size, 1, orderById);
     }
 
-    private void notifyLoadComplete() {
-        ((PtrFrameLayout) layout).refreshComplete();
-    }
+//    private void notifyLoadComplete() {
+//        ((PtrFrameLayout) layout).refreshComplete();
+//    }
 
 
     private void load(int size, int page, String order) {
@@ -71,7 +74,7 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
                 if (list != null) {
                     listPlace = list;
                     listPlace.remove(0);
-                    notifyLoadComplete();
+//                    notifyLoadComplete();
                     notifyDataSetChanged();
                 }
             }
