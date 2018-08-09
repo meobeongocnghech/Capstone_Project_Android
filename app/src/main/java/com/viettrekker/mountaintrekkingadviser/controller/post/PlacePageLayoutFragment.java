@@ -10,8 +10,10 @@ import android.location.Geocoder;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +22,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.akexorcist.googledirection.DirectionCallback;
+import com.akexorcist.googledirection.GoogleDirection;
+import com.akexorcist.googledirection.constant.AvoidType;
+import com.akexorcist.googledirection.constant.RequestResult;
+import com.akexorcist.googledirection.constant.TransportMode;
+import com.akexorcist.googledirection.model.Direction;
+import com.akexorcist.googledirection.model.Leg;
+import com.akexorcist.googledirection.model.Route;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import android.support.design.button.MaterialButton;
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
@@ -33,6 +43,7 @@ import android.support.v4.app.Fragment;
 
 import java.io.IOException;
 import java.util.List;
+
 
 public class PlacePageLayoutFragment extends Fragment {
     private Place place;
@@ -46,6 +57,7 @@ public class PlacePageLayoutFragment extends Fragment {
     private MaterialButton btnViewDetail;
 
     public void setPlace(Place place) {
+
         this.place = place;
     }
 
@@ -103,6 +115,8 @@ public class PlacePageLayoutFragment extends Fragment {
         bindData(view);
     }
 
+
+
     private void bindData(View view) {
         String addressName = "Chưa rõ";
         LocationManager location;
@@ -137,13 +151,34 @@ public class PlacePageLayoutFragment extends Fragment {
                 public void onLocationChanged(android.location.Location location) {
                     double tlat =  location.getLatitude();
                     double tlng =  location.getLongitude();
-                    android.location.Location myLoc = new android.location.Location("");
-                    myLoc.setLatitude(tlat);
-                    myLoc.setLongitude(tlng);
-                    android.location.Location targetLoc = new android.location.Location("");
-                    targetLoc.setLatitude(lat);
-                    targetLoc.setLongitude(lng);
-                    tvPlaceDistance.setText("Khoảng "+(int)myLoc.distanceTo(targetLoc)/1000 + " km");
+                    LatLng myLoc = new LatLng(tlat,tlng);
+                    LatLng targetLoc = new LatLng(lat,lng);
+                    GoogleDirection.withServerKey(getResources().getString(R.string.google_maps_key))
+//                    GoogleDirection.withServerKey("AIzaSyDtbcVZthXcQno7KYa-Rf-4jtVUgjYa_4s")
+                            .from(myLoc)
+                            .to(targetLoc)
+                            .transportMode(TransportMode.DRIVING).
+                            avoid(AvoidType.HIGHWAYS)
+                            .alternativeRoute(true)
+                            .execute(new DirectionCallback() {
+                                @Override
+                                public void onDirectionSuccess(Direction direction, String rawBody) {
+                                    String status = direction.getStatus();
+                                    if(status.equals(RequestResult.OK)) {
+                                        Route route = direction.getRouteList().get(0);
+                                        Leg leg = route.getLegList().get(0);
+                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
+                                        distance = distance*0.001;
+                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km");
+                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
+                                        // Do something
+                                    }
+                                }
+
+                                @Override
+                                public void onDirectionFailure(Throwable t) {
+                                }
+                            });
 
 
                 }
@@ -169,13 +204,34 @@ public class PlacePageLayoutFragment extends Fragment {
                 public void onLocationChanged(android.location.Location location) {
                     double tlat =  location.getLatitude();
                     double tlng =  location.getLongitude();
-                    android.location.Location myLoc = new android.location.Location("");
-                    myLoc.setLatitude(tlat);
-                    myLoc.setLongitude(tlng);
-                    android.location.Location targetLoc = new android.location.Location("");
-                    targetLoc.setLatitude(lat);
-                    targetLoc.setLongitude(lng);
-                    tvPlaceDistance.setText("Khoảng "+(int)myLoc.distanceTo(targetLoc)/1000 + " km");
+                    LatLng myLoc = new LatLng(tlat,tlng);
+                    LatLng targetLoc = new LatLng(lat,lng);
+                    GoogleDirection.withServerKey("AIzaSyD8WTCySi0IpUz7RnamE1pqbLsCPi8R93w")
+                            .from(myLoc)
+                            .to(targetLoc)
+                            .transportMode(TransportMode.DRIVING).
+                            avoid(AvoidType.HIGHWAYS)
+                            .alternativeRoute(true)
+                            .execute(new DirectionCallback() {
+                                @Override
+                                public void onDirectionSuccess(Direction direction, String rawBody) {
+                                    String status = direction.getStatus();
+                                    if(status.equals(RequestResult.OK)) {
+                                        Route route = direction.getRouteList().get(0);
+                                        Leg leg = route.getLegList().get(0);
+                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
+                                        distance = distance*0.001;
+                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10);
+                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
+                                        // Do something
+                                    }
+                                }
+
+                                @Override
+                                public void onDirectionFailure(Throwable t) {
+
+                                }
+                            });
                 }
 
                 @Override
@@ -196,7 +252,6 @@ public class PlacePageLayoutFragment extends Fragment {
         }
 
 
-        MyLocation userLoc = new MyLocation();
         tvPlaceName.setText(place.getName());
         tvPlaceAddress.setText(addressName);
         tvPlaceDistance.setText("Chưa rõ");

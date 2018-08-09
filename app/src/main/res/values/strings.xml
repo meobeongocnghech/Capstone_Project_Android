@@ -67,4 +67,5 @@
     <string name="error_email_format">Sai định dạng</string>
     <string name="error_password">Mật khẩu quá ngắn</string>
     <string name="error_repassword">Nhập lại chưa chính xác</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -20,8 +20,8 @@
         <activity android:name=".controller.MainActivity" />
         <activity
             android:name=".controller.LoginActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:theme="@style/LoginTheme"/>
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".controller.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,12 +32,21 @@
         <activity android:name=".controller.ForgotPasswordActivity" />
         <activity
             android:name=".controller.register.RegisterActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" >
-
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name=".controller.post.PlaceDetailActivity" />
-        <activity android:name=".TestActivity">
-        </activity>
+        <activity android:name=".TestActivity"></activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
     </application>
 
 </manifest>

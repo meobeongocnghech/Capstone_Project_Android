@@ -34,4 +34,11 @@
     <color name="switchThumbBgActive">#1b5e20</color>
     <color name="switchThumbActive">#ad1457</color>
     <color name="switchThumbNormal">#64b5f6</color>
+
+    <color name="dpnamecolor">#fff</color>
+    <color name="weekcolor">#fff</color>
+    <color name="agendacolor">#8E9097</color>
+    <color name="timecolor">#000</color>
+    <color name="schedulecolor">#000</color>
+    <color name="statementcolor">#778AA6</color>
 </resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="false"
+    android:background="@color/colorDefaultBackground"
+    android:layout_marginBottom="10dp"
+    app:cardElevation="2dp">
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/constrainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/imgAvtCmt"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCmtContent"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :)"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/imgAvtCmt"
+            app:layout_constraintEnd_toStartOf="@id/btnActionCmt"
+            app:layout_constraintStart_toEndOf="@+id/imgAvtCmt"
+            app:layout_constraintTop_toBottomOf="@id/tvUserCmt" />
+
+        <TextView
+            android:id="@+id/tvUserCmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Cuong Dang"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/imgAvtCmt"
+             />
+
+
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btnActionCmt"
+            android:layout_width="32dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCmtContent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintStart_toStartOf="@+id/tvCmtContent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCmtContent">
+
+            <Button
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/ic_thumb_up_gray"/>
+
+            <TextView
+                android:id="@+id/likeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textSize="13dp"
+                android:layout_marginLeft="7dp"/>
+            <Button
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="50dp"
+                android:background="@drawable/ic_insert_comment_gay" />
+
+            <TextView
+                android:id="@+id/cmtCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="51"
+                android:textSize="13dp"
+                android:layout_marginLeft="7dp"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 phút"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@+id/tvCmtContent"
+            tools:layout_editor_absoluteX="301dp"
+            app:layout_constraintEnd_toEndOf="@id/tvCmtContent"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.design.card.MaterialCardView>
