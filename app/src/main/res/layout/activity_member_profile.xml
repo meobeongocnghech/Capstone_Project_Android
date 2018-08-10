@@ -5,48 +5,46 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
    >
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"></include>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="190dp"
-        android:background="#008b8c"
+        android:background="@drawable/cover_1"
         android:orientation="vertical"
         android:layout_gravity="center"
 
 
         >
 
-        <com.example.rp.listview.RoundedImageView
-            android:id="@+id/logo"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgUserAvt"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/thoms"
-            android:scaleType="centerCrop"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-           />
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thomas Schneider"
-            android:gravity="center"
-            android:textColor="#fff"
-            android:textSize="22dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default" />
 
-            android:layout_marginTop="10dp"/>
         <TextView
-            android:id="@+id/photographer"
+            android:id="@+id/tvUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Photographer"
+            android:layout_marginTop="10dp"
             android:gravity="center"
+            android:text="Cuong Dang"
             android:textColor="#fff"
-            android:textSize="13dp"
-            android:layout_marginTop="4dp"/>
+
+            android:textSize="22dp" />
+
+        <TextView
+            android:id="@+id/tvUserInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Dep trai"
+            android:textColor="#fff"
+            android:textSize="13dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -61,26 +59,31 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <TextView
-            android:id="@+id/no1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="26"
-            android:textSize="16dp"
-            android:textColor="#009293"
-            android:gravity="center"
-            android:textStyle="bold"/>
+            android:orientation="vertical"
+            >
+
             <TextView
-                android:id="@+id/comment"
+                android:id="@+id/tvLikeCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Comment"
+                android:gravity="center"
+                android:text="26"
+                android:textColor="#009293"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvUserLike"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thích"
                 android:textColor="#000"
                 android:gravity="center"/>
         </LinearLayout>
 
-
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"></View>
         <LinearLayout
             android:layout_weight="1"
             android:layout_width="match_parent"
@@ -97,15 +100,17 @@
                 android:textStyle="bold"
                 />
             <TextView
-                android:id="@+id/channel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Channel"
+                android:text="Bài viết"
                 android:textColor="#000"
                 android:gravity="center"/>
         </LinearLayout>
 
-
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorError"></View>
 
         <LinearLayout
             android:layout_weight="1"
@@ -125,19 +130,21 @@
                 android:id="@+id/bookmark"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Bookmarks"
+                android:text="Kế hoạch"
                 android:textColor="#000"
                 android:gravity="center"/>
         </LinearLayout>
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/listview"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:divider="#00000000"
-        >
-    </ListView>
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#99A1AC" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
