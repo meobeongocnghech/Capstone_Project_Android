@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/cardview_bg">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:orientation="vertical">
+
+                        <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                            android:id="@+id/text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Mời thành viên tham gia chuyến đi của bạn."
+                            android:textColor="@color/colorGray"
+                            android:textSize="15dp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="15dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <EditText
+                                android:layout_width="200dp"
+                                android:layout_height="wrap_content"
+                                android:hint="Tìm kiếm..."/>
+
+                            <ImageButton
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_search"/>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal">
+
+                                <FrameLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center">
+
+                                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/avatar_default"
+                                        android:translationZ="2dp"
+                                        app:civ_border_color="@color/colorBackroundWhite"
+                                        app:civ_border_width="2dp" />
+
+                                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginLeft="25dp"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/avatar_default"
+                                        android:translationZ="1dp"
+                                        app:civ_border_color="@color/colorBackroundWhite"
+                                        app:civ_border_width="2dp" />
+
+                                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginLeft="50dp"
+                                        android:layout_weight="1"
+                                        android:src="@drawable/avatar_default"
+                                        android:translationZ="0dp"
+                                        app:civ_border_color="@color/colorBackroundWhite"
+                                        app:civ_border_width="2dp" />
+
+                                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                                        android:layout_width="35dp"
+                                        android:layout_height="35dp"
+                                        android:layout_marginLeft="75dp"
+                                        android:background="@drawable/roun_rect_orangemore"
+                                        android:gravity="center"
+                                        android:text="+3"
+                                        android:textColor="#fff"
+                                        android:textSize="12dp"
+                                        android:textStyle="bold" />
+
+                                </FrameLayout>
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</ScrollView>

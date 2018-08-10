@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/cardview_bg"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/viewStateColorLeft"
+                android:layout_width="5dp"
+                android:layout_height="100dp"
+                android:background="@color/colorPrimary"></View>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp">
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                    android:id="@+id/tvPlanName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Đi Ba Vì trải nghiệm 1 ngày"
+                    android:textColor="@color/colorGray"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:gravity="center_vertical">
+
+                    <View
+                        android:id="@+id/viewStateColorCircle"
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/gree_circle"></View>
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+
+                        android:id="@+id/tvStatePlan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="Hoàn Thành"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvPlanName"
+                    android:layout_marginTop="3dp"
+                    android:orientation="horizontal">
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.Textview_lato_thin
+                        android:id="@+id/tvStartPlan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:text="20/10/2018"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginLeft="7dp"
+                        android:src="@drawable/placeholder" />
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.Textview_lato_thin
+                        android:id="@+id/tvStartLoc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:text="Thạch Thất, Hà Nội"
+                        android:textColor="@color/colorLightGray"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linear"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                        android:id="@+id/tvPlanLead"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/roun_rect_lightgray"
+                        android:gravity="center"
+                        android:text="Cuong Dang"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/roun_rect_lightgray"
+                        android:gravity="center"
+                        android:text="job"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/roun_rect_lightgray"
+                        android:gravity="center"
+                        android:text="family"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/roun_rect_lightgray"
+                        android:gravity="center"
+                        android:text="update"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="15dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:cardElevation="4dp"
+
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/cardview_bg"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="5dp"
+                android:layout_height="100dp"
+                android:background="@color/colorError"></View>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp">
+
+            <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Team Building Ba Vì"
+                android:textColor="@color/colorGray"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:gravity="center_vertical">
+
+                <View
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/orange_circle"></View>
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Đang chờ"
+                    android:textColor="@color/colorOrange"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text1"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+
+                <com.viettrekker.mountaintrekkingadviser.animator.Textview_lato_thin
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="13/8/2018"
+                    android:textColor="@color/colorLightGray"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="7dp"
+                    android:src="@drawable/placeholder" />
+
+                <com.viettrekker.mountaintrekkingadviser.animator.Textview_lato_thin
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:text="Ba Đình, Hà Nội"
+                    android:textColor="@color/colorLightGray"
+                    android:textSize="12dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear1"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/roun_rect_lightgray"
+                    android:gravity="center"
+                    android:text="Linh Nguyen The"
+                    android:textColor="@color/colorGray"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/roun_rect_lightgray"
+                    android:gravity="center"
+                    android:text="workflow"
+                    android:textColor="@color/colorGray"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/roun_rect_lightgray"
+                    android:gravity="center"
+                    android:text="team build"
+                    android:textColor="@color/colorGray"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/roun_rect_lightgray"
+                    android:gravity="center"
+                    android:text="data design"
+                    android:textColor="@color/colorGray"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
+</RelativeLayout>

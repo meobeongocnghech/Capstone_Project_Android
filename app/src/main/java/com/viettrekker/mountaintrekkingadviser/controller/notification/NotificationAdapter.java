@@ -67,7 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }catch (Exception ex){
 
         }
-        Picasso.get().load("https://openclipart.org/download/4749/acspike-male-user-icon.svg").error(R.drawable.error_icon).into(holder.imgNoti);
+//        Picasso.get().load("https://openclipart.org/download/4749/acspike-male-user-icon.svg").error(R.drawable.error_icon).into(holder.imgNoti);
         if (position == getItemCount() - 1 ){
             APIService mWebService = APIUtils.getWebService();
             mWebService.getOldNoti(MainActivity.user.getToken(),olderId ).enqueue(new Callback<List<Notification>>() {
