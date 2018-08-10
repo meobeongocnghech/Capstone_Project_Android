@@ -27,7 +27,7 @@
         android:text="mta"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
-        android:textSize="48sp"
+        android:textSize="60sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/tvAppDesc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/white_border"
         android:padding="7dp"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:text="Ứng dụng cộng đồng leo núi"
         android:textAllCaps="true"
         android:textColor="@android:color/white"
@@ -64,7 +64,7 @@
         android:paddingBottom="15dp"
         android:textColor="@color/colorAlpha80White"
         android:textColorHint="@color/colorAlpha80White"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +84,7 @@
         android:paddingBottom="15dp"
         android:textColor="@color/colorAlpha80White"
         android:textColorHint="@color/colorAlpha80White"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginEmail" />
 
     <android.support.design.button.MaterialButton
@@ -96,15 +96,13 @@
         android:minHeight="0dp"
         android:text="Quên mật khẩu"
         android:textColor="@color/colorPrimary"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:layout_marginTop="24dp"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         app:backgroundTint="@android:color/transparent"
-        app:layout_constraintBottom_toTopOf="@id/buttonGroup"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtLoginPassword"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintVertical_chainStyle="spread"
         app:rippleColor="@android:color/transparent"
         app:textAllCaps="false" />
 
@@ -116,7 +114,7 @@
         android:letterSpacing="0.01"
         android:text="Đăng nhập"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="@id/btnWithFacebook"
@@ -132,7 +130,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="hoặc"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@id/btnLogin"
@@ -144,20 +142,20 @@
     <android.support.design.button.MaterialButton
         android:id="@+id/btnWithFacebook"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginRight="25dp"
         android:letterSpacing="0.01"
-        android:paddingLeft="0dp"
+        android:paddingLeft="4dp"
         android:paddingRight="9dp"
         android:text="Facebook"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:backgroundTint="@color/colorFacebook"
         app:cornerRadius="5dp"
         app:icon="@drawable/ic_facebook"
         app:iconGravity="start"
         app:iconPadding="0dp"
-        app:iconSize="40dp"
+        app:iconSize="46dp"
         app:layout_constraintBottom_toBottomOf="@id/buttonGroup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
@@ -169,9 +167,10 @@
         android:id="@+id/buttonGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         app:constraint_referenced_ids="btnLogin, textView2, btnWithFacebook"
-        app:layout_constraintBottom_toTopOf="@id/tvQuestion"
-        app:layout_constraintTop_toBottomOf="@id/btnForgotPassword" />
+        app:layout_constraintTop_toBottomOf="@id/btnForgotPassword"
+        app:layout_goneMarginTop="72dp"/>
 
     <TextView
         android:id="@+id/tvQuestion"
@@ -183,9 +182,8 @@
         app:layout_constraintEnd_toStartOf="@id/btnRegister"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonGroup"
-        app:layout_constraintVertical_bias="0.8"
-        android:textSize="12sp"/>
+        android:layout_marginBottom="32dp"
+        android:textSize="14sp"/>
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btnRegister"
@@ -205,7 +203,6 @@
         app:layout_constraintBottom_toBottomOf="@id/tvQuestion"
         app:rippleColor="@android:color/transparent"
         app:textAllCaps="false"
-        android:textSize="12sp"/>
-
+        android:textSize="14sp"/>
 
 </android.support.constraint.ConstraintLayout>

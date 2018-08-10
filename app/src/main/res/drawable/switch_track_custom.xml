@@ -3,10 +3,9 @@
     <item android:gravity="center_vertical|fill_horizontal">
         <shape android:shape="rectangle"
             android:tint="@color/switch_track_color">
-            <corners android:radius="4dp" />
-            <size android:height="40dp" />
-            <padding android:right="15dp" android:left="15dp" />
-            <stroke android:width="33dp" android:color="@android:color/transparent" />
+            <corners android:radius="25dp" />
+            <size android:height="25dp" />
+            <stroke android:width="5dp" android:color="@android:color/transparent" />
         </shape>
     </item>
 </layer-list>

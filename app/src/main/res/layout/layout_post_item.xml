@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="false"
     android:background="@color/colorDefaultBackground"
-    android:layout_marginBottom="10dp"
-    app:cardElevation="2dp">
+    app:cardElevation="2dp"
+    android:layout_marginBottom="10dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,12 +15,13 @@
 
         <ImageView
             android:id="@+id/imgPostAvatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="16dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="8dp"
             android:adjustViewBounds="true"
             android:padding="8dp"
             android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
             android:src="@drawable/avatar_default" />
 
         <android.support.constraint.Barrier
@@ -34,21 +35,35 @@
             android:id="@+id/tvPostUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
             android:text="User"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
             app:layout_constraintBottom_toTopOf="@id/tvTime"
             app:layout_constraintStart_toEndOf="@id/imgPostAvatar"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread" />
 
         <TextView
+            android:id="@+id/separator"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_play_arrow_16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName"
+            app:layout_constraintBottom_toBottomOf="@id/tvPostUserName"
+            app:layout_constraintStart_toEndOf="@id/tvPostUserName"/>
+
+        <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="20 m"
-            android:textSize="15sp"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="@id/avatarBarrier"
             app:layout_constraintStart_toStartOf="@id/tvPostUserName"
             app:layout_constraintTop_toBottomOf="@id/tvPostUserName" />
@@ -57,28 +72,34 @@
             android:id="@+id/tvPostCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/radius_border"
-            android:paddingBottom="2dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="2dp"
             android:text="Chuyên mục khác"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnPostOption" />
+            android:textColor="@color/colorTextFieldInput"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginLeft="4dp"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/separator"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
 
         <ImageButton
             android:id="@+id/btnPostOption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="8dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_vstyle_down"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
+
+        <TextView
+            android:id="@+id/tvPostTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/avatarBarrier"
+            app:layout_constraintStart_toStartOf="@id/tvPostContent"
+            android:textSize="18sp"
+            android:textColor="@color/colorTextFieldInput"
+            android:fontFamily="sans-serif-medium"
+            android:text="Lorem ipsum dolor"/>
 
         <TextView
             android:id="@+id/tvPostContent"
@@ -87,37 +108,195 @@
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:lines="4"
-            android:maxLines="8"
+            android:maxLines="4"
+            android:ellipsize="end"
             android:text="@string/pseudo_para"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/avatarBarrier" />
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvPostTitle" />
 
-        <Button
+        <android.support.design.button.MaterialButton
+            android:id="@+id/btnReadMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.01"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            android:text="Xem thêm"
+            android:textColor="#888"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            app:layout_constraintTop_toBottomOf="@id/tvPostContent"
+            app:layout_constraintStart_toStartOf="@id/tvPostContent"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="@android:color/transparent"
+            app:textAllCaps="false"
+            android:textSize="14sp"/>
+
+        <android.support.v7.widget.GridLayout
+            android:id="@+id/gridPostPicture"
+            android:layout_width="0dp"
+            android:layout_height="336dp"
+            android:padding="4dp"
+            app:rowCount="3"
+            app:columnCount="2"
+            app:layout_constraintStart_toStartOf="@id/btnReadMore"
+            app:layout_constraintEnd_toEndOf="@id/tvPostContent"
+            app:layout_constraintTop_toBottomOf="@id/btnReadMore">
+
+            <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_gravity="left|top"-->
+            <!--android:textColorLink="@color/colorPrimary"-->
+            <!--android:text="B1"/>-->
+
+            <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_gravity="left|top"-->
+            <!--android:textColorLink="@color/colorPrimary"-->
+            <!--android:text="B1"/>-->
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/preview1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:cardCornerRadius="5dp"
+                android:clipToPadding="false"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="2dp">
+                <ImageView
+                    android:id="@+id/imgPreview1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/mini_picture"
+                    android:scaleType="centerCrop" />
+            </android.support.design.card.MaterialCardView>
+
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/preview2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:cardCornerRadius="5dp"
+                android:clipToPadding="false"
+                android:layout_marginLeft="2dp"
+                android:layout_marginBottom="2dp">
+                <ImageView
+                    android:id="@+id/imgPreview2"
+                    android:src="@drawable/mini_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+            </android.support.design.card.MaterialCardView>
+
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/preview3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                android:scaleType="centerCrop"
+                app:cardCornerRadius="5dp"
+                android:clipToPadding="false"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp">
+                <ImageView
+                    android:id="@+id/imgPreview3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/mini_picture"
+                    android:scaleType="centerCrop" />
+            </android.support.design.card.MaterialCardView>
+
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/preview4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
+                app:cardCornerRadius="5dp"
+                android:clipToPadding="false"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|bottom">
+
+                    <ImageView
+                        android:id="@+id/imgPreview4"
+                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:src="@drawable/mini_picture"
+                        android:scaleType="centerCrop" />
+
+                    <TextView
+                        android:id="@+id/tvCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorAlpha50Black"
+                        android:textColor="@android:color/white"
+                        android:textSize="21sp"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="+4"/>
+
+                </FrameLayout>
+            </android.support.design.card.MaterialCardView>
+        </android.support.v7.widget.GridLayout>
+
+        <android.support.design.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:id="@+id/btnPostLike"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/like_button_default"
-            android:paddingLeft="80dp"
+            app:icon="@drawable/ic_like"
+            android:letterSpacing="0.01"
             android:text="Like"
+            app:iconSize="20dp"
+            android:textAllCaps="false"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="0dp"
+            app:iconGravity="textStart"
+            android:textColor="@color/colorTextFieldInput"
+            app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toStartOf="@id/btnPostComment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPostContent" />
+            app:layout_constraintTop_toBottomOf="@id/gridPostPicture" />
 
-        <Button
+        <android.support.design.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:id="@+id/btnPostComment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/comment_button_default"
-            android:paddingLeft="55dp"
-            android:paddingRight="10dp"
+            app:icon="@drawable/ic_comment"
+            android:letterSpacing="0.01"
+            app:iconSize="20dp"
             android:text="Comment"
+            android:textAllCaps="false"
+            app:cornerRadius="0dp"
+            app:backgroundTint="@android:color/white"
+            app:iconGravity="textStart"
+            android:textColor="@color/colorTextFieldInput"
+            app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnPostLike"
-            app:layout_constraintTop_toBottomOf="@id/tvPostContent" />
+            app:layout_constraintTop_toBottomOf="@id/gridPostPicture" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            app:layout_constraintTop_toTopOf="@id/btnPostLike"
+            android:background="#dcdcdc"/>
 
 
         <android.support.v7.widget.RecyclerView

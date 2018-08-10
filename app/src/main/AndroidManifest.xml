@@ -20,8 +20,8 @@
         <activity android:name=".controller.MainActivity" />
         <activity
             android:name=".controller.LoginActivity"
-            android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:theme="@style/LoginTheme"/>
         <activity android:name=".controller.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

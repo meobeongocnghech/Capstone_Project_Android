@@ -54,7 +54,10 @@ public class PlacePageLayoutFragment extends Fragment {
     private TextView tvPlaceDistance;
     private TextView tvPlaceTotalPlan;
     private TextView tvPlaceDescription;
-    private MaterialButton btnViewDetail;
+
+    public ImageView getImgCover() {
+        return imgCover;
+    }
 
     public void setPlace(Place place) {
 
@@ -73,7 +76,6 @@ public class PlacePageLayoutFragment extends Fragment {
         tvPlaceDistance = (TextView) view.findViewById(R.id.tvPlaceDistance);
         tvPlaceTotalPlan = (TextView) view.findViewById(R.id.tvPlaceTotalPlan);
         tvPlaceDescription = (TextView) view.findViewById(R.id.tvPlaceDescription);
-        btnViewDetail = (MaterialButton) view.findViewById(R.id.btnPlaceView);
         return view;
     }
 
@@ -104,14 +106,6 @@ public class PlacePageLayoutFragment extends Fragment {
         holder.getLayoutParams().height = (int) (size.x * 1.5 / 3);
         holder.requestLayout();
 
-        btnViewDetail.setOnClickListener((v) -> {
-            Intent i = new Intent(view.getContext(), PlaceDetailActivity.class);
-            i.putExtra("id", place.getId());
-            i.putExtra("name", place.getName());
-            i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
-            startActivity(i);
-        });
-
         bindData(view);
     }
 
@@ -125,8 +119,12 @@ public class PlacePageLayoutFragment extends Fragment {
         double lng = place.getLocation().getLongitude();
         try {
             List<Address> list = geoCoder.getFromLocation(lat,lng,1);
-            String address = list.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            addressName = address;
+            if (list.isEmpty()) {
+                addressName = "Chưa có";
+            } else {
+                String address = list.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                addressName = address;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

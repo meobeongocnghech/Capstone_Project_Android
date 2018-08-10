@@ -17,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.widget.ImageView;
+
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,8 +30,18 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
     private int page = 1;
     private final String orderById = "id";
 
+    private Fragment currentFragment;
+
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
     public PlaceViewPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+
+    public Place getPlaceItem(int position) {
+        return listPlace.get(position);
     }
 
     @Override
@@ -38,6 +50,7 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
             load(listPlace.size() + 3, 1, orderById);
         }
         PlacePageLayoutFragment fragment = new PlacePageLayoutFragment();
+        currentFragment = fragment;
         fragment.setPlace(listPlace.get(position));
         return fragment;
     }

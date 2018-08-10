@@ -3,7 +3,17 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SwitchCompat;
+import android.transition.ChangeBounds;
+import android.transition.ChangeImageTransform;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +24,7 @@ import android.support.design.widget.TabLayout;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.animator.CircleTransform;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PagePlaceFragment;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
 import android.support.annotation.IdRes;
@@ -101,13 +112,22 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //setupWindowAnimations();
+    }
 
+    private void setupWindowAnimations() {
+        Fade fade = new Fade();
+        getWindow().setExitTransition(fade);
 
+        ChangeImageTransform cif = new ChangeImageTransform();
+        getWindow().setSharedElementExitTransition(new Explode());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+//        Bundle transitionBundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, findViewById(R.id.imgPlaceCover), "placeImg").toBundle();
+//        adapter.setTransitionBundle(transitionBundle);
     }
 
     @Override

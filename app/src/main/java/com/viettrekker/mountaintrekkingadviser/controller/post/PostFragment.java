@@ -1,21 +1,39 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
+import android.support.design.chip.Chip;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SwitchCompat;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -33,24 +51,80 @@ public class PostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.placeViewPager);
+        SwitchCompat switchView = (SwitchCompat) view.findViewById(R.id.swtMode);
+        Chip chip = (Chip) view.findViewById(R.id.postHint);
+        loadPlaceData(chip);
+        switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    loadNewsfeedData(chip);
+                } else {
+                    loadPlaceData(chip);
+                }
+            }
+        });
 
-        ParallaxPageTransformer pageTransformer = new ParallaxPageTransformer()
-                .addViewToParallax(new ParallaxTransformInformation(R.id.imgPlaceCover, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceName, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceAddress, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceTotalPlan, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDescription, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDistance, -5f, -5f));
-
-        viewPager.setPageTransformer(true, pageTransformer);
-        PlaceViewPagerAdapter placeAdapter = new PlaceViewPagerAdapter(getChildFragmentManager());
-        //loadEffect(view, placeAdapter);
-        placeAdapter.load(placeAdapter.getCount() == 0 ? 5 : placeAdapter.getCount());
-        viewPager.setAdapter(placeAdapter);
     }
 
-//    private void loadEffect(View view, PlaceViewPagerAdapter placeAdapter) {
+    private void loadPlaceData(Chip chip) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        PagePlaceFragment placeFragment = new PagePlaceFragment();
+
+        Fade fadeIn = new Fade();
+        fadeIn.setMode(Fade.MODE_IN);
+        fadeIn.setDuration(100);
+        fadeIn.setStartDelay(100);
+        placeFragment.setEnterTransition(fadeIn);
+
+        Fade fadeOut = new Fade();
+        fadeOut.setMode(Fade.MODE_OUT);
+        fadeOut.setDuration(100);
+        placeFragment.setExitTransition(fadeOut);
+
+        fragmentTransaction.replace(R.id.postFragment, placeFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+
+        loadChipAnimation(chip, "Địa điểm");
+    }
+
+    private void loadChipAnimation(Chip chip, String hint) {
+        chip.setVisibility(View.VISIBLE);
+        chip.setAlpha(1f);
+        chip.setText(hint);
+
+        chip.animate().alpha(1f).setDuration(200).start();
+
+        chip.animate().alpha(0f).setDuration(200).setStartDelay(700).start();
+    }
+
+    private void loadNewsfeedData(Chip chip) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
+
+        Fade fadeIn = new Fade();
+        fadeIn.setMode(Fade.MODE_IN);
+        fadeIn.setDuration(100);
+        fadeIn.setStartDelay(100);
+        newsFeedFragment.setEnterTransition(fadeIn);
+
+        Fade fadeOut = new Fade();
+        fadeOut.setMode(Fade.MODE_OUT);
+        fadeOut.setDuration(100);
+        newsFeedFragment.setExitTransition(fadeOut);
+
+        fragmentTransaction.replace(R.id.postFragment, newsFeedFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+
+        loadChipAnimation(chip, "Bảng tin");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    //    private void loadEffect(View view, PlaceViewPagerAdapter placeAdapter) {
 //        final PtrFrameLayout frame = (PtrFrameLayout) view.findViewById(R.id.post_ptr_frame);
 //
 ////        final PtrLoadingHeader header = new PtrLoadingHeader(getContext());

@@ -69,8 +69,10 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = edtLoginEmail.getText().toString().trim();
-                String password = edtLoginPassword.getText().toString().trim();
+//                String email = edtLoginEmail.getText().toString().trim();
+//                String password = edtLoginPassword.getText().toString().trim();
+                String email = "linhnt@gmail.com";
+                String password = "linhnt";
                 final ConstraintLayout view = findViewById(R.id.loginLayout);
                 if (email.isEmpty() || password.isEmpty()) {
                     Snackbar.make(view, "Không được để trống", Snackbar.LENGTH_LONG).show();

@@ -11,11 +11,11 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/regToolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/appbar_height"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/Toolbar"
-        app:subtitleTextAppearance="@style/ToolbarSubtitleTheme"
         app:title="@string/title_register"
+        app:titleTextColor="@android:color/white"
         app:titleTextAppearance="@style/ToolbarTitleTheme">
 
     </android.support.v7.widget.Toolbar>
@@ -29,18 +29,18 @@
     <android.support.design.button.MaterialButton
         android:id="@+id/btnRegNext"
         android:layout_width="0dp"
-        android:layout_height="@dimen/button_height"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="32dp"
         android:layout_marginRight="80dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorPrimary"
         android:letterSpacing="0.01"
-        android:minHeight="0dp"
         android:text="@string/button_next"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

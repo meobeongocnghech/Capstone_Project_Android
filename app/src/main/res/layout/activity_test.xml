@@ -23,7 +23,10 @@
             android:background="#b2b2b2"
             app:shimmer_base_alpha="0.8"
             app:shimmer_highlight_alpha="1"
-            app:shimmer_duration="1200">
+            app:shimmer_duration="1200"
+            app:shimmer_tilt="0"
+            app:shimmer_height_ratio="0.2"
+            app:shimmer_direction="bottom_to_top">
         </com.facebook.shimmer.ShimmerFrameLayout>
     </RelativeLayout>
 

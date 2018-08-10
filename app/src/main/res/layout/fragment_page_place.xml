@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/placeViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+    </android.support.v4.view.ViewPager>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/placeDetailShimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-45dp"
+        android:layout_gravity="center_horizontal"
+        app:shimmer_base_alpha="1"
+        app:shimmer_highlight_alpha="0"
+        app:shimmer_duration="2000"
+        app:shimmer_auto_start="true"
+        app:shimmer_tilt="0"
+        app:shimmer_direction="bottom_to_top">
+        <android.support.design.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:id="@+id/btnPlaceView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@android:color/transparent"
+            app:icon="@drawable/ic_up_arrow_24dp"
+            app:iconTint="@color/colorPrimary"
+            android:gravity="center_horizontal"
+            android:textAllCaps="false"
+            android:minHeight="0dp"
+            android:layout_marginBottom="16dp"
+            app:iconSize="48dp"
+            app:iconPadding="0dp"
+            android:paddingLeft="20dp" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+</LinearLayout>

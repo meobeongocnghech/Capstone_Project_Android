@@ -68,7 +68,7 @@
             android:drawableLeft="@drawable/ic_comment_accent_15dp"
             android:fontFamily="sans-serif-medium"
             android:gravity="center_vertical"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/colorSecondary"
             android:text="500"
             android:drawablePadding="4dp"
             app:layout_constraintEnd_toEndOf="parent"

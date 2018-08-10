@@ -3,6 +3,11 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.transition.ChangeImageTransform;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -22,8 +27,14 @@ public class PlaceDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail);
-
         init();
+        //setupWindowAnimations();
+    }
+
+    private void setupWindowAnimations() {
+        Fade fade = new Fade();
+        getWindow().setExitTransition(fade);
+        getWindow().setSharedElementExitTransition(new Explode());
     }
 
     private void init() {
@@ -57,6 +68,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        //supportFinishAfterTransition();
         onBackPressed();
         return true;
     }

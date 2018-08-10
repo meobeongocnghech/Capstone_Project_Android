@@ -5,17 +5,10 @@
             <item android:gravity="center_vertical|fill_horizontal">
                 <shape android:shape="rectangle"
                     android:tint="@color/switch_thumb_color">
-                    <corners android:radius="40dp" />
-                    <size android:width="40dp" />
-                    <size android:height="40dp" />
-                    <padding android:top="3dp"
-                        android:bottom="3dp"
-                        android:left="3dp"
-                        android:right="3dp"/>
+                    <corners android:radius="25dp" />
+                    <size android:width="25dp" />
+                    <size android:height="25dp" />
                 </shape>
-            </item>
-            <item>
-                <bitmap android:src="@drawable/ic_other_post" />
             </item>
         </layer-list>
     </item>
@@ -24,17 +17,10 @@
             <item android:gravity="center_vertical|fill_horizontal">
                 <shape android:shape="rectangle"
                     android:tint="@color/switch_thumb_color">
-                    <corners android:radius="40dp" />
-                    <size android:width="40dp" />
-                    <size android:height="40dp" />
-                    <padding android:top="3dp"
-                        android:bottom="3dp"
-                        android:left="3dp"
-                        android:right="3dp"/>
+                    <corners android:radius="25dp" />
+                    <size android:width="25dp" />
+                    <size android:height="25dp" />
                 </shape>
-            </item>
-            <item>
-                <bitmap android:src="@drawable/ic_location_point" />
             </item>
         </layer-list>
     </item>
