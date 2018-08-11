@@ -151,32 +151,32 @@ public class PlacePageLayoutFragment extends Fragment {
                     double tlng =  location.getLongitude();
                     LatLng myLoc = new LatLng(tlat,tlng);
                     LatLng targetLoc = new LatLng(lat,lng);
-                    GoogleDirection.withServerKey(getResources().getString(R.string.google_maps_key))
-//                    GoogleDirection.withServerKey("AIzaSyDtbcVZthXcQno7KYa-Rf-4jtVUgjYa_4s")
-                            .from(myLoc)
-                            .to(targetLoc)
-                            .transportMode(TransportMode.DRIVING).
-                            avoid(AvoidType.HIGHWAYS)
-                            .alternativeRoute(true)
-                            .execute(new DirectionCallback() {
-                                @Override
-                                public void onDirectionSuccess(Direction direction, String rawBody) {
-                                    String status = direction.getStatus();
-                                    if(status.equals(RequestResult.OK)) {
-                                        Route route = direction.getRouteList().get(0);
-                                        Leg leg = route.getLegList().get(0);
-                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
-                                        distance = distance*0.001;
-                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km");
-                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
-                                        // Do something
-                                    }
-                                }
-
-                                @Override
-                                public void onDirectionFailure(Throwable t) {
-                                }
-                            });
+//                    GoogleDirection.withServerKey(getResources().getString(R.string.google_maps_key))
+////                    GoogleDirection.withServerKey("AIzaSyDtbcVZthXcQno7KYa-Rf-4jtVUgjYa_4s")
+//                            .from(myLoc)
+//                            .to(targetLoc)
+//                            .transportMode(TransportMode.DRIVING).
+//                            avoid(AvoidType.HIGHWAYS)
+//                            .alternativeRoute(true)
+//                            .execute(new DirectionCallback() {
+//                                @Override
+//                                public void onDirectionSuccess(Direction direction, String rawBody) {
+//                                    String status = direction.getStatus();
+//                                    if(status.equals(RequestResult.OK)) {
+//                                        Route route = direction.getRouteList().get(0);
+//                                        Leg leg = route.getLegList().get(0);
+//                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
+//                                        distance = distance*0.001;
+//                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km");
+//                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
+//                                        // Do something
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onDirectionFailure(Throwable t) {
+//                                }
+//                            });
 
 
                 }
@@ -204,32 +204,32 @@ public class PlacePageLayoutFragment extends Fragment {
                     double tlng =  location.getLongitude();
                     LatLng myLoc = new LatLng(tlat,tlng);
                     LatLng targetLoc = new LatLng(lat,lng);
-                    GoogleDirection.withServerKey("AIzaSyD8WTCySi0IpUz7RnamE1pqbLsCPi8R93w")
-                            .from(myLoc)
-                            .to(targetLoc)
-                            .transportMode(TransportMode.DRIVING).
-                            avoid(AvoidType.HIGHWAYS)
-                            .alternativeRoute(true)
-                            .execute(new DirectionCallback() {
-                                @Override
-                                public void onDirectionSuccess(Direction direction, String rawBody) {
-                                    String status = direction.getStatus();
-                                    if(status.equals(RequestResult.OK)) {
-                                        Route route = direction.getRouteList().get(0);
-                                        Leg leg = route.getLegList().get(0);
-                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
-                                        distance = distance*0.001;
-                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10);
-                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
-                                        // Do something
-                                    }
-                                }
-
-                                @Override
-                                public void onDirectionFailure(Throwable t) {
-
-                                }
-                            });
+//                    GoogleDirection.withServerKey("AIzaSyD8WTCySi0IpUz7RnamE1pqbLsCPi8R93w")
+//                            .from(myLoc)
+//                            .to(targetLoc)
+//                            .transportMode(TransportMode.DRIVING).
+//                            avoid(AvoidType.HIGHWAYS)
+//                            .alternativeRoute(true)
+//                            .execute(new DirectionCallback() {
+//                                @Override
+//                                public void onDirectionSuccess(Direction direction, String rawBody) {
+//                                    String status = direction.getStatus();
+//                                    if(status.equals(RequestResult.OK)) {
+//                                        Route route = direction.getRouteList().get(0);
+//                                        Leg leg = route.getLegList().get(0);
+//                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
+//                                        distance = distance*0.001;
+//                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10);
+//                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
+//                                        // Do something
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onDirectionFailure(Throwable t) {
+//
+//                                }
+//                            });
                 }
 
                 @Override

@@ -4,6 +4,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
 import java.util.List;
@@ -70,6 +71,10 @@ public interface APIService {
     Call<List<Notification>> getOldNoti(@Header("AUTH_TOKEN_ID") String token,
                                      @Query("olderThanId") int id);
 
-
+    @GET("post/paging")
+    Call<List<Post>> getPostPage(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("page") int page,
+                                 @Query("pageSize") int size,
+                                 @Query("orderBy") String order);
 
 }

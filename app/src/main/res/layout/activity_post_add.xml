@@ -1,0 +1,263 @@
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDefaultBackground"
+    android:layout_marginBottom="10dp">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgPostAvatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="10dp"
+            android:padding="3dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:src="@drawable/avatar_default" />
+        <android.support.constraint.Barrier
+            android:id="@+id/avatarBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="imgPostAvatar" />
+
+        <TextView
+            android:id="@+id/tvPostUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Cuong Dang"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/imgPostAvatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/ic_play_arrow_16dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvPostUserName"
+            app:layout_constraintStart_toEndOf="@id/tvPostUserName"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Chuyên mục khác"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPostUserName"
+            app:layout_constraintStart_toEndOf="@+id/separator"
+            app:layout_constraintTop_toTopOf="@+id/tvPostUserName"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <EditText
+            android:id="@+id/edtTitlePost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:hint="Hãy nhập tiêu đề bài viết nhé..."
+            app:layout_constraintStart_toStartOf="@id/imgPostAvatar"
+            app:layout_constraintTop_toBottomOf="@id/imgPostAvatar"/>
+
+        <EditText
+            android:id="@+id/edtContent"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:hint="Hãy chia sẻ cảm nhận của bạn ^.^!!"
+            android:textSize="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:gravity="top"
+            app:layout_constraintTop_toBottomOf="@id/edtTitlePost"/>
+        <HorizontalScrollView
+            android:id="@+id/scvImageSlide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fillViewport="true"
+            android:measureAllChildren="false"
+            android:scrollbars="none"
+            app:layout_constraintEnd_toEndOf="@+id/edtContent"
+            app:layout_constraintStart_toStartOf="@+id/edtContent"
+            app:layout_constraintTop_toBottomOf="@id/edtContent">
+            <LinearLayout
+                android:id="@+id/lnLayoutImage"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/cover_2"
+                    />
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/cover_7"
+                    />
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/cover_6"
+                    />
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/cover_9"
+                    />
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <ScrollView
+            android:id="@+id/scvAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/edtContent"
+            app:layout_constraintStart_toStartOf="@+id/edtContent"
+            app:layout_constraintTop_toBottomOf="@id/scvImageSlide">
+        <LinearLayout
+            android:id="@+id/lnLayoutAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="10dp"
+            >
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btnAddPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/checkBox2"
+        android:text="Bạn đã chọn 4 ảnh"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/colorBlack"
+        android:textSize="15dp"
+        app:backgroundTint="@android:color/white"
+        app:icon="@drawable/ic_collections_black_24dp"
+        app:iconSize="35dp"
+        app:iconTint="@color/colorPrimary" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="0dp"
+                    android:layout_toStartOf="@+id/cbLocationSelect"
+                    android:text="Địa điểm"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15dp"
+                    app:backgroundTint="@android:color/white"
+                    app:icon="@drawable/ic_location_point"
+                    app:iconSize="35dp"
+                    app:iconTint="@color/colorSecondary"
+                    tools:layout_editor_absoluteY="0dp" />
+                <CheckBox
+                    android:id="@+id/cbLocationSelect"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnPlan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="0dp"
+                    android:layout_toStartOf="@+id/cbPlanSelect"
+                    android:text="Kế hoạch"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15dp"
+                    app:backgroundTint="@android:color/white"
+                    app:icon="@drawable/ic_plan"
+                    app:iconSize="35dp"
+                    app:iconTint="@color/material_blue"
+                    tools:layout_editor_absoluteY="0dp" />
+
+                <CheckBox
+                    android:id="@+id/cbPlanSelect"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+
+        </LinearLayout>
+        </ScrollView>
+        <com.viettrekker.mountaintrekkingadviser.animator.TextView_Lato
+            android:id="@+id/tvPostButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/roun_rect_gray"
+            android:text="Đăng bài"
+            android:textColor="@color/colorBackroundWhite"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
+            app:layout_constraintTop_toBottomOf="@id/scvAction"
+            app:layout_constraintEnd_toEndOf="@id/scvAction"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.design.card.MaterialCardView>

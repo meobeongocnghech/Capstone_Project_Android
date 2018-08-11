@@ -175,5 +175,6 @@
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
+<include layout="@layout/activity_add_plan_button"/>
 
 </RelativeLayout>

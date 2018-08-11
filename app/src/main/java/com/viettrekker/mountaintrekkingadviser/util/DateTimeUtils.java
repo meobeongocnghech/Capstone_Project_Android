@@ -56,6 +56,11 @@ public class DateTimeUtils {
         long diffHours = diff / (60 * 60 * 1000) % 24;
         long diffDays = diff / (24 * 60 * 60 * 1000);
         if (diffDays > 0){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            if (diffDays > 2) {
+                Date date = new Date(oldTime);
+                return sdf.format(date);
+            }
             return diffDays + " ngày";
         } else if (diffHours > 0){
             return diffHours + " giờ";
