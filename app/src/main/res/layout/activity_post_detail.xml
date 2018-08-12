@@ -25,13 +25,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:src="@drawable/avatar_default" />
 
-        <android.support.constraint.Barrier
-            android:id="@+id/avatarBarrier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="imgPostAvatarDetail"
-            tools:layout_editor_absoluteY="60dp" />
 
         <TextView
             android:id="@+id/tvPostUserNameDetail"
@@ -96,14 +89,14 @@
             android:id="@+id/tvPostTitleDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/avatarBarrier"
-            app:layout_constraintStart_toStartOf="@id/tvPostContentDetail"
-            android:textSize="15sp"
-            android:layout_marginTop="3dp"
-            android:textColor="@color/colorTextFieldInput"
             android:fontFamily="sans-serif-medium"
+            android:text="Lorem ipsum dolor"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="15sp"
             android:textStyle="bold"
-            android:text="Lorem ipsum dolor"/>
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="@id/tvPostContentDetail"
+            app:layout_constraintTop_toBottomOf="@+id/imgPostAvatarDetail" />
 
         <TextView
             android:id="@+id/tvPostContentDetail"
@@ -137,7 +130,7 @@
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toStartOf="@id/btnPostCommentDetail"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="352dp" />
+            app:layout_constraintTop_toBottomOf="@id/view2"/>
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btnPostCommentDetail"
@@ -156,14 +149,15 @@
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnPostLikeDetail"
-            tools:layout_editor_absoluteY="352dp" />
+            app:layout_constraintTop_toTopOf="@+id/btnPostLikeDetail" />
 
         <View
             android:id="@+id/view2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#dcdcdc"
-            app:layout_constraintTop_toTopOf="@id/btnPostLikeDetail" />
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/tvPostContentDetail" />
 
 
         <android.support.v7.widget.RecyclerView

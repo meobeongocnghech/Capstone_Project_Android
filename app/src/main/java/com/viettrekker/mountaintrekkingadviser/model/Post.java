@@ -160,4 +160,24 @@ public class Post {
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", typeId=" + typeId +
+                ", name='" + name + '\'' +
+                ", content='" + content + '\'' +
+                ", description='" + description + '\'' +
+                ", state=" + state +
+                ", gallery=" + gallery +
+                ", directionId=" + directionId +
+                ", liked=" + liked +
+                ", commentsCount=" + commentsCount +
+                ", likesCount=" + likesCount +
+                ", reportsCount=" + reportsCount +
+                ", user=" + user +
+                ", updated_at=" + updated_at +
+                '}';
+    }
 }

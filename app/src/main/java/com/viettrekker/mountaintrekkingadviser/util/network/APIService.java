@@ -81,4 +81,8 @@ public interface APIService {
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,
                                          @Query("userId") int id,
                                          @Query("page") int page);
+
+    @GET("post")
+    Call<Post> getPostByPostId(@Header("AUTH_TOKEN_ID") String token,
+                                         @Query("id") int id);
 }

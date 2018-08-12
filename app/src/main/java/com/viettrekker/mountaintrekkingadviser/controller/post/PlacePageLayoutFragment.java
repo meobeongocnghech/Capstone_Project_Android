@@ -153,7 +153,7 @@ public class PlacePageLayoutFragment extends Fragment {
                                 tvPlaceDistance.setText(("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km"));
                             } else {
                                 // Do something
-                                Toast.makeText(getContext(), "Hệ thống đang quá tải, quay lại sau.", Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getContext(), "Hệ thống đang quá tải, quay lại sau.", Toast.LENGTH_LONG).show();
                             }
                         }
 

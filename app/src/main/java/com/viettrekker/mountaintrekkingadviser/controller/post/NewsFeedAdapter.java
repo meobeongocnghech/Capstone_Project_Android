@@ -78,6 +78,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int postion) {
         viewHolder.user = listPost.get(postion).getUser();
+        viewHolder.postId = listPost.get(postion).getId();
         String typPost = "null";
         int imgSize;
         Post post = listPost.get(postion);
@@ -200,6 +201,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     static class ViewHolder extends RecyclerView.ViewHolder {
         User user;
         Context context;
+        int postId;
         ImageView imgPostAvatar;
         TextView tvPostUserName;
         TextView tvTime;
@@ -218,13 +220,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         MaterialButton btnPostComent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatarDetail);
-            tvPostUserName = (TextView) itemView.findViewById(R.id.tvPostUserNameDetail);
+            imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
+            tvPostUserName = (TextView) itemView.findViewById(R.id.tvPostUserName);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvPostCategory = (TextView) itemView.findViewById(R.id.tvPostCategory);
             btnPostOption = (ImageButton) itemView.findViewById(R.id.btnPostOption);
-            tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitleDetail);
-            tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContentDetail);
+            tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitle);
+            tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContent);
             btnReadMore = (MaterialButton) itemView.findViewById(R.id.btnReadMore);
             gridPostPicture = (GridLayout) itemView.findViewById(R.id.gridPostPicture);
             imgPreview1 = (ImageView) itemView.findViewById(R.id.imgPreview1);
@@ -237,6 +239,40 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
             imgPostAvatar.setOnClickListener((v) -> eventViewProfile());
             tvPostUserName.setOnClickListener((v) -> eventViewProfile());
+            btnReadMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("id", postId);
+                    context.startActivity(intent);
+                }
+            });
+            tvPostContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("id", postId);
+                    context.startActivity(intent);
+                }
+            });
+            tvPostTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    intent.putExtra("id", postId);
+                    context.startActivity(intent);
+                }
+            });
+            btnPostComent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PostDetailActivity.class);
+                    String action = "comment";
+                    intent.putExtra("id", postId);
+                    intent.putExtra("action", action);
+                    context.startActivity(intent);
+                }
+            });
         }
 
         private void eventViewProfile() {
