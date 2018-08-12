@@ -19,6 +19,7 @@ public class Place {
     @SerializedName("gallery")
     @Expose
     private MyGallery gallery;
+    private String distance;
 
 
     public int getId() {
@@ -59,5 +60,13 @@ public class Place {
 
     public void setLocation(MyLocation location) {
         this.location = location;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 }

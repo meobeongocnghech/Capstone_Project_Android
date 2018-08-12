@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgPostAvatar"
+            android:id="@+id/imgPostAvatarDetail"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginLeft="10dp"
@@ -25,10 +25,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="imgPostAvatar" />
+            app:constraint_referenced_ids="imgPostAvatarDetail" />
 
         <TextView
-            android:id="@+id/tvPostUserName"
+            android:id="@+id/tvPostUserNameDetail"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
@@ -38,7 +38,7 @@
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/imgPostAvatar"
+            app:layout_constraintStart_toEndOf="@+id/imgPostAvatarDetail"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -48,9 +48,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/ic_play_arrow_16dp"
-            app:layout_constraintBottom_toBottomOf="@id/tvPostUserName"
-            app:layout_constraintStart_toEndOf="@id/tvPostUserName"
-            app:layout_constraintTop_toTopOf="@id/tvPostUserName"
+            app:layout_constraintBottom_toBottomOf="@id/tvPostUserNameDetail"
+            app:layout_constraintStart_toEndOf="@id/tvPostUserNameDetail"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail"
             app:layout_constraintVertical_bias="1.0" />
 
         <Spinner
@@ -62,9 +62,9 @@
             android:textColor="@color/colorTextFieldInput"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/tvPostUserName"
+            app:layout_constraintBottom_toBottomOf="@+id/tvPostUserNameDetail"
             app:layout_constraintStart_toEndOf="@+id/separator"
-            app:layout_constraintTop_toTopOf="@+id/tvPostUserName"
+            app:layout_constraintTop_toTopOf="@+id/tvPostUserNameDetail"
             app:layout_constraintVertical_bias="0.0" />
 
         <EditText
@@ -74,8 +74,8 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:hint="Hãy nhập tiêu đề bài viết nhé..."
-            app:layout_constraintStart_toStartOf="@id/imgPostAvatar"
-            app:layout_constraintTop_toBottomOf="@id/imgPostAvatar"/>
+            app:layout_constraintStart_toStartOf="@id/imgPostAvatarDetail"
+            app:layout_constraintTop_toBottomOf="@id/imgPostAvatarDetail"/>
 
         <EditText
             android:id="@+id/edtContent"

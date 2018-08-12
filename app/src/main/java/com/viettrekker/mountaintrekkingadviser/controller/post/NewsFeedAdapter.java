@@ -1,10 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v7.widget.GridLayout;
@@ -20,16 +16,12 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationAdapter;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -161,13 +153,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         MaterialButton btnPostComent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
-            tvPostUserName = (TextView) itemView.findViewById(R.id.tvPostUserName);
+            imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatarDetail);
+            tvPostUserName = (TextView) itemView.findViewById(R.id.tvPostUserNameDetail);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvPostCategory = (TextView) itemView.findViewById(R.id.tvPostCategory);
             btnPostOption = (ImageButton) itemView.findViewById(R.id.btnPostOption);
-            tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitle);
-            tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContent);
+            tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitleDetail);
+            tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContentDetail);
             btnReadMore = (MaterialButton) itemView.findViewById(R.id.btnReadMore);
             gridPostPicture = (GridLayout) itemView.findViewById(R.id.gridPostPicture);
             imgPreview1 = (ImageView) itemView.findViewById(R.id.imgPreview1);
@@ -175,8 +167,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             imgPreview3 = (ImageView) itemView.findViewById(R.id.imgPreview3);
             imgPreview4 = (ImageView) itemView.findViewById(R.id.imgPreview4);
             tvCount = (TextView) itemView.findViewById(R.id.tvCount);
-            btnPostLike = (MaterialButton) itemView.findViewById(R.id.btnPostLike);
-            btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostComment);
+            btnPostLike = (MaterialButton) itemView.findViewById(R.id.btnPostLikeDetail);
+            btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostCommentDetail);
         }
     }
 }

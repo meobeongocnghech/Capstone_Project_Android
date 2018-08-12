@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -35,17 +36,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyLocation;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
 
 
 public class PlacePageLayoutFragment extends Fragment {
+    private LatLng mLatLng = null;
     private Place place;
     private ShimmerFrameLayout mShimmer;
     private ImageView imgCover;
@@ -110,15 +114,15 @@ public class PlacePageLayoutFragment extends Fragment {
     }
 
 
-
     private void bindData(View view) {
         String addressName = "Chưa rõ";
         LocationManager location;
         Geocoder geoCoder = new Geocoder(getContext());
         double lat = place.getLocation().getLatitude();
         double lng = place.getLocation().getLongitude();
+        LatLng targetLoc = new LatLng(lat, lng);
         try {
-            List<Address> list = geoCoder.getFromLocation(lat,lng,1);
+            List<Address> list = geoCoder.getFromLocation(lat, lng, 1);
             if (list.isEmpty()) {
                 addressName = "Chưa có";
             } else {
@@ -129,130 +133,41 @@ public class PlacePageLayoutFragment extends Fragment {
             e.printStackTrace();
         }
 
-        //Calculate distance
-        location = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        // CHecking network provider enable
-        if (location.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            System.out.println("Vao den network");
-            location.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(android.location.Location location) {
-                    double tlat =  location.getLatitude();
-                    double tlng =  location.getLongitude();
-                    LatLng myLoc = new LatLng(tlat,tlng);
-                    LatLng targetLoc = new LatLng(lat,lng);
-//                    GoogleDirection.withServerKey(getResources().getString(R.string.google_maps_key))
-////                    GoogleDirection.withServerKey("AIzaSyDtbcVZthXcQno7KYa-Rf-4jtVUgjYa_4s")
-//                            .from(myLoc)
-//                            .to(targetLoc)
-//                            .transportMode(TransportMode.DRIVING).
-//                            avoid(AvoidType.HIGHWAYS)
-//                            .alternativeRoute(true)
-//                            .execute(new DirectionCallback() {
-//                                @Override
-//                                public void onDirectionSuccess(Direction direction, String rawBody) {
-//                                    String status = direction.getStatus();
-//                                    if(status.equals(RequestResult.OK)) {
-//                                        Route route = direction.getRouteList().get(0);
-//                                        Leg leg = route.getLegList().get(0);
-//                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
-//                                        distance = distance*0.001;
-//                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km");
-//                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
-//                                        // Do something
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onDirectionFailure(Throwable t) {
-//                                }
-//                            });
+        mLatLng = ((MainActivity) getActivity()).getLatLng();
+        if (mLatLng != null) {
+            GoogleDirection.withServerKey("AIzaSyAdn_ZIuwlIQKKZIIEW-Olh-xd2kLoteKc")
+                    .from(mLatLng)
+                    .to(targetLoc)
+                    .transportMode(TransportMode.DRIVING).
+                    avoid(AvoidType.HIGHWAYS)
+                    .alternativeRoute(true)
+                    .execute(new DirectionCallback() {
+                        @Override
+                        public void onDirectionSuccess(Direction direction, String rawBody) {
+                            String status = direction.getStatus();
+                            if (status.equals(RequestResult.OK)) {
+                                Route route = direction.getRouteList().get(0);
+                                Leg leg = route.getLegList().get(0);
+                                double distance = Double.parseDouble(leg.getDistance().getValue());
+                                distance = distance * 0.001;
+                                tvPlaceDistance.setText(("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km"));
+                            } else {
+                                // Do something
+                                Toast.makeText(getContext(), "Hệ thống đang quá tải, quay lại sau.", Toast.LENGTH_LONG).show();
+                            }
+                        }
 
-
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            });
-        } else if (location.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(android.location.Location location) {
-                    double tlat =  location.getLatitude();
-                    double tlng =  location.getLongitude();
-                    LatLng myLoc = new LatLng(tlat,tlng);
-                    LatLng targetLoc = new LatLng(lat,lng);
-//                    GoogleDirection.withServerKey("AIzaSyD8WTCySi0IpUz7RnamE1pqbLsCPi8R93w")
-//                            .from(myLoc)
-//                            .to(targetLoc)
-//                            .transportMode(TransportMode.DRIVING).
-//                            avoid(AvoidType.HIGHWAYS)
-//                            .alternativeRoute(true)
-//                            .execute(new DirectionCallback() {
-//                                @Override
-//                                public void onDirectionSuccess(Direction direction, String rawBody) {
-//                                    String status = direction.getStatus();
-//                                    if(status.equals(RequestResult.OK)) {
-//                                        Route route = direction.getRouteList().get(0);
-//                                        Leg leg = route.getLegList().get(0);
-//                                        double distance = Double.parseDouble(leg.getDistance().getValue()) ;
-//                                        distance = distance*0.001;
-//                                        tvPlaceDistance.setText("Khoảng " + (double) Math.floor(distance * 10) / 10);
-//                                    } else if(status.equals(RequestResult.NOT_FOUND)) {
-//                                        // Do something
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onDirectionFailure(Throwable t) {
-//
-//                                }
-//                            });
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            });
+                        @Override
+                        public void onDirectionFailure(Throwable t) {
+                        }
+                    });
+        } else {
+//            Toast.makeText(getContext(), "Null rồi...", Toast.LENGTH_LONG).show();
         }
 
-
+        tvPlaceDistance.setText("Chưa rõ");
         tvPlaceName.setText(place.getName());
         tvPlaceAddress.setText(addressName);
-        tvPlaceDistance.setText("Chưa rõ");
         tvPlaceTotalPlan.setText("Chưa rõ");
         tvPlaceDescription.setText(place.getDescription());
 
