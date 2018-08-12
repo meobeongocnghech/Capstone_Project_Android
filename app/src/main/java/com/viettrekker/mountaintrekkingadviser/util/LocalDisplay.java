@@ -59,4 +59,18 @@ public class LocalDisplay {
         SCREEN_HEIGHT_DP = (int) (SCREEN_HEIGHT_PIXELS / dm.density);
         return dp2px(designedDp, context);
     }
+
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
+    }
+
+    public static int getScreenHeight(Context context) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
+    }
 }

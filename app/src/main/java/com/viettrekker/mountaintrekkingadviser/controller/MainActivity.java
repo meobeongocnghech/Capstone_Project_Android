@@ -2,6 +2,7 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.LocationListener;
@@ -10,7 +11,9 @@ import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SwitchCompat;
 import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
@@ -40,7 +43,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.animator.CircleTransform;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.message.MessageFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PagePlaceFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.search.SearchFragment;
+import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
 import android.support.annotation.IdRes;
@@ -59,8 +69,13 @@ public class MainActivity extends AppCompatActivity
     private MainScreenPagerAdapter adapter;
     private DrawerLayout drawer;
     public static User user;
+
     private LocationManager location;
     private LatLng mLatLng;
+    private TextView tvMainTitle;
+    private SwipeRefreshLayout swipeContainer;
+    private NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +89,7 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         imgAvatar = (ImageView) findViewById(R.id.imgMainAvatar);
@@ -82,6 +97,21 @@ public class MainActivity extends AppCompatActivity
 
         View header = navigationView.getHeaderView(0);
         ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+
+        imgNavAvatar.setOnClickListener((v) -> {
+            Intent i = new Intent(this, ProfileMemberActivity.class);
+            i.putExtra("firstname", user.getFirstName());
+            i.putExtra("lastname", user.getLastName());
+            i.putExtra("email", user.getEmail());
+            i.putExtra("birthdate", user.getBirthDate().getTime());
+            i.putExtra("phone", user.getPhone());
+            i.putExtra("gender", user.getGender());
+            i.putExtra("owner", true);
+            i.putExtra("id", user.getId());
+            //i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
+            drawer.closeDrawer(GravityCompat.START);
+            startActivity(i);
+        });
 
         if (user.getGallery() != null) {
             Picasso.get().load("https://imgur.com/jKq7grX123.png")
@@ -128,12 +158,64 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                Fragment fragment = adapter.getItem(viewPager.getCurrentItem());
+                switch (viewPager.getCurrentItem()) {
+                    case 0:
+                        if (((PostFragment) fragment).getCurrectScrollY() != 0) {
+                            ((PostFragment) fragment).scrollToTop();
+                        } else {
+                            swipeContainer.setRefreshing(true);
+                            swipeContainer.setRefreshing(false);
+                        }
+                        break;
+                    default:
+                }
             }
         });
 
 
         //setupWindowAnimations();
+        tvMainTitle = (TextView) findViewById(R.id.tvMainTitle);
+
+        initRefreshLayout();
+    }
+
+    private void initRefreshLayout() {
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary);
+    }
+
+    private void refreshData() {
+        switch (viewPager.getCurrentItem()) {
+            case 0:
+                adapter.getPostFragment().refreshData();
+                break;
+            case 1:
+                adapter.setPlanFragment(new PlanFragment());
+                break;
+            case 2:
+                adapter.setNotificationFragment(new NotificationFragment());
+                break;
+            case 3:
+                adapter.setMessageFragment(new MessageFragment());
+                break;
+            case 4:
+                adapter.setSearchFragment(new SearchFragment());
+                break;
+        }
+        swipeContainer.setRefreshing(false);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void setTitle(String title) {
+        tvMainTitle.setText(title);
     }
 
     private void setupWindowAnimations() {
@@ -153,6 +235,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
+        //item.getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
+
+        MenuItem item1 = navigationView.getMenu().findItem(R.id.nav_profile);
+
+        if (item.equals(item1)) {
+            Intent i = new Intent(this, ProfileMemberActivity.class);
+            i.putExtra("firstname", user.getFirstName());
+            i.putExtra("lastname", user.getLastName());
+            i.putExtra("email", user.getEmail());
+            i.putExtra("birthdate", user.getBirthDate().getTime());
+            i.putExtra("phone", user.getPhone());
+            i.putExtra("gender", user.getGender());
+            i.putExtra("owner", true);
+            i.putExtra("id", user.getId());
+            i.putExtra("viewProfile", true);
+            //i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
+            drawer.closeDrawer(GravityCompat.START);
+            startActivity(i);
+        }
         return false;
     }
 

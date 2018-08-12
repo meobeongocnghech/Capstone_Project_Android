@@ -20,6 +20,7 @@
     <color name="colorCorrect">#67c95a</color>
     <color name="colorViewHolder">#b2b2b2</color>
     <color name="colorWhite">#fff</color>
+    <color name="colorDisable">#99A1AC</color>
 
     <color name="material_red">#FFC93437</color>
     <color name="material_blue">#FF375BF1</color>

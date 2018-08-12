@@ -70,4 +70,10 @@ public class DateTimeUtils {
             return "vài giây trước";
         }
     }
+
+    public static String parseStringDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("dd/MM/yyyy");
+        return sdf.format(date);
+    }
 }

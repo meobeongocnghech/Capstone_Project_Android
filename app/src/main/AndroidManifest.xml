@@ -35,6 +35,8 @@
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity android:name=".controller.post.PlaceDetailActivity" />
         <activity android:name=".TestActivity"></activity>
+        <activity android:name=".controller.profile.ProfileMemberActivity">
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

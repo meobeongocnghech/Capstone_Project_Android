@@ -77,4 +77,8 @@ public interface APIService {
                                  @Query("pageSize") int size,
                                  @Query("orderBy") String order);
 
+    @GET("member/post")
+    Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,
+                                         @Query("userId") int id,
+                                         @Query("page") int page);
 }

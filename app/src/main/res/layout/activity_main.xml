@@ -93,12 +93,19 @@
             </android.support.design.widget.TabLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/container"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorDefaultBackground"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent">
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorDefaultBackground"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
@@ -109,6 +116,7 @@
         android:background="@android:color/white"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer"
+        android:theme="@style/NavigationView"/>
 
 </android.support.v4.widget.DrawerLayout>

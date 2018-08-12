@@ -25,6 +25,20 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class NewsFeedFragment extends Fragment {
+    private boolean isByUserId = false;
+    private int userId;
+    private boolean loading = true;
+    private NewsFeedAdapter adapter;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+    public void setByUserId(boolean byUserId) {
+        isByUserId = byUserId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,29 +48,60 @@ public class NewsFeedFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         RecyclerView rcvNewsFeed = view.findViewById(R.id.rcvNewsFeed);
-        rcvNewsFeed.setLayoutManager(new LinearLayoutManager(getContext()));
-        NewsFeedAdapter adapter = new NewsFeedAdapter();
+        LinearLayoutManager mLayoutManager;
+        mLayoutManager = new LinearLayoutManager(getContext());
+        rcvNewsFeed.setLayoutManager(mLayoutManager);
+        adapter = new NewsFeedAdapter(getContext());
         initLoad(adapter);
         rcvNewsFeed.setAdapter(adapter);
     }
 
+    public void incrementalLoad(){
+        adapter.incrementalLoad();
+    }
+
+    public void notifyChanged(){
+        adapter.notifyDataSetChanged();
+    }
+
     private void initLoad(NewsFeedAdapter newsFeedAdapter){
         APIService mWebService = APIUtils.getWebService();
-        mWebService.getPostPage(MainActivity.user.getToken(),1,5,"id").enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                List<Post> list = response.body();
-                if (list != null) {
-                    list.remove(0);
-                    newsFeedAdapter.setListPost(list);
-                    newsFeedAdapter.notifyDataSetChanged();
+        if (isByUserId) {
+            newsFeedAdapter.setByUserId(isByUserId);
+            newsFeedAdapter.setUserId(userId);
+            mWebService.getPostPageByUserId(MainActivity.user.getToken(), userId, 1).enqueue(new Callback<List<Post>>() {
+                @Override
+                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                    List<Post> list = response.body();
+                    if (list != null) {
+                        list.remove(0);
+                        newsFeedAdapter.setListPost(list);
+                        newsFeedAdapter.notifyDataSetChanged();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(getContext(), "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<List<Post>> call, Throwable t) {
+                    Toast.makeText(getContext(), "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            mWebService.getPostPage(MainActivity.user.getToken(),1,5,"id").enqueue(new Callback<List<Post>>() {
+                @Override
+                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                    List<Post> list = response.body();
+                    if (list != null) {
+                        list.remove(0);
+                        newsFeedAdapter.setListPost(list);
+                        newsFeedAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Post>> call, Throwable t) {
+                    Toast.makeText(getContext(), "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

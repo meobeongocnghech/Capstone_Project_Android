@@ -88,7 +88,9 @@ public class RegisterActivity extends AppCompatActivity {
                     isNext = false;
                 }
             } else {
-                valiteAccountInfo();
+                if (valiteAccountInfo()) {
+                    submitRegister();
+                }
             }
         });
 

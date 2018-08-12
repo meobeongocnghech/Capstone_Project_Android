@@ -1,150 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-   >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:background="@drawable/cover_1"
-        android:orientation="vertical"
-        android:layout_gravity="center"
-
-
-        >
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imgUserAvt"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/avatar_default" />
-
-        <TextView
-            android:id="@+id/tvUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="Cuong Dang"
-            android:textColor="#fff"
-
-            android:textSize="22dp" />
-
-        <TextView
-            android:id="@+id/tvUserInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:text="Dep trai"
-            android:textColor="#fff"
-            android:textSize="13dp" />
-    </LinearLayout>
+    tools:context=".controller.profile.ProfileMemberActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:orientation="vertical">
 
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/profile_cover"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sea"
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusableInTouchMode="true"/>
 
-        <LinearLayout
-            android:layout_weight="1"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/profileToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:theme="@style/Toolbar"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="Thông tin cá nhân"
+                app:titleTextAppearance="@style/ToolbarTitleTheme"
+                app:titleTextColor="@android:color/white">
+
+            </android.support.v7.widget.Toolbar>
+
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="10dp"
+                android:src="@drawable/avatar_default"
+                app:layout_constraintBottom_toTopOf="@id/tvUserNamePrf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvUserNamePrf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="24dp"
+                android:letterSpacing="0.025"
+                android:text="Cuong Dang"
+                android:textColor="@color/weekcolor"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/tvEmailPrf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvEmailPrf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.025"
+                android:text="cuongdv@mta.com"
+                android:textColor="@color/agendacolor"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@id/statistic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/statistic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginBottom="8dp"
+                android:elevation="0dp"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="@id/profile_cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvLikeCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="26"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvUserLike"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Thích"
+                            android:textColor="#000" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvPostCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="7"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Bài viết"
+                            android:textColor="#000" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingVertical="4dp">
+
+                        <TextView
+                            android:id="@+id/tvPlanCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="48"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/bookmark"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Kế hoạch"
+                            android:textColor="#000" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.design.card.MaterialCardView>
+        </android.support.constraint.ConstraintLayout>
+        <android.support.design.widget.TabLayout
+            android:id="@+id/profileTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:background="@android:color/white"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabMaxWidth="0dp"
+            app:tabMode="fixed"
+            android:focusableInTouchMode="true">
 
-            <TextView
-                android:id="@+id/tvLikeCount"
-                android:layout_width="match_parent"
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabUserPost"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="26"
-                android:textColor="#009293"
-                android:textSize="16dp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/tvUserLike"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Thích"
-                android:textColor="#000"
-                android:gravity="center"/>
-        </LinearLayout>
+                android:text="Bài viết" />
 
-        <View
-            android:layout_width="2dp"
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cá nhân" />
+
+        </android.support.design.widget.TabLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/profileViewpager"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"></View>
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/no2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="7"
-                android:textSize="16dp"
-                android:textColor="#009293"
-                android:gravity="center"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bài viết"
-                android:textColor="#000"
-                android:gravity="center"/>
-        </LinearLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorError"></View>
-
-        <LinearLayout
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/no3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="48"
-                android:textSize="16dp"
-                android:textColor="#009293"
-                android:gravity="center"
-                android:textStyle="bold"/>
-            <TextView
-                android:id="@+id/bookmark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Kế hoạch"
-                android:textColor="#000"
-                android:gravity="center"/>
-        </LinearLayout>
+        </android.support.v4.view.ViewPager>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="#99A1AC" />
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

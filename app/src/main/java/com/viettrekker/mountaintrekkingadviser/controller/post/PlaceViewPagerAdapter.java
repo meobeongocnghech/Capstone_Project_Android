@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -87,7 +88,6 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
                 if (list != null) {
                     listPlace = list;
                     listPlace.remove(0);
-//                    notifyLoadComplete();
                     notifyDataSetChanged();
                 }
             }
