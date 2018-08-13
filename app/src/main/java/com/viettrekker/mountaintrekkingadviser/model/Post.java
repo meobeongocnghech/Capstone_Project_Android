@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
+import java.util.List;
 
 public class Post {
     @SerializedName("id")
@@ -48,6 +49,10 @@ public class Post {
     @SerializedName("updated_at")
     @Expose
     private Date updated_at;
+    @SerializedName("comments")
+    @Expose
+    private List<Comment> comments;
+    
 
     public int getId() {
         return id;
@@ -160,6 +165,15 @@ public class Post {
     public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
     }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
 
     @Override
     public String toString() {

@@ -113,6 +113,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     private void loadData() {
         adapter = new ProfileMemberPostAdapter(getSupportFragmentManager());
+        adapter.setByUserId(true);
+        adapter.setUserId(id);
         profileViewpager.setAdapter(adapter);
 
         if (owner) {

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardUseCompatPadding="false"
+    android:background="@color/colorDefaultBackground"
+    android:layout_marginBottom="6dp"
+    android:layout_marginLeft="70dp"
+    app:cardCornerRadius="10dp"
+    app:strokeWidth="1dp"
+    app:cardElevation="2dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/imgAvtCmtRep"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:adjustViewBounds="true"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvCmtContentRep"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :)"
+            android:textColor="@android:color/black"
+            android:textSize="13sp"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toStartOf="@id/btnActionCmtRep"
+            app:layout_constraintStart_toStartOf="@+id/tvUserCmtRep"
+            app:layout_constraintTop_toBottomOf="@id/tvUserCmtRep" />
+
+        <TextView
+            android:id="@+id/tvUserCmtRep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:text="Cuong Dang"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/imgAvtCmtRep"
+            app:layout_constraintTop_toTopOf="@+id/imgAvtCmtRep" />
+
+        <TextView
+            android:id="@+id/tvTimeRep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 phút"
+            android:textSize="12sp"
+            app:layout_constraintTop_toTopOf="@+id/tvUserCmtRep"
+            tools:layout_editor_absoluteX="301dp"
+            app:layout_constraintEnd_toEndOf="@id/tvCmtContentRep"/>
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btnActionCmtRep"
+            android:layout_width="32dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_more_vert_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvCmtContentRep" />
+
+        <TextView
+            android:id="@+id/tvReadMoreChild"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="3dp"
+            android:text="Xem thêm"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/layoutActionOnCOmmentRep"
+            app:layout_constraintEnd_toEndOf="@+id/tvCmtContentRep"
+            app:layout_constraintTop_toBottomOf="@+id/tvCmtContentRep" />
+
+        <LinearLayout
+            android:id="@+id/layoutActionOnCOmmentRep"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintStart_toStartOf="@+id/tvCmtContentRep"
+            app:layout_constraintTop_toBottomOf="@+id/tvCmtContentRep"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/tvLikeCmtRep"
+                android:textSize="13dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thích"/>
+
+            <TextView
+                android:id="@+id/likeCountRep"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textSize="13dp"
+                android:layout_marginLeft="7dp"/>
+        </LinearLayout>
+
+
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.design.card.MaterialCardView>

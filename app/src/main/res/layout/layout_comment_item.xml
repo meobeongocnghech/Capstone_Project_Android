@@ -1,116 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView
+
+
+    <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardUseCompatPadding="false"
-    android:background="@color/colorDefaultBackground"
-    android:layout_marginBottom="10dp"
-    app:cardElevation="2dp">
-
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/constrainlayout"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:layout_marginBottom="2dp"
+        android:orientation="vertical">
+    <android.support.design.card.MaterialCardView
 
-        <ImageView
-            android:id="@+id/imgAvtCmt"
-            android:layout_width="80dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="false"
+        app:cardCornerRadius="12dp"
+        android:layout_margin="2dp"
+        android:layout_marginBottom="3dp"
+        app:strokeWidth="1dp"
+        app:cardElevation="2dp">
+
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/constrainlayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:padding="8dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/avatar_default"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:background="@android:color/white">
 
-        <TextView
-            android:id="@+id/tvCmtContent"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:maxLines="3"
-            android:singleLine="false"
-            android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :)"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/imgAvtCmt"
-            app:layout_constraintEnd_toStartOf="@id/btnActionCmt"
-            app:layout_constraintStart_toEndOf="@+id/imgAvtCmt"
-            app:layout_constraintTop_toBottomOf="@id/tvUserCmt" />
-
-        <TextView
-            android:id="@+id/tvUserCmt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Cuong Dang"
-            android:textSize="15sp"
-            app:layout_constraintStart_toEndOf="@id/imgAvtCmt"
-             />
-
-
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/btnActionCmt"
-            android:layout_width="32dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@android:color/transparent"
-            android:src="@drawable/ic_more_vert_black_24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvCmtContent" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:background="@android:color/transparent"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            app:layout_constraintStart_toStartOf="@+id/tvCmtContent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCmtContent">
-
-            <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/ic_thumb_up_gray"/>
+            <ImageView
+                android:id="@+id/imgAvtCmt"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar_default"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
-                android:id="@+id/likeCount"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCmtContent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="5"
-                android:textSize="13dp"
-                android:layout_marginLeft="7dp"/>
-            <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="50dp"
-                android:background="@drawable/ic_insert_comment_gay" />
+                android:singleLine="false"
+                android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :) vui lam nhe"
+                android:textColor="@android:color/black"
+                android:textSize="13sp"
+                android:maxLines="3"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toStartOf="@id/btnActionCmt"
+                app:layout_constraintStart_toEndOf="@+id/imgAvtCmt"
+                app:layout_constraintTop_toBottomOf="@id/tvUserCmt"
+                />
 
             <TextView
-                android:id="@+id/cmtCount"
+                android:id="@+id/tvUserCmt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="51"
-                android:textSize="13dp"
-                android:layout_marginLeft="7dp"/>
+                android:text="Cuong Dang"
+                android:textSize="13sp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toEndOf="@id/imgAvtCmt"
+                />
 
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/btnActionCmt"
+                android:layout_width="40dp"
+                android:layout_height="20dp"
+                android:backgroundTint="@android:color/transparent"
+                android:src="@drawable/ic_more_vert_black_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvCmtContent" />
+
+            <TextView
+                android:id="@+id/tvReadMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="3dp"
+                android:text="Xem thêm"
+                android:textSize="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/layoutActionOnCOmment"
+                app:layout_constraintEnd_toEndOf="@+id/tvCmtContent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCmtContent" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layoutActionOnCOmment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@+id/tvCmtContent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvCmtContent"
+                app:layout_constraintEnd_toEndOf="@id/tvCmtContent"
+                >
+
+                <TextView
+                    android:id="@+id/btnLikeCmt"
+                    android:layout_width="wrap_content"
+                    android:textSize="13dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="Like"/>
+
+                <TextView
+                    android:id="@+id/likeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(5)"
+                    android:textSize="12dp"
+                    app:layout_constraintStart_toEndOf="@id/btnLikeCmt"
+                    android:layout_marginLeft="7dp"/>
+
+
+
+                <TextView
+                    android:id="@+id/tvReplyComment"
+                    android:textSize="13dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="7dp"
+                    app:layout_constraintEnd_toStartOf="@id/cmtCount"
+                    android:text="Trả lời"/>
+
+                <TextView
+                    android:id="@+id/cmtCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(5)"
+                    android:textSize="12dp"
+                    android:layout_marginRight="130dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginLeft="7dp" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:text="2 phút"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/tvCmtContent"
+                app:layout_constraintTop_toTopOf="@+id/tvUserCmt" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.design.card.MaterialCardView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvCmtChild"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2 phút"
-            android:textSize="13sp"
-            app:layout_constraintTop_toBottomOf="@+id/tvCmtContent"
-            tools:layout_editor_absoluteX="301dp"
-            app:layout_constraintEnd_toEndOf="@id/tvCmtContent"/>
+            app:layout_constraintTop_toBottomOf="@id/layoutActionOnCOmment"
+            android:layout_marginTop="2dp">
 
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
-</android.support.design.card.MaterialCardView>

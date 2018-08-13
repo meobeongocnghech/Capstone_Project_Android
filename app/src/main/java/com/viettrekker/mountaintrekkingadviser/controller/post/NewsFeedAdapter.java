@@ -33,6 +33,9 @@ import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,11 +100,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
+        viewHolder.btnPostLike.setText("Thích");
         if (post.getLiked()!=0){
+            viewHolder.likeFlag = true;
             viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
-            viewHolder.btnPostLike.setText("Đã thích");
+            viewHolder.btnPostLike.setText("Bỏ thích");
         }
         try {
             viewHolder.tvTime.setText(datetime.caculatorTime(Calendar.getInstance().getTime().getTime(), post.getUpdated_at().getTime()));
@@ -124,6 +129,30 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
             }
         });
+//        viewHolder.btnPostLike.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                APIService mWebService = APIUtils.getWebService();
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("id",post.getId());
+//                } catch (JSONException e) {
+//                    Toast.makeText(context,"Lỗi Json rồi",Toast.LENGTH_LONG).show();
+//                }
+//                mWebService.likePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+//                    @Override
+//                    public void onResponse(Call<Post> call, Response<Post> response) {
+//                        Toast.makeText(context,"Like thành công",Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Post> call, Throwable t) {
+//                        Toast.makeText(context,"Like thất bại rồi ^.^",Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
+//        });
+
 //        int lineContent = viewHolder.tvPostContent.getLayout().getLineCount();
 //        if (lineContent > 0){
 //            if (viewHolder.tvPostContent.getLayout().getEllipsisCount(lineContent-1) > 0){
@@ -218,6 +247,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView tvCount;
         MaterialButton btnPostLike;
         MaterialButton btnPostComent;
+        boolean likeFlag;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
@@ -236,9 +266,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvCount = (TextView) itemView.findViewById(R.id.tvCount);
             btnPostLike = (MaterialButton) itemView.findViewById(R.id.btnPostLike);
             btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostComment);
-
             imgPostAvatar.setOnClickListener((v) -> eventViewProfile());
             tvPostUserName.setOnClickListener((v) -> eventViewProfile());
+            likeFlag = false;
             btnReadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -267,10 +297,28 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
-                    String action = "comment";
+                    boolean action = true;
                     intent.putExtra("id", postId);
                     intent.putExtra("action", action);
                     context.startActivity(intent);
+                }
+            });
+            btnPostLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!likeFlag){
+                        btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
+                        btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                        btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
+                        btnPostLike.setText("Bỏ thích");
+                        likeFlag = true;
+                    } else {
+                        btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
+                        btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                        btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
+                        btnPostLike.setText("Thích");
+                        likeFlag = false;
+                    }
                 }
             });
         }

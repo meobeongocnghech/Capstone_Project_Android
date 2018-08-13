@@ -10,6 +10,7 @@ import com.viettrekker.mountaintrekkingadviser.model.User;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -85,4 +86,13 @@ public interface APIService {
     @GET("post")
     Call<Post> getPostByPostId(@Header("AUTH_TOKEN_ID") String token,
                                          @Query("id") int id);
+
+    @POST("post/like")
+    Call<Post> likePost(@Header("AUTH_TOKEN_ID") String token,
+                               @Field("id") int id);
+
+    @POST("comment/like")
+    Call<Post> likeComment(@Header("AUTH_TOKEN_ID") String token,
+                           @Field("id") int id,
+                           @Field("targetId") int targetId);
 }
