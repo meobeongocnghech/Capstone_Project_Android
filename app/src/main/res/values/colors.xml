@@ -27,6 +27,9 @@
     <color name="material_yellow">#FFF7D23E</color>
     <color name="material_green">#FF34A350</color>
 
+    <color name="titleTabColor">#000000</color>
+    <color name="titleSelectedTabColor">#00c853</color>
+
 
     <!--Switch color-->
     <color name="switchTrack">#ffd600</color>

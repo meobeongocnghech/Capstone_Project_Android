@@ -38,6 +38,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
     private MaterialButton btnPhone;
     private MaterialButton btnGender;
     private MaterialButton btnChangeProfile;
+    private MaterialButton btnCancelChange;
 
     private String birth;
     private String phoneNum;
@@ -54,6 +55,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ProfileMemberActivity activity = (ProfileMemberActivity) getActivity();
+        btnCancelChange = (MaterialButton) view.findViewById(R.id.btnCancelChange);
         btnBirthdate = (MaterialButton) view.findViewById(R.id.birthdate);
         birth = activity.getBirthdate();
         btnBirthdate.setText(birth);
@@ -85,8 +87,32 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                         new int[][]{{}}, new int[]{Color.parseColor("#00c853")});
                 btnChangeProfile.setBackgroundTintList(stateList);
                 btnChangeProfile.setTextColor(Color.parseColor("#ffffff"));
+
+                ((ProfileMemberActivity) getActivity()).enableUpdate();
+                btnCancelChange.setVisibility(View.VISIBLE);
                 isChange = true;
             }
+        });
+
+        btnCancelChange.setOnClickListener((v) -> {
+            btnBirthdate.setClickable(false);
+            btnBirthdate.setTextColor(Color.parseColor("#99A1AC"));
+
+            btnPhone.setClickable(true);
+            btnPhone.setTextColor(Color.parseColor("#99A1AC"));
+
+            btnGender.setClickable(true);
+            btnGender.setTextColor(Color.parseColor("#99A1AC"));
+
+            btnChangeProfile.setText("Lưu chỉnh sửa");
+            final ColorStateList stateList = new ColorStateList(
+                    new int[][]{{}}, new int[]{Color.parseColor("#FFFFFF")});
+            btnChangeProfile.setBackgroundTintList(stateList);
+            btnChangeProfile.setTextColor(Color.parseColor("#00c853"));
+
+            ((ProfileMemberActivity) getActivity()).disableUpdate();
+            btnCancelChange.setVisibility(View.GONE);
+            isChange = false;
         });
 
         btnBirthdate.setOnClickListener((v) -> update(0));

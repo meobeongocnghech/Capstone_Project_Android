@@ -51,7 +51,7 @@ public class NewsFeedFragment extends Fragment {
         LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getContext());
         rcvNewsFeed.setLayoutManager(mLayoutManager);
-        adapter = new NewsFeedAdapter(getContext());
+        adapter = new NewsFeedAdapter(getContext(), this);
         initLoad(adapter);
         rcvNewsFeed.setAdapter(adapter);
     }
@@ -86,7 +86,7 @@ public class NewsFeedFragment extends Fragment {
                 }
             });
         } else {
-            mWebService.getPostPage(MainActivity.user.getToken(),1,5,"id").enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPage(MainActivity.user.getToken(),1,5,"id", "DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();

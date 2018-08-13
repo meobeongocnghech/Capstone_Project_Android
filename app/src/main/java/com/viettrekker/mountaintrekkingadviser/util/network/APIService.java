@@ -10,7 +10,6 @@ import com.viettrekker.mountaintrekkingadviser.model.User;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -76,7 +75,8 @@ public interface APIService {
     Call<List<Post>> getPostPage(@Header("AUTH_TOKEN_ID") String token,
                                  @Query("page") int page,
                                  @Query("pageSize") int size,
-                                 @Query("orderBy") String order);
+                                 @Query("orderBy") String orderBy,
+                                 @Query("order") String order);
 
     @GET("member/post")
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,

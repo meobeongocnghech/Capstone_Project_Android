@@ -118,6 +118,15 @@ public class PostDetailActivity extends AppCompatActivity{
         mWebService.getPostByPostId(MainActivity.user.getToken(),id).enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
+                tvPostUserName = (TextView)findViewById(R.id.tvPostUserNameDetail);
+                tvTime = (TextView) findViewById(R.id.tvTimeDetail);
+                tvPostCategory = (TextView) findViewById(R.id.tvPostCategoryDetail);
+                btnPostOption = (ImageButton) findViewById(R.id.btnPostOptionDetail);
+                tvPostTitle = (TextView) findViewById(R.id.tvPostTitleDetail);
+                tvPostContent = (TextView) findViewById(R.id.tvPostContentDetail);
+                //tvCount = (TextView) findViewById(R.id.tvCount);
+                btnPostLike = (MaterialButton) findViewById(R.id.btnPostLikeDetail);
+                btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
 
                 Post post = response.body();
                 User user = post.getUser();

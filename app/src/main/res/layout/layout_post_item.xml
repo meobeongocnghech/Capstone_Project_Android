@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="false"
+    android:layout_marginBottom="10dp"
     android:background="@color/colorDefaultBackground"
     app:cardElevation="2dp"
-    android:layout_marginBottom="10dp">
+    app:cardUseCompatPadding="false">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,14 +18,14 @@
             android:id="@+id/imgPostAvatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
-            android:padding="3dp"
+            android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
+            android:padding="3dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/avatar_default" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.Barrier
             android:id="@+id/avatarBarrier"
@@ -44,28 +44,28 @@
             android:text="User"
             android:textColor="@android:color/black"
             android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/tvTime"
             app:layout_constraintStart_toEndOf="@+id/imgPostAvatar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tvTime"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/separator"
             android:layout_width="16dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_play_arrow_16dp"
-            android:layout_marginTop="4dp"
             android:layout_marginLeft="4dp"
-            app:layout_constraintTop_toTopOf="@id/tvPostUserName"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/ic_play_arrow_16dp"
             app:layout_constraintBottom_toBottomOf="@id/tvPostUserName"
-            app:layout_constraintStart_toEndOf="@id/tvPostUserName"/>
+            app:layout_constraintStart_toEndOf="@id/tvPostUserName"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
 
         <TextView
             android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
             android:text="20 m"
             android:textSize="12sp"
-            android:layout_marginBottom="6dp"
             app:layout_constraintBottom_toBottomOf="@id/imgPostAvatar"
             app:layout_constraintStart_toStartOf="@id/tvPostUserName"
             app:layout_constraintTop_toBottomOf="@id/tvPostUserName" />
@@ -74,10 +74,10 @@
             android:id="@+id/tvPostCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:fontFamily="sans-serif-medium"
             android:text="Chuyên mục khác"
             android:textColor="@color/colorTextFieldInput"
-            android:fontFamily="sans-serif-medium"
-            android:layout_marginLeft="4dp"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/separator"
             app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
@@ -96,31 +96,32 @@
             android:id="@+id/tvPostTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/imgPostAvatar"
-            app:layout_constraintStart_toStartOf="@id/tvPostContent"
-            android:textSize="20sp"
             android:layout_marginTop="3dp"
-            android:textColor="@color/colorTextFieldInput"
             android:fontFamily="sans-serif-medium"
-            android:text="Lorem ipsum dolor"/>
+            android:text="Lorem ipsum dolor"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@id/tvPostContent"
+            app:layout_constraintTop_toBottomOf="@id/imgPostAvatar" />
 
         <TextView
             android:id="@+id/tvPostContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="16dp"
-            android:maxLines="4"
+            android:layout_marginBottom="16dp"
             android:ellipsize="end"
+            android:maxLines="4"
             android:text="@string/pseudo_para"
             android:textColor="@color/colorTextFieldInput"
             android:textSize="14sp"
-            android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/tvPostTitle" />
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btnReadMore"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.01"
@@ -129,184 +130,211 @@
             android:padding="0dp"
             android:text="Xem thêm"
             android:textColor="#888"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            app:layout_constraintTop_toBottomOf="@id/tvPostContent"
-            app:layout_constraintStart_toStartOf="@id/tvPostContent"
+            android:textSize="14sp"
             app:backgroundTint="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="@id/tvPostContent"
+            app:layout_constraintTop_toBottomOf="@id/tvPostContent"
             app:rippleColor="@android:color/transparent"
-            app:textAllCaps="false"
-            android:textSize="14sp"/>
+            app:textAllCaps="false" />
 
-        <android.support.v7.widget.GridLayout
-            android:id="@+id/gridPostPicture"
-            android:layout_width="0dp"
-            android:layout_height="336dp"
-            android:padding="4dp"
-            app:rowCount="3"
-            app:columnCount="2"
-            app:layout_constraintStart_toStartOf="@id/btnReadMore"
-            app:layout_constraintEnd_toEndOf="@id/tvPostContent"
-            app:layout_constraintTop_toBottomOf="@id/btnReadMore">
+        <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_gravity="left|top"-->
+        <!--android:textColorLink="@color/colorPrimary"-->
+        <!--android:text="B1"/>-->
 
-            <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_gravity="left|top"-->
-            <!--android:textColorLink="@color/colorPrimary"-->
-            <!--android:text="B1"/>-->
+        <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_gravity="left|top"-->
+        <!--android:textColorLink="@color/colorPrimary"-->
+        <!--android:text="B1"/>-->
 
-            <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_gravity="left|top"-->
-            <!--android:textColorLink="@color/colorPrimary"-->
-            <!--android:text="B1"/>-->
-
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/imagesLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/btnReadMore"
+            android:visibility="gone">
             <android.support.design.card.MaterialCardView
                 android:id="@+id/preview1"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                app:cardCornerRadius="5dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:layout_marginRight="2dp"
-                android:layout_marginBottom="2dp">
+                app:cardCornerRadius="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/preview2">
+
                 <ImageView
                     android:id="@+id/imgPreview1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/mini_picture"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorDefaultBackground" />
             </android.support.design.card.MaterialCardView>
 
 
             <android.support.design.card.MaterialCardView
                 android:id="@+id/preview2"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                app:cardCornerRadius="5dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:layout_marginLeft="2dp"
-                android:layout_marginBottom="2dp">
+                app:cardCornerRadius="5dp"
+                android:layout_marginLeft="4dp"
+                app:layout_constraintStart_toEndOf="@id/preview1"
+                app:layout_constraintEnd_toEndOf="parent">
+
                 <ImageView
                     android:id="@+id/imgPreview2"
-                    android:src="@drawable/mini_picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorDefaultBackground" />
             </android.support.design.card.MaterialCardView>
 
 
             <android.support.design.card.MaterialCardView
                 android:id="@+id/preview3"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                android:scaleType="centerCrop"
-                app:cardCornerRadius="5dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="2dp">
+                android:scaleType="centerCrop"
+                android:layout_marginTop="4dp"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/preview4"
+                app:layout_constraintTop_toBottomOf="@id/preview1">
+
                 <ImageView
                     android:id="@+id/imgPreview3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/mini_picture"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorDefaultBackground" />
             </android.support.design.card.MaterialCardView>
-
 
             <android.support.design.card.MaterialCardView
                 android:id="@+id/preview4"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1"
-                app:cardCornerRadius="5dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
-                android:layout_marginLeft="2dp"
-                android:layout_marginTop="2dp">
+                android:scaleType="centerCrop"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintStart_toEndOf="@id/preview3"
+                app:layout_constraintEnd_toStartOf="@id/preview5"
+                app:layout_constraintTop_toBottomOf="@id/preview1">
+
+                <ImageView
+                    android:id="@+id/imgPreview4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@color/colorDefaultBackground" />
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/preview5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="4dp"
+                app:cardCornerRadius="5dp"
+                app:layout_constraintTop_toBottomOf="@id/preview1"
+                app:layout_constraintStart_toEndOf="@id/preview4"
+                app:layout_constraintEnd_toEndOf="parent">
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="right|bottom">
 
                     <ImageView
-                        android:id="@+id/imgPreview4"
-                        android:layout_height="match_parent"
+                        android:id="@+id/imgPreview5"
                         android:layout_width="match_parent"
-                        android:src="@drawable/mini_picture"
-                        android:scaleType="centerCrop" />
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@color/colorDefaultBackground" />
 
                     <TextView
                         android:id="@+id/tvCount"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/colorAlpha50Black"
-                        android:textColor="@android:color/white"
-                        android:textSize="21sp"
-                        android:gravity="center"
                         android:fontFamily="sans-serif-medium"
-                        android:text="+4"/>
+                        android:gravity="center"
+                        android:text="+4"
+                        android:textColor="@android:color/white"
+                        android:textSize="21sp" />
 
                 </FrameLayout>
             </android.support.design.card.MaterialCardView>
-        </android.support.v7.widget.GridLayout>
+        </android.support.constraint.ConstraintLayout>
+
+        <!--<FrameLayout-->
+        <!--android:id="@+id/framePostImage"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="500dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/btnReadMore">-->
+        <!--&lt;!&ndash;<include&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/spannableImageGrid"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;layout="@layout/layout_spannable_grid" />&ndash;&gt;-->
+        <!--</FrameLayout>-->
 
         <android.support.design.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:id="@+id/btnPostLike"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:icon="@drawable/ic_like"
             android:letterSpacing="0.01"
             android:text="Like"
-            app:iconSize="20dp"
             android:textAllCaps="false"
+            android:textColor="@color/colorTextFieldInput"
             app:backgroundTint="@android:color/white"
             app:cornerRadius="0dp"
+            app:icon="@drawable/ic_like"
             app:iconGravity="textStart"
-            android:textColor="@color/colorTextFieldInput"
+            app:iconSize="20dp"
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toStartOf="@id/btnPostComment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gridPostPicture" />
+            app:layout_constraintTop_toBottomOf="@id/imagesLayout" />
 
         <android.support.design.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:id="@+id/btnPostComment"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:icon="@drawable/ic_comment"
             android:letterSpacing="0.01"
-            app:iconSize="20dp"
             android:text="Comment"
             android:textAllCaps="false"
-            app:cornerRadius="0dp"
-            app:backgroundTint="@android:color/white"
-            app:iconGravity="textStart"
             android:textColor="@color/colorTextFieldInput"
+            app:backgroundTint="@android:color/white"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/ic_comment"
+            app:iconGravity="textStart"
+            app:iconSize="20dp"
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnPostLike"
-            app:layout_constraintTop_toBottomOf="@id/gridPostPicture" />
+            app:layout_constraintTop_toBottomOf="@id/imagesLayout" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            app:layout_constraintTop_toTopOf="@id/btnPostLike"
-            android:background="#dcdcdc"/>
-
+            android:background="#dcdcdc"
+            app:layout_constraintTop_toTopOf="@id/btnPostLike" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvCmtList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/btnPostLike"/>
+            app:layout_constraintTop_toBottomOf="@id/btnPostLike" />
 
     </android.support.constraint.ConstraintLayout>
 

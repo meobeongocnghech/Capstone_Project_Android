@@ -41,6 +41,7 @@ import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.model.Route;
 import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.animator.CircleTransform;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.message.MessageFragment;
@@ -52,6 +53,8 @@ import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberA
 import com.viettrekker.mountaintrekkingadviser.controller.search.SearchFragment;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
@@ -114,15 +117,26 @@ public class MainActivity extends AppCompatActivity
         });
 
         if (user.getGallery() != null) {
-            Picasso.get().load("https://imgur.com/jKq7grX123.png")
-                    .transform(new CircleTransform())
-                    .placeholder(R.drawable.avatar_default)
+//            Picasso.get().load("https://imgur.com/jKq7grX123.png")
+//                    .transform(new CircleTransform())
+//                    .placeholder(R.drawable.avatar_default)
+//                    .into(imgAvatar);
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API +user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .placeholder(getDrawable(R.drawable.avatar_default))
+                    .fallback(getDrawable(R.drawable.avatar_default))
                     .into(imgAvatar);
 
-            Picasso.get().load("https://imgur.com/jKq7grX123.png")
-                    .transform(new CircleTransform())
-                    .placeholder(R.drawable.avatar_default)
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API +user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .placeholder(getDrawable(R.drawable.avatar_default))
+                    .fallback(getDrawable(R.drawable.avatar_default))
                     .into(imgNavAvatar);
+
+//            Picasso.get().load("https://imgur.com/jKq7grX123.png")
+//                    .transform(new CircleTransform())
+//                    .placeholder(R.drawable.avatar_default)
+//                    .into(imgNavAvatar);
         }
 
         TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
@@ -251,7 +265,9 @@ public class MainActivity extends AppCompatActivity
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
             i.putExtra("viewProfile", true);
-            //i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
+            if (user.getGallery() != null ) {
+                i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
+            }
             drawer.closeDrawer(GravityCompat.START);
             startActivity(i);
         }

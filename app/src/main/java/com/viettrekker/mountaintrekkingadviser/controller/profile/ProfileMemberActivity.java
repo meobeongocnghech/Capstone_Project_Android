@@ -1,12 +1,16 @@
 package com.viettrekker.mountaintrekkingadviser.controller.profile;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.card.MaterialCardView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,21 +23,39 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.erikagtierrez.multiple_media_picker.Gallery;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainScreenPagerAdapter;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
+import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ProfileMemberActivity extends AppCompatActivity {
+
+    static final int OPEN_MEDIA_PICKER = 1;
 
     private ImageView profileCoverImage;
     private ImageView profileAvatarImage;
@@ -47,6 +69,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private TabItem tabUserPost;
     private TabItem tabProfile;
     private ViewPager profileViewpager;
+    private ImageButton addImage;
+
 
     private ProfileMemberPostAdapter adapter;
 
@@ -58,6 +82,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private boolean owner;
     private int id;
     private String email;
+    private String avatar;
 
     private boolean isChange;
     private boolean viewProfile;
@@ -67,22 +92,45 @@ public class ProfileMemberActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_profile);
 
-        firstName = getIntent().getStringExtra("firstname");
-        lastName = getIntent().getStringExtra("lastname");
-        phone = getIntent().getStringExtra("phone");
-        birthdate = DateTimeUtils.parseStringDate(new Date(getIntent().getLongExtra("birthdate", 0)));
-        gender = getIntent().getIntExtra("gender", 0) == 1 ? "Nam" : "Nữ";
-        owner = getIntent().getBooleanExtra("owner", false);
         id = getIntent().getIntExtra("id", 0);
-        email = getIntent().getStringExtra("email");
-        viewProfile = getIntent().getBooleanExtra("viewProfile", false);
+        final ProgressDialog progressDialog = new ProgressDialog(this, R.style.DialogStyle);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        APIService mWebService = APIUtils.getWebService();
+        mWebService.getUserById(MainActivity.user.getToken(), id).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                User user = response.body();
+                progressDialog.dismiss();
+                if (user == null) {
+                    Toast.makeText(getApplicationContext(), "Tài khoản không tồn tại", Toast.LENGTH_LONG).show();
+                    onBackPressed();
+                } else {
+                    firstName = getIntent().getStringExtra("firstname");
+                    lastName = getIntent().getStringExtra("lastname");
+                    phone = getIntent().getStringExtra("phone");
+                    birthdate = DateTimeUtils.parseStringDate(new Date(getIntent().getLongExtra("birthdate", 0)));
+                    gender = getIntent().getIntExtra("gender", 0) == 1 ? "Nam" : "Nữ";
+                    owner = getIntent().getBooleanExtra("owner", false);
+                    email = getIntent().getStringExtra("email");
+                    viewProfile = getIntent().getBooleanExtra("viewProfile", false);
+                    avatar = getIntent().getStringExtra("avatar");
 
-        init();
-        loadData();
-        setEventChangeName();
-        if (viewProfile) {
-            selectProfileTab();
-        }
+                    init();
+                    loadData();
+                    setEventChangeName();
+                    if (viewProfile) {
+                        selectProfileTab();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "Xảy ra lỗi", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void init() {
@@ -104,6 +152,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
         tabUserPost = (TabItem) findViewById(R.id.tabUserPost);
         tabProfile = (TabItem) findViewById(R.id.tabProfile);
         profileViewpager = (ViewPager) findViewById(R.id.profileViewpager);
+        addImage = (ImageButton) findViewById(R.id.addAvatar);
 
         setSupportActionBar(profileToolbar);
 
@@ -124,31 +173,54 @@ public class ProfileMemberActivity extends AppCompatActivity {
             profileTabs.setVisibility(View.GONE);
         }
 
-        profileTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 1) {
-                    tvUserNamePrf.setPadding(LocalDisplay.dp2px(48, getApplicationContext()), 0, 0, 0);
-                    tvUserNamePrf.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
-                    isChange = true;
-                } else {
-                    tvUserNamePrf.setCompoundDrawables(null, null, null, null);
-                    tvUserNamePrf.setPadding(0, 0, 0, 0);
-                    isChange = false;
-                }
-            }
+//        GlideApp.with(this)
+//                .load(avatar)
+//                .apply(RequestOptions.circleCropTransform())
+//                .fallback(R.drawable.avatar_default)
+//                .into(profileAvatarImage);
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+        addImage.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, Gallery.class);
+            // Set the title
+            intent.putExtra("title", "Select media");
+            // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
+            intent.putExtra("mode", 2);
+            intent.putExtra("maxSelection", 1); // Optional
+            startActivityForResult(intent, OPEN_MEDIA_PICKER);
         });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == OPEN_MEDIA_PICKER) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+            }
+        }
+    }
+
+    public void enableUpdate() {
+        tvUserNamePrf.setPadding(LocalDisplay.dp2px(48, getApplicationContext()), 0, 0, 0);
+        tvUserNamePrf.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
+        addImage.setVisibility(View.VISIBLE);
+        isChange = true;
+    }
+
+    public void disableUpdate() {
+//        GlideApp.with(this)
+//                .load(avatar)
+//                .apply(RequestOptions.circleCropTransform())
+//                .fallback(R.drawable.avatar_default)
+//                .into(profileAvatarImage);
+        tvUserNamePrf.setCompoundDrawables(null, null, null, null);
+        tvUserNamePrf.setPadding(0, 0, 0, 0);
+        tvUserNamePrf.setText(firstName + " " + lastName);
+        addImage.setVisibility(View.GONE);
+        isChange = false;
+    }
+
 
     private void selectProfileTab() {
         profileTabs.getTabAt(1).select();

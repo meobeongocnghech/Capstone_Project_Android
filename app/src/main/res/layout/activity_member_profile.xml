@@ -21,10 +21,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:adjustViewBounds="true"
+                android:focusableInTouchMode="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/sea"
-                app:layout_constraintTop_toTopOf="parent"
-                android:focusableInTouchMode="true"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/profileToolbar"
@@ -39,15 +39,25 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <ImageView
-                android:id="@+id/profile_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/avatar_default"
-                app:layout_constraintBottom_toTopOf="@id/tvUserNamePrf"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/avatar_default"
+                    app:layout_constraintBottom_toTopOf="@id/tvUserNamePrf"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/addAvatar"
+                    android:background="@drawable/bg_white_oval"
+                    android:src="@drawable/ic_plus_primary_24dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/profile_image"
+                    app:layout_constraintRight_toRightOf="@id/profile_image" />
 
             <TextView
                 android:id="@+id/tvUserNamePrf"
@@ -176,16 +186,17 @@
                 </LinearLayout>
             </android.support.design.card.MaterialCardView>
         </android.support.constraint.ConstraintLayout>
+
         <android.support.design.widget.TabLayout
             android:id="@+id/profileTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
+            android:focusableInTouchMode="true"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabMaxWidth="0dp"
-            app:tabMode="fixed"
-            android:focusableInTouchMode="true">
+            app:tabMode="fixed">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabUserPost"
