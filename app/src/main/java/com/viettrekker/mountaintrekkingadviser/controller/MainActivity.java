@@ -10,19 +10,11 @@ import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.SwitchCompat;
-import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,32 +23,19 @@ import android.widget.TextView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 
-import com.akexorcist.googledirection.DirectionCallback;
-import com.akexorcist.googledirection.GoogleDirection;
-import com.akexorcist.googledirection.constant.AvoidType;
-import com.akexorcist.googledirection.constant.RequestResult;
-import com.akexorcist.googledirection.constant.TransportMode;
-import com.akexorcist.googledirection.model.Direction;
-import com.akexorcist.googledirection.model.Leg;
-import com.akexorcist.googledirection.model.Route;
 import com.google.android.gms.maps.model.LatLng;
-import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
-import com.viettrekker.mountaintrekkingadviser.animator.CircleTransform;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.message.MessageFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
-import com.viettrekker.mountaintrekkingadviser.controller.post.PagePlaceFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.search.SearchFragment;
-import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import android.support.annotation.IdRes;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -117,10 +96,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         if (user.getGallery() != null) {
-//            Picasso.get().load("https://imgur.com/jKq7grX123.png")
-//                    .transform(new CircleTransform())
-//                    .placeholder(R.drawable.avatar_default)
-//                    .into(imgAvatar);
+
             GlideApp.with(this)
                     .load(APIUtils.BASE_URL_API +user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
                     .placeholder(getDrawable(R.drawable.avatar_default))
@@ -132,11 +108,6 @@ public class MainActivity extends AppCompatActivity
                     .placeholder(getDrawable(R.drawable.avatar_default))
                     .fallback(getDrawable(R.drawable.avatar_default))
                     .into(imgNavAvatar);
-
-//            Picasso.get().load("https://imgur.com/jKq7grX123.png")
-//                    .transform(new CircleTransform())
-//                    .placeholder(R.drawable.avatar_default)
-//                    .into(imgNavAvatar);
         }
 
         TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
@@ -154,6 +125,8 @@ public class MainActivity extends AppCompatActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
+        viewPager.setOffscreenPageLimit(4);
+
         int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
 
@@ -162,6 +135,10 @@ public class MainActivity extends AppCompatActivity
             public void onTabSelected(TabLayout.Tab tab) {
                 int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
                 tab.getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
+
+                if (tab.getPosition() == 2) {
+                    tvMainTitle.setText("Thông báo");
+                }
             }
 
             @Override
@@ -175,11 +152,29 @@ public class MainActivity extends AppCompatActivity
                 Fragment fragment = adapter.getItem(viewPager.getCurrentItem());
                 switch (viewPager.getCurrentItem()) {
                     case 0:
-                        if (((PostFragment) fragment).getCurrectScrollY() != 0) {
+                        if (((PostFragment) fragment).getCurrentScrollY() != 0) {
                             ((PostFragment) fragment).scrollToTop();
                         } else {
-                            swipeContainer.setRefreshing(true);
-                            swipeContainer.setRefreshing(false);
+                            swipeContainer.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipeContainer.setRefreshing(true);
+                                    refreshData();
+                                }
+                            });
+                        }
+                        break;
+                    case 2:
+                        if (((NotificationFragment) fragment).getCurrentScrollY() != 0) {
+                            ((NotificationFragment) fragment).scrollToTop();
+                        } else {
+                            swipeContainer.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipeContainer.setRefreshing(true);
+                                    refreshData();
+                                }
+                            });
                         }
                         break;
                     default:
@@ -215,7 +210,7 @@ public class MainActivity extends AppCompatActivity
                 adapter.setPlanFragment(new PlanFragment());
                 break;
             case 2:
-                adapter.setNotificationFragment(new NotificationFragment());
+                adapter.getNotificationFragment().initLoad();
                 break;
             case 3:
                 adapter.setMessageFragment(new MessageFragment());

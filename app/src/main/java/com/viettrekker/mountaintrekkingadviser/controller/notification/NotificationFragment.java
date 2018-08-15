@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
@@ -25,6 +26,10 @@ import retrofit2.Response;
 
 public class NotificationFragment extends Fragment {
 
+    RecyclerView rcvNotiItem;
+    NotificationAdapter notiAdapter;
+
+    private ProgressBar progress;
 
     public NotificationFragment() {
 
@@ -39,14 +44,24 @@ public class NotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView rcvNotiItem = (RecyclerView) view.findViewById(R.id.rcvNotiItem);
+        rcvNotiItem = (RecyclerView) view.findViewById(R.id.rcvNotiItem);
         rcvNotiItem.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        NotificationAdapter notiAdapter = new NotificationAdapter();
-        initLoad(notiAdapter);
+        notiAdapter = new NotificationAdapter();
+        notiAdapter.setContext(getContext());
+        notiAdapter.setFragment(this);
+        initLoad();
         rcvNotiItem.setAdapter(notiAdapter);
     }
 
-    private void initLoad(NotificationAdapter notiAdapter) {
+    public int getCurrentScrollY() {
+        return rcvNotiItem.computeVerticalScrollOffset();
+    }
+
+    public void scrollToTop() {
+        rcvNotiItem.smoothScrollToPosition(4);
+    }
+
+    public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
         mWebService.getNoti(MainActivity.user.getToken()).enqueue(new Callback<List<Notification>>() {
             @Override

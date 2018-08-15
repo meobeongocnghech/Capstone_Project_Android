@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +31,6 @@ import android.widget.Toast;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
@@ -70,8 +69,10 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private boolean isByUserId = false;
     private int userId;
     private Context context;
+    private int width;
+    private Fragment fragment;
 
-    public NewsFeedAdapter(Context context) {
+    public NewsFeedAdapter(Context context, Fragment fragment) {
         this.context = context;
         this.fragment = fragment;
         this.width = LocalDisplay.getScreenWidth(context) - LocalDisplay.dp2px(40, context);
@@ -187,7 +188,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                         .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
                                 viewHolder.imgPreview1.setImageBitmap(resource);
                                 if (resource.getHeight() / resource.getWidth() > 2) {
                                     viewHolder.preview1.getLayoutParams().height = resource.getWidth() * 2;
@@ -538,10 +539,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 viewHolder.imagesLayout.setVisibility(View.VISIBLE);
         }
 
-//        PostImageFragment mFragment = PostImageFragment.newInstance(R.layout.layout_spannable_grid);
-//        mFragment.setMedias(medias);
-//        FragmentTransaction ft = fragment.getFragmentManager().beginTransaction();
-//        ft.replace(R.id.framePostImage, mFragment).commit();
     }
 
     public void incrementalLoad() {
@@ -551,12 +548,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
+                    int lastPosition = listPost.size();
                     if (list != null) {
                         list.remove(0);
                         for (Post p : list) {
                             listPost.add(p);
                         }
-                        notifyDataSetChanged();
+                        notifyItemRangeChanged(lastPosition, list.size());
                     }
                 }
 
@@ -572,10 +570,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     List<Post> list = response.body();
                     if (list != null) {
                         list.remove(0);
+                        int lastPosition = listPost.size();
                         for (Post p : list) {
                             listPost.add(p);
                         }
-                        notifyDataSetChanged();
+                        notifyItemRangeChanged(lastPosition, list.size());
                     }
                 }
 
@@ -709,8 +708,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             Intent i = new Intent(context, ProfileMemberActivity.class);
             i.putExtra("firstname", user.getFirstName());
             i.putExtra("lastname", user.getLastName());
-            i.putExtra("owner", false);
             i.putExtra("id", user.getId());
+            if (MainActivity.user.getId() == user.getId()) {
+                i.putExtra("owner", true);
+            } else {
+                i.putExtra("owner", false);
+            }
             context.startActivity(i);
         }
     }

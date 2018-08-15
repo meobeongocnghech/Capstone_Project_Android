@@ -256,7 +256,11 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         Intent i = new Intent(context, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        i.putExtra("owner", false);
+        if (MainActivity.user.getId() == user.getId()) {
+            i.putExtra("owner", true);
+        } else {
+            i.putExtra("owner", false);
+        }
         i.putExtra("id", user.getId());
         context.startActivity(i);
     }

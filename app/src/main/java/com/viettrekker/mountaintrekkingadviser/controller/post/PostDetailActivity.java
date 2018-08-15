@@ -3,18 +3,19 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,17 +25,23 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
+//import com.arasthel.spannedgridlayoutmanager.sample.GridItemAdapter;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
+import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,9 +61,14 @@ public class PostDetailActivity extends AppCompatActivity{
     MaterialButton btnPostLike;
     MaterialButton btnPostComent;
     Button btnSendCmtDetail;
+    RecyclerView rcvPostImage;
+    RecyclerView rcvCmtItem;
+    CommentListAdapter cmtListAdapter;
     boolean likeFlag;
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
-    DateTimeUtils datetime = new DateTimeUtils();
+
+    public static int currentPosition;
+    private static final String KEY_CURRENT_POSITION = "com.google.samples.gridtopager.key.currentPosition";
 
     public PostDetailActivity() {
     }
@@ -65,6 +77,12 @@ public class PostDetailActivity extends AppCompatActivity{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        if (savedInstanceState != null) {
+            currentPosition = savedInstanceState.getInt(KEY_CURRENT_POSITION, 0);
+            // Return here to prevent adding additional GridFragments when changing orientation.
+            return;
+        }
+
         int id = getIntent().getIntExtra("id",0);
         cmtFocus = getIntent().getBooleanExtra("action",false);
         tvPostUserName = (TextView)findViewById(R.id.tvPostUserNameDetail);
@@ -78,6 +96,7 @@ public class PostDetailActivity extends AppCompatActivity{
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
         edtComment = (EditText) findViewById(R.id.edtInputComment);
         btnSendCmtDetail = (Button) findViewById(R.id.btnSendCmtDetail);
+        rcvPostImage = (RecyclerView) findViewById(R.id.rcvPostImage);
         likeFlag = false;
         btnPostLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,9 +128,8 @@ public class PostDetailActivity extends AppCompatActivity{
             }
         });
 
-        RecyclerView rcvCmtItem = (RecyclerView) findViewById(R.id.rcvCmtListDetail);
-        rcvCmtItem.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        CommentListAdapter cmtListAdapter = new CommentListAdapter(PostDetailActivity.this);
+        rcvCmtItem = (RecyclerView) findViewById(R.id.rcvCmtListDetail);
+        cmtListAdapter = new CommentListAdapter(PostDetailActivity.this);
 
 
         APIService mWebService = APIUtils.getWebService();
@@ -202,7 +220,25 @@ public class PostDetailActivity extends AppCompatActivity{
                 tvPostContent.setText(post.getContent());
                 cmtListAdapter.setList(post.getComments());
                 cmtListAdapter.notifyDataSetChanged();
+                rcvCmtItem.setNestedScrollingEnabled(false);
+                rcvCmtItem.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                 rcvCmtItem.setAdapter(cmtListAdapter);
+
+                int cmtPosition = getIntent().getIntExtra("cmtPosition", -1);
+                if (cmtPosition != -1) {
+                    int position = cmtListAdapter.findCmtPosition(cmtPosition);
+                    if (position <= cmtListAdapter.getItemCount()) {
+                        rcvCmtItem.smoothScrollToPosition(position);
+                    }
+                }
+                rcvCmtItem.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int position = cmtListAdapter.findCmtPosition(cmtPosition);
+                        rcvCmtItem.smoothScrollToPosition(position);
+                    }
+                });
+
                 btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_like));
                 btnPostLike.setTextColor(getApplicationContext().getResources().getColor(R.color.colorBlack));
                 btnPostLike.setIconTint(getApplicationContext().getResources().getColorStateList(R.color.colorBlack));
@@ -215,7 +251,7 @@ public class PostDetailActivity extends AppCompatActivity{
                     btnPostLike.setText("Đã thích");
                 }
                 try {
-                   tvTime.setText(datetime.caculatorTime(Calendar.getInstance().getTime().getTime(), post.getUpdated_at().getTime()));
+                   tvTime.setText(DateTimeUtils.caculatorTime(Calendar.getInstance().getTime().getTime(), post.getUpdated_at().getTime()));
                 }catch (ParseException e){
 
                 }
@@ -226,6 +262,21 @@ public class PostDetailActivity extends AppCompatActivity{
                 }
                 imgPostAvatar.setOnClickListener((v) -> eventViewProfile(user));
                 tvPostUserName.setOnClickListener((v) -> eventViewProfile(user));
+
+                PostImageAdapter imageAdapter = new PostImageAdapter();
+                imageAdapter.setMedias(post.getGallery().getMedia());
+                imageAdapter.setContext(PostDetailActivity.this);
+                SpannedGridLayoutManager spannedGridLayoutManager = new SpannedGridLayoutManager(
+                        SpannedGridLayoutManager.Orientation.VERTICAL, 3);
+                spannedGridLayoutManager.setItemOrderIsStable(true);
+                rcvPostImage.addItemDecoration(new SpaceItemDecorator1(new Rect(10, 10, 10, 10)));
+                rcvPostImage.setLayoutManager(spannedGridLayoutManager);
+                rcvPostImage.setAdapter(imageAdapter);
+                int size = post.getGallery().getMedia().size();
+                int width = LocalDisplay.getScreenWidth(getBaseContext());
+                rcvPostImage.getLayoutParams().height = (int)(width/3 * Math.ceil((double)size/3));
+                rcvPostImage.requestLayout();
+                //scrollToPosition();
             }
 
             @Override
@@ -234,16 +285,64 @@ public class PostDetailActivity extends AppCompatActivity{
             }
         });
 
-
-
+        prepareTransitions();
     }
 
     private void eventViewProfile(User user) {
-        Intent i = new Intent(this.getApplicationContext(), ProfileMemberActivity.class);
+        Intent i = new Intent(this, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        i.putExtra("owner", false);
+        if (MainActivity.user.getId() == user.getId()) {
+            i.putExtra("owner", true);
+        } else {
+            i.putExtra("owner", false);
+        }
         i.putExtra("id", user.getId());
-        getApplicationContext().startActivity(i);
+        startActivity(i);
+    }
+
+    private void scrollToPosition() {
+        rcvPostImage.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v,
+                                       int left,
+                                       int top,
+                                       int right,
+                                       int bottom,
+                                       int oldLeft,
+                                       int oldTop,
+                                       int oldRight,
+                                       int oldBottom) {
+                rcvPostImage.removeOnLayoutChangeListener(this);
+                final RecyclerView.LayoutManager layoutManager = rcvPostImage.getLayoutManager();
+                View viewAtPosition = layoutManager.findViewByPosition(PostDetailActivity.currentPosition);
+                // Scroll to position if the view for the current position is null (not currently part of
+                // layout manager children), or it's not completely visible.
+                if (viewAtPosition == null || layoutManager
+                        .isViewPartiallyVisible(viewAtPosition, false, true)) {
+                    rcvPostImage.post(() -> layoutManager.scrollToPosition(PostDetailActivity.currentPosition));
+                }
+            }
+        });
+    }
+
+    private void prepareTransitions() {
+        // A similar mapping is set at the ImagePagerFragment with a setEnterSharedElementCallback.
+        setExitSharedElementCallback(
+                new SharedElementCallback() {
+                    @Override
+                    public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                        // Locate the ViewHolder for the clicked position.
+                        RecyclerView.ViewHolder selectedViewHolder = rcvPostImage
+                                .findViewHolderForAdapterPosition(PostDetailActivity.currentPosition);
+                        if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
+                            return;
+                        }
+
+                        // Map the first shared element name to the child ImageView.
+                        sharedElements
+                                .put(names.get(0), selectedViewHolder.itemView.findViewById(R.id.postImage));
+                    }
+                });
     }
 }

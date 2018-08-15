@@ -25,9 +25,7 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+
 import com.viettrekker.mountaintrekkingadviser.customview.PtrLoadingHeader;
 import com.viettrekker.mountaintrekkingadviser.customview.RentalsSunHeaderView;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
@@ -65,6 +63,7 @@ public class TestActivity extends AppCompatActivity {
 //        twoByTwo1.setText("TOP");
 //        twoByTwo1.setTextAppearance(this, android.R.style.TextAppearance_Large);
 //        gridLayout.addView(twoByTwo1, first);
+
 
         AppBarLayout layout = (AppBarLayout) findViewById(R.id.app_bar_layout);
         ImageView imageView = (ImageView) findViewById(R.id.image);

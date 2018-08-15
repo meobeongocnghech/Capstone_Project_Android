@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -31,10 +32,10 @@ import com.akexorcist.googledirection.constant.TransportMode;
 import com.akexorcist.googledirection.model.Direction;
 import com.akexorcist.googledirection.model.Leg;
 import com.akexorcist.googledirection.model.Route;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.maps.model.LatLng;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyLocation;
@@ -172,21 +173,17 @@ public class PlacePageLayoutFragment extends Fragment {
         tvPlaceDescription.setText(place.getDescription());
 
         if (place.getGallery().getMedia().size() != 0) {
-            Picasso.get()
-                    .load(APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4))
-                    .into(imgCover, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            mShimmer.stopShimmer();
-                            mShimmer.setVisibility(View.GONE);
-                            view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
+//            GlideApp.with(this)
+//                    .load(APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4))
+//                    .into(new SimpleTarget<Drawable>() {
+//                        @Override
+//                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+//                            mShimmer.stopShimmer();
+//                            mShimmer.setVisibility(View.GONE);
+//                            view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
+//                            imgCover.setImageDrawable(resource);
+//                        }
+//                    });
         } else {
             view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
         }

@@ -20,6 +20,8 @@ import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedFragment;
 public class ProfileMemberPostAdapter extends FragmentPagerAdapter {
     private boolean isByUserId;
     private int userId;
+    NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
+    ProfileOwnFragment profileOwnFragment = new ProfileOwnFragment();
 
     public void setByUserId(boolean byUserId) {
         isByUserId = byUserId;
@@ -37,15 +39,12 @@ public class ProfileMemberPostAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
                 if (isByUserId) {
                     newsFeedFragment.setByUserId(isByUserId);
                     newsFeedFragment.setUserId(userId);
                 }
-
                 return newsFeedFragment;
             case 1:
-                ProfileOwnFragment profileOwnFragment = new ProfileOwnFragment();
                 return profileOwnFragment;
         }
         return null;

@@ -73,7 +73,7 @@ public class NewsFeedFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
-                    if (list != null) {
+                    if (list != null && !list.isEmpty()) {
                         list.remove(0);
                         newsFeedAdapter.setListPost(list);
                         newsFeedAdapter.notifyDataSetChanged();
@@ -90,7 +90,7 @@ public class NewsFeedFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
-                    if (list != null) {
+                    if (list != null && !list.isEmpty()) {
                         list.remove(0);
                         newsFeedAdapter.setListPost(list);
                         newsFeedAdapter.notifyDataSetChanged();

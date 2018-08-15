@@ -1,0 +1,60 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'multiple-media-picker'
+    bintrayName = 'multiple-media-picker'
+
+    publishedGroupId = 'com.erikagtierrez.multiple_media_picker'
+    libraryName = 'multiple-media-picker'
+    artifact = 'multiple-media-picker'
+
+    libraryDescription = 'An android library to pick multiple images and/or videos from bulit-in gallery.'
+
+    siteUrl = 'https://github.com/erikagtierrez/multiple-media-picker'
+    gitUrl = 'https://github.com/erikagtierrez/multiple-media-picker.git'
+
+    libraryVersion = '1.0.2'
+
+    developerId = 'eikagtierrez'
+    developerName = 'Erika Gutierrez'
+    developerEmail = 'erikagutierrez01@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0.2"
+
+        // required to use vector drawables before API 21.
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
+    implementation 'com.android.support:design:28.0.0-rc01'
+    implementation 'com.android.support:recyclerview-v7:28.0.0-rc01'
+//    implementation 'com.github.bumptech.glide:glide:3.8.0'
+//    implementation 'com.github.bumptech.glide:glide:4.7.1'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+}

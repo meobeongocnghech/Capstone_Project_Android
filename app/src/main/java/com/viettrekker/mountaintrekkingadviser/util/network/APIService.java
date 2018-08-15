@@ -1,6 +1,7 @@
 package com.viettrekker.mountaintrekkingadviser.util.network;
 
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
@@ -16,6 +17,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 /**
@@ -64,7 +66,7 @@ public interface APIService {
                                 @Query("pageSize") int size,
                                 @Query("orderBy") String order);
 
-    @GET("noti?newerThanId=1&newest=true")
+    @GET("noti?newerThanId=0&newest=true")
     Call<List<Notification>> getNoti(@Header("AUTH_TOKEN_ID") String token);
 
     @GET("noti")
@@ -95,4 +97,25 @@ public interface APIService {
     Call<Post> likeComment(@Header("AUTH_TOKEN_ID") String token,
                            @Field("id") int id,
                            @Field("targetId") int targetId);
+    @GET("member")
+    Call<User> getUserById(@Header("AUTH_TOKEN_ID") String token,
+                           @Query("id") int id);
+
+    @POST("auth/profile")
+    @FormUrlEncoded
+    Call<User> updateUserProfile(@Header("AUTH_TOKEN_ID") String token,
+                                 @Field("id") int id,
+                                 @Field("firstname") String firstname,
+                                 @Field("lastname") String lastname,
+                                 @Field("phone") String phone,
+                                 @Field("birthdate") String date,
+                                 @Field("gender") int gender);
+
+    @GET("image/size")
+    Call<ImageSize> getImageSize(@Query("link") String link);
+
+    @PUT("noti")
+    @FormUrlEncoded
+    Call<Notification> markReadNotification(@Header("AUTH_TOKEN_ID") String token,
+                                            @Field("id") int id);
 }

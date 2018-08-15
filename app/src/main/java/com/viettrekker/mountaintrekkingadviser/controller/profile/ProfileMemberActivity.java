@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.design.card.MaterialCardView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabItem;
@@ -21,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,7 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+//import com.erikagtierrez.multiple_media_picker;
 import com.bumptech.glide.request.RequestOptions;
 import com.erikagtierrez.multiple_media_picker.Gallery;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
@@ -69,7 +71,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private TabItem tabUserPost;
     private TabItem tabProfile;
     private ViewPager profileViewpager;
-    private ImageButton addImage;
+    private MaterialButton addImage;
 
 
     private ProfileMemberPostAdapter adapter;
@@ -106,15 +108,15 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Tài khoản không tồn tại", Toast.LENGTH_LONG).show();
                     onBackPressed();
                 } else {
-                    firstName = getIntent().getStringExtra("firstname");
-                    lastName = getIntent().getStringExtra("lastname");
-                    phone = getIntent().getStringExtra("phone");
-                    birthdate = DateTimeUtils.parseStringDate(new Date(getIntent().getLongExtra("birthdate", 0)));
-                    gender = getIntent().getIntExtra("gender", 0) == 1 ? "Nam" : "Nữ";
+                    firstName = user.getFirstName();
+                    lastName = user.getLastName();
+                    phone = user.getPhone();
+                    birthdate = DateTimeUtils.parseStringDate(user.getBirthDate());
+                    gender = user.getGender() == 1 ? "Nam" : "Nữ";
                     owner = getIntent().getBooleanExtra("owner", false);
-                    email = getIntent().getStringExtra("email");
+                    email = user.getEmail();
                     viewProfile = getIntent().getBooleanExtra("viewProfile", false);
-                    avatar = getIntent().getStringExtra("avatar");
+                    avatar = user.getGallery() != null ? user.getGallery().getMedia().get(0).getPath() : "";
 
                     init();
                     loadData();
@@ -152,7 +154,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
         tabUserPost = (TabItem) findViewById(R.id.tabUserPost);
         tabProfile = (TabItem) findViewById(R.id.tabProfile);
         profileViewpager = (ViewPager) findViewById(R.id.profileViewpager);
-        addImage = (ImageButton) findViewById(R.id.addAvatar);
+        addImage = (MaterialButton) findViewById(R.id.addAvatar);
 
         setSupportActionBar(profileToolbar);
 
@@ -165,24 +167,52 @@ public class ProfileMemberActivity extends AppCompatActivity {
         adapter.setByUserId(true);
         adapter.setUserId(id);
         profileViewpager.setAdapter(adapter);
+        profileViewpager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
+        profileTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(profileViewpager));
 
         if (owner) {
-            profileViewpager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(profileTabs));
-            profileTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(profileViewpager));
+            profileTabs.setVisibility(View.VISIBLE);
         } else {
-            profileTabs.setVisibility(View.GONE);
+            profileViewpager.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true;
+                }
+            });
         }
 
-//        GlideApp.with(this)
-//                .load(avatar)
-//                .apply(RequestOptions.circleCropTransform())
-//                .fallback(R.drawable.avatar_default)
-//                .into(profileAvatarImage);
+
+        profileTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    disableUpdate();
+                }
+                ((ProfileOwnFragment) adapter.getItem(1)).disableUpdate();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        GlideApp.with(this)
+                .load(avatar)
+                .placeholder(R.drawable.avatar_default)
+                .apply(RequestOptions.circleCropTransform())
+                .fallback(R.drawable.avatar_default)
+                .into(profileAvatarImage);
 
         addImage.setOnClickListener((v) -> {
             Intent intent = new Intent(this, Gallery.class);
             // Set the title
-            intent.putExtra("title", "Select media");
+            intent.putExtra("title", "Chọn một ảnh");
             // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
             intent.putExtra("mode", 2);
             intent.putExtra("maxSelection", 1); // Optional
@@ -197,6 +227,14 @@ public class ProfileMemberActivity extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK && data != null) {
                 ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+                GlideApp.with(this)
+                        .load(selectionResult.get(0))
+                        .placeholder(R.drawable.avatar_default)
+                        .fallback(R.drawable.avatar_default)
+                        .centerCrop()
+                        .apply(RequestOptions.circleCropTransform())
+                        .override(LocalDisplay.dp2px(80, this))
+                        .into(profileAvatarImage);
             }
         }
     }
@@ -209,11 +247,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
     }
 
     public void disableUpdate() {
-//        GlideApp.with(this)
-//                .load(avatar)
-//                .apply(RequestOptions.circleCropTransform())
-//                .fallback(R.drawable.avatar_default)
-//                .into(profileAvatarImage);
+        GlideApp.with(this)
+                .load(avatar)
+                .placeholder(R.drawable.avatar_default)
+                .fallback(R.drawable.avatar_default)
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileAvatarImage);
         tvUserNamePrf.setCompoundDrawables(null, null, null, null);
         tvUserNamePrf.setPadding(0, 0, 0, 0);
         tvUserNamePrf.setText(firstName + " " + lastName);
@@ -290,6 +329,10 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     public String getGender() {
         return gender;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

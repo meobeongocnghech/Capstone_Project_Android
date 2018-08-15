@@ -3,6 +3,7 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.transition.ChangeImageTransform;
 import android.transition.Explode;
 import android.transition.Fade;
@@ -12,8 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import android.support.design.widget.CollapsingToolbarLayout;
-import com.squareup.picasso.Picasso;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 
 import android.support.v7.app.AppCompatActivity;
@@ -61,9 +61,9 @@ public class PlaceDetailActivity extends AppCompatActivity {
         imgCover.requestLayout();
         toolbarLayout.getLayoutParams().height = (int) (size.x * 1.5 / 3);
         toolbarLayout.requestLayout();
-        Picasso.get()
-                .load(getIntent().getStringExtra("img"))
-                .into(imgCover);
+//        GlideApp.with(this)
+//                .load(getIntent().getStringExtra("img"))
+//                .into(imgCover);
     }
 
     @Override

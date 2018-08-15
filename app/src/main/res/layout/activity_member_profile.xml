@@ -49,10 +49,11 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <ImageButton
+                <android.support.design.button.MaterialButton
                     android:id="@+id/addAvatar"
-                    android:background="@drawable/bg_white_oval"
-                    android:src="@drawable/ic_plus_primary_24dp"
+                    app:icon="@drawable/ic_plus_primary_24dp"
+                    app:iconGravity="start"
+                    android:padding="0dp"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:visibility="gone"
@@ -196,7 +197,8 @@
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabMaxWidth="0dp"
-            app:tabMode="fixed">
+            app:tabMode="fixed"
+            android:visibility="gone">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabUserPost"

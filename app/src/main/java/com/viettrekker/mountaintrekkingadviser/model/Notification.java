@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 public class Notification {
+    @SerializedName("id")
+    @Expose
+    int id;
     @SerializedName("oldestId")
     @Expose
     int oldestId;
@@ -29,30 +32,28 @@ public class Notification {
     int state;
     @SerializedName("source")
     @Expose
-    private SourceNotification source;
+    private User user;
     @SerializedName("post")
     @Expose
-    private PostNotification post;
+    private Post post;
+    @SerializedName("comment")
+    @Expose
+    private Comment comment;
     @SerializedName("updated_at")
     @Expose
     private Date updated_at;
 
-    public Notification(int oldestId, int oldestIdinHistoryId, int typeId, int sourceId, int targetId, String content, int state, SourceNotification source, PostNotification post, Date updated_at) {
-        this.oldestId = oldestId;
-        this.oldestIdinHistoryId = oldestIdinHistoryId;
-        this.typeId = typeId;
-        this.sourceId = sourceId;
-        this.targetId = targetId;
-        this.content = content;
-        this.state = state;
-        this.source = source;
-        this.post = post;
-        this.updated_at = updated_at;
-    }
-
     public Notification(int typeId) {
 
         this.typeId = typeId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getTypeId() {
@@ -95,22 +96,6 @@ public class Notification {
         this.state = state;
     }
 
-    public SourceNotification getSource() {
-        return source;
-    }
-
-    public void setSource(SourceNotification source) {
-        this.source = source;
-    }
-
-    public PostNotification getPost() {
-        return post;
-    }
-
-    public void setPost(PostNotification post) {
-        this.post = post;
-    }
-
     public Date getUpdated_at() {
         return updated_at;
     }
@@ -133,5 +118,29 @@ public class Notification {
 
     public void setOldestIdinHistoryId(int oldestIdinHistoryId) {
         this.oldestIdinHistoryId = oldestIdinHistoryId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }

@@ -35,6 +35,10 @@ public class Comment {
     @Expose
     private List<Comment> children;
 
+    @SerializedName("targetId")
+    @Expose
+    private int targetId;
+
     public int getId() {
         return id;
     }
@@ -105,5 +109,13 @@ public class Comment {
 
     public void setChildren(List<Comment> children) {
         this.children = children;
+    }
+
+    public int getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(int targetId) {
+        this.targetId = targetId;
     }
 }

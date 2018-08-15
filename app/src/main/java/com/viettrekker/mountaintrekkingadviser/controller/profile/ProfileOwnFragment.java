@@ -1,11 +1,13 @@
 package com.viettrekker.mountaintrekkingadviser.controller.profile;
 
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -18,19 +20,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tsongkha.spinnerdatepicker.DatePicker;
 import com.tsongkha.spinnerdatepicker.DatePickerDialog;
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
@@ -39,39 +53,80 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
     private MaterialButton btnGender;
     private MaterialButton btnChangeProfile;
     private MaterialButton btnCancelChange;
+    private ProgressBar updateProgressbar;
 
     private String birth;
     private String phoneNum;
     private String gender;
     private boolean isChange = false;
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_own, container, false);
+        btnCancelChange = (MaterialButton) view.findViewById(R.id.btnCancelChange);
+        btnBirthdate = (MaterialButton) view.findViewById(R.id.birthdate);
+        updateProgressbar = (ProgressBar) view.findViewById(R.id.updateProgressbar);
+        btnPhone = (MaterialButton) view.findViewById(R.id.phone);
+        btnGender = (MaterialButton) view.findViewById(R.id.gender);
+        btnChangeProfile = (MaterialButton) view.findViewById(R.id.btnChangeProfile);
+        disableUpdate();
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        disableUpdate();
         ProfileMemberActivity activity = (ProfileMemberActivity) getActivity();
-        btnCancelChange = (MaterialButton) view.findViewById(R.id.btnCancelChange);
-        btnBirthdate = (MaterialButton) view.findViewById(R.id.birthdate);
+
         birth = activity.getBirthdate();
         btnBirthdate.setText(birth);
 
-        btnPhone = (MaterialButton) view.findViewById(R.id.phone);
         phoneNum = activity.getPhone();
+        if (phoneNum == null || phoneNum.isEmpty()) {
+            phoneNum = "Chưa có";
+        }
         btnPhone.setText(phoneNum);
 
-        btnGender = (MaterialButton) view.findViewById(R.id.gender);
         gender = activity.getGender();
         btnGender.setText(gender);
 
-        btnChangeProfile = (MaterialButton) view.findViewById(R.id.btnChangeProfile);
         btnChangeProfile.setOnClickListener((v) -> {
             if (isChange) {
+                btnChangeProfile.setTextColor(Color.parseColor("#00ffffff"));
+                animationLoading();
+                APIService mWebService = APIUtils.getWebService();
+                new Handler().postDelayed(() -> {
+                    try {
+                        mWebService.updateUserProfile(MainActivity.user.getToken(),
+                                ((ProfileMemberActivity) getActivity()).getId(),
+                                ((ProfileMemberActivity) getActivity()).getFirstName(),
+                                ((ProfileMemberActivity) getActivity()).getLastName(),
+                                btnPhone.getText().toString().equalsIgnoreCase("chưa có") ? "" : btnPhone.getText().toString(),
+                                DateTimeUtils.formatISO(btnBirthdate.getText().toString()),
+                                btnGender.getText().toString().equalsIgnoreCase("nam") ? 1 : 0).enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                stopAnimation();
+                                User user = response.body();
+                                if (user != null) {
+                                    Toast.makeText(getContext(), "Thay đổi thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getContext(), "Thay đổi thất bại", Toast.LENGTH_SHORT).show();
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                stopAnimation();
+                                Toast.makeText(getContext(), "Đã có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }, 1000);
             } else {
                 btnBirthdate.setClickable(true);
                 btnBirthdate.setTextColor(Color.parseColor("#00c853"));
@@ -95,24 +150,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
         });
 
         btnCancelChange.setOnClickListener((v) -> {
-            btnBirthdate.setClickable(false);
-            btnBirthdate.setTextColor(Color.parseColor("#99A1AC"));
-
-            btnPhone.setClickable(true);
-            btnPhone.setTextColor(Color.parseColor("#99A1AC"));
-
-            btnGender.setClickable(true);
-            btnGender.setTextColor(Color.parseColor("#99A1AC"));
-
-            btnChangeProfile.setText("Lưu chỉnh sửa");
-            final ColorStateList stateList = new ColorStateList(
-                    new int[][]{{}}, new int[]{Color.parseColor("#FFFFFF")});
-            btnChangeProfile.setBackgroundTintList(stateList);
-            btnChangeProfile.setTextColor(Color.parseColor("#00c853"));
-
-            ((ProfileMemberActivity) getActivity()).disableUpdate();
-            btnCancelChange.setVisibility(View.GONE);
-            isChange = false;
+            disableUpdate();
         });
 
         btnBirthdate.setOnClickListener((v) -> update(0));
@@ -153,11 +191,11 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                         .setPositiveButton("Hoàn tất", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String inputPhone = input.getText().toString().trim();
-                                String pattern = "/^(01[2689]|09)[0-9]{8}$/";
-                                pattern = pattern.replaceAll("-", "");
-                                pattern = pattern.replaceAll(".", "");
-                                pattern = pattern.replaceAll(" ", "");
-                                if (inputPhone.matches(pattern)) {
+//                                String pattern = "/^(01[2689]|09)[0-9]{8}$/";
+//                                inputPhone = inputPhone.replaceAll("-", "");
+//                                inputPhone = inputPhone.replaceAll(".", "");
+//                                inputPhone = inputPhone.replaceAll(" ", "");
+                                if (!inputPhone.isEmpty()) {
                                     btnPhone.setText(inputPhone);
                                     dialog.cancel();
                                 } else {
@@ -186,7 +224,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 if (btnGender.getText().toString().trim().equalsIgnoreCase("Nam")) {
                     male.setChecked(true);
                 } else {
-                    female.setChecked(false);
+                    female.setChecked(true);
                 }
 
                 male.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -260,6 +298,74 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 alertDialog1.show();
                 break;
         }
+    }
+
+    public void disableUpdate() {
+
+        btnBirthdate.setClickable(false);
+        btnBirthdate.setTextColor(Color.parseColor("#99A1AC"));
+
+        btnPhone.setClickable(false);
+        btnPhone.setTextColor(Color.parseColor("#99A1AC"));
+
+        btnGender.setClickable(false);
+        btnGender.setTextColor(Color.parseColor("#99A1AC"));
+
+        btnChangeProfile.setText("Lưu chỉnh sửa");
+        final ColorStateList stateList = new ColorStateList(
+                new int[][]{{}}, new int[]{Color.parseColor("#FFFFFF")});
+        btnChangeProfile.setBackgroundTintList(stateList);
+        btnChangeProfile.setTextColor(Color.parseColor("#00c853"));
+        btnChangeProfile.setText("Sửa thông tin");
+
+        ((ProfileMemberActivity) getActivity()).disableUpdate();
+        btnCancelChange.setVisibility(View.GONE);
+        isChange = false;
+
+    }
+
+    private void animationLoading() {
+        ValueAnimator anim = ValueAnimator.ofInt(LocalDisplay.getScreenWidth(getContext()) - LocalDisplay.dp2px(64, getContext()),
+                LocalDisplay.dp2px(45, getContext()));
+
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int val = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = btnChangeProfile.getLayoutParams();
+                layoutParams.width = val;
+                btnChangeProfile.setLayoutParams(layoutParams);
+                btnChangeProfile.requestLayout();
+            }
+        });
+        anim.setDuration(100);
+        anim.start();
+
+        updateProgressbar.animate().alpha(1f).setStartDelay(100).start();
+        updateProgressbar.setVisibility(View.VISIBLE);
+    }
+
+    private void stopAnimation() {
+        updateProgressbar.setVisibility(View.INVISIBLE);
+        updateProgressbar.animate().alpha(0f).setDuration(1).start();
+        int width = LocalDisplay.getScreenWidth(getContext()) - LocalDisplay.dp2px(64, getContext());
+        ValueAnimator anim = ValueAnimator.ofInt(LocalDisplay.dp2px(45, getContext()), width);
+
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int val = (Integer) valueAnimator.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = btnChangeProfile.getLayoutParams();
+                layoutParams.width = val;
+                btnChangeProfile.setLayoutParams(layoutParams);
+                btnChangeProfile.requestLayout();
+                if (val == width) {
+                    btnChangeProfile.setTextColor(Color.parseColor("#ffffff"));
+                }
+            }
+        });
+        anim.setDuration(100);
+        anim.start();
     }
 
     @Override

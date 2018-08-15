@@ -42,6 +42,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private Context context;
 
 
+    public List<Comment> getList() {
+        return list;
+    }
 
     public void setList(List<Comment> list) {
         this.list = list;
@@ -293,8 +296,21 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         Intent i = new Intent(context, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        i.putExtra("owner", false);
+        if (MainActivity.user.getId() == user.getId()) {
+            i.putExtra("owner", true);
+        } else {
+            i.putExtra("owner", false);
+        }
         i.putExtra("id", user.getId());
         context.startActivity(i);
+    }
+
+    public int findCmtPosition(int id) {
+        for(int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId() == id) {
+                return i;
+            }
+        }
+        return 0;
     }
 }

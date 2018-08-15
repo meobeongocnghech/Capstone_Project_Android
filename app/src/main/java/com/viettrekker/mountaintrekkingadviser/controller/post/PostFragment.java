@@ -31,8 +31,6 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
@@ -125,7 +123,7 @@ public class PostFragment extends Fragment {
         layout.smoothScrollTo(0, 0);
     }
 
-    public int getCurrectScrollY() {
+    public int getCurrentScrollY() {
         return layout.getScrollY();
     }
 
