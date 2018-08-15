@@ -145,8 +145,8 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:shimmer_duration="1200"
-        app:shimmer_base_alpha="0.45"
-        app:shimmer_highlight_alpha="0.1">
+        app:shimmer_base_color="#eeeeee"
+        app:shimmer_highlight_color="#EFEFEF">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

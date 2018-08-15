@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.maps.model.LatLng;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyLocation;
@@ -116,12 +117,15 @@ public class PlacePageLayoutFragment extends Fragment {
 
 
     private void bindData(View view) {
+        String distance ="Chưa rõ";
         String addressName = "Chưa rõ";
         LocationManager location;
         Geocoder geoCoder = new Geocoder(getContext());
         double lat = place.getLocation().getLatitude();
         double lng = place.getLocation().getLongitude();
-        LatLng targetLoc = new LatLng(lat, lng);
+        Location targetLoc = new Location("");
+        targetLoc.setLatitude(lat);
+        targetLoc.setLongitude(lng);
         try {
             List<Address> list = geoCoder.getFromLocation(lat, lng, 1);
             if (list.isEmpty()) {
@@ -136,54 +140,31 @@ public class PlacePageLayoutFragment extends Fragment {
 
         mLatLng = ((MainActivity) getActivity()).getLatLng();
         if (mLatLng != null) {
-            GoogleDirection.withServerKey("AIzaSyAdn_ZIuwlIQKKZIIEW-Olh-xd2kLoteKc")
-                    .from(mLatLng)
-                    .to(targetLoc)
-                    .transportMode(TransportMode.DRIVING).
-                    avoid(AvoidType.HIGHWAYS)
-                    .alternativeRoute(true)
-                    .execute(new DirectionCallback() {
-                        @Override
-                        public void onDirectionSuccess(Direction direction, String rawBody) {
-                            String status = direction.getStatus();
-                            if (status.equals(RequestResult.OK)) {
-                                Route route = direction.getRouteList().get(0);
-                                Leg leg = route.getLegList().get(0);
-                                double distance = Double.parseDouble(leg.getDistance().getValue());
-                                distance = distance * 0.001;
-                                tvPlaceDistance.setText(("Khoảng " + (double) Math.floor(distance * 10) / 10 + "km"));
-                            } else {
-                                // Do something
-                                //Toast.makeText(getContext(), "Hệ thống đang quá tải, quay lại sau.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onDirectionFailure(Throwable t) {
-                        }
-                    });
+            Location myLoc = new Location("");
+            myLoc.setLatitude(mLatLng.latitude);
+            myLoc.setLongitude(mLatLng.longitude);
+            float dist = myLoc.distanceTo(targetLoc)/1000;
+            distance = "Khoảng " + (double) Math.floor(dist * 10) / 10 + "km";
         } else {
-//            Toast.makeText(getContext(), "Null rồi...", Toast.LENGTH_LONG).show();
         }
-
-        tvPlaceDistance.setText("Chưa rõ");
+        tvPlaceDistance.setText(distance);
         tvPlaceName.setText(place.getName());
         tvPlaceAddress.setText(addressName);
         tvPlaceTotalPlan.setText("Chưa rõ");
         tvPlaceDescription.setText(place.getDescription());
 
         if (place.getGallery().getMedia().size() != 0) {
-//            GlideApp.with(this)
-//                    .load(APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4))
-//                    .into(new SimpleTarget<Drawable>() {
-//                        @Override
-//                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-//                            mShimmer.stopShimmer();
-//                            mShimmer.setVisibility(View.GONE);
-//                            view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
-//                            imgCover.setImageDrawable(resource);
-//                        }
-//                    });
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4))
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            mShimmer.stopShimmer();
+                            mShimmer.setVisibility(View.GONE);
+                            view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
+                            imgCover.setImageDrawable(resource);
+                        }
+                    });
         } else {
             view.findViewById(R.id.constrainPlaceItem).setVisibility(View.VISIBLE);
         }

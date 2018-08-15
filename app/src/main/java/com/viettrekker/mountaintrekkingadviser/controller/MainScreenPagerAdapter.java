@@ -76,10 +76,8 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
             return 1;
         } else if (object instanceof NotificationFragment) {
             return 2;
-        } else if (object instanceof MessageFragment) {
-            return 3;
         } else if (object instanceof SearchFragment) {
-            return 4;
+            return 3;
         } else {
             return POSITION_NONE;
         }
@@ -94,9 +92,9 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
                 return planFragment;
             case 2:
                 return notificationFragment;
+//            case 3:
+//                return messageFragment;
             case 3:
-                return messageFragment;
-            case 4:
                 return searchFragment;
         }
         return null;

@@ -40,6 +40,7 @@ import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+//import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -71,6 +72,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private Context context;
     private int width;
     private Fragment fragment;
+    APIService mWebService = APIUtils.getWebService();
 
     public NewsFeedAdapter(Context context, Fragment fragment) {
         this.context = context;
@@ -117,7 +119,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         listImgView.add(viewHolder.imgPreview4);
         typPost = postType[post.getTypeId() - 1];
 
-
         if (post.getUser().getGallery() != null) {
             GlideApp.with(context)
                     .load(post.getUser().getGallery().getMedia().get(0).getPath())
@@ -130,14 +131,20 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.tvPostCategory.setText(typPost);
         viewHolder.tvPostTitle.setText(post.getName());
         viewHolder.tvPostContent.setText(post.getContent());
-        viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
+        viewHolder.tvCmtCount.setText(post.getCommentsCount()==0 ? "" : post.getCommentsCount()+" bình luận");
+
+        viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like));
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
-        if (post.getLiked() != 0) {
-            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
+        viewHolder.btnPostLike.setText("Thích");
+        viewHolder.tvlikeCount.setText(post.getLikesCount() == 0 ? "" : post.getLikesCount()+" thích");
+        if (post.getLiked() != 0){
+            viewHolder.likeFlag = true;
+            viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like_pressed));
             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
             viewHolder.btnPostLike.setText("Đã thích");
+            viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
         }
         try {
             viewHolder.tvTime.setText(datetime.caculatorTime(Calendar.getInstance().getTime().getTime(), post.getUpdated_at().getTime()));
@@ -160,7 +167,60 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
             }
         });
-//        int lineContent = viewHolder.tvPostContent.getLineCount();
+        viewHolder.btnPostLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!viewHolder.likeFlag){
+                    viewHolder.btnPostLike.setClickable(false);
+                    mWebService.likePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                        @Override
+                        public void onResponse(Call<Post> call, Response<Post> response) {
+                            Post p = response.body();
+                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
+                            viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                            viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
+                            viewHolder.btnPostLike.setText("Bỏ thích");
+                            viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) +" thích");
+                            viewHolder.likeFlag = true;
+                            viewHolder.btnPostLike.setClickable(true);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Post> call, Throwable t) {
+                            Toast.makeText(context,"Có lỗi vui lòng thử lại sau",Toast.LENGTH_LONG).show();
+                            viewHolder.btnPostLike.setClickable(true);
+                        }
+                    });
+
+
+                } else {
+                    viewHolder.btnPostLike.setClickable(false);
+                    mWebService.unlikePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                        @Override
+                        public void onResponse(Call<Post> call, Response<Post> response) {
+                            Post p = response.body();
+                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
+                            viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                            viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
+                            viewHolder.btnPostLike.setText("Thích");
+                            viewHolder.tvlikeCount.setText(p.getLikesCount() <= 1 ? "" : (p.getLikesCount())+" thích");
+                            viewHolder.likeFlag = false;
+                            viewHolder.btnPostLike.setClickable(true);
+                        }
+
+                        @Override
+                        public void onFailure(Call<Post> call, Throwable t) {
+                            Toast.makeText(context,"Có lỗi vui lòng thử lại sau",Toast.LENGTH_LONG).show();
+                            viewHolder.btnPostLike.setClickable(true);
+                        }
+                    });
+
+                }
+
+            }
+        });
+
+//        int lineContent = viewHolder.tvPostContent.getLayout().getLineCount();
 //        if (lineContent > 0){
 //            if (viewHolder.tvPostContent.getLayout().getEllipsisCount(lineContent-1) > 0){
 //                viewHolder.btnReadMore.setVisibility(View.VISIBLE);
@@ -619,6 +679,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView tvCount;
         MaterialButton btnPostLike;
         MaterialButton btnPostComent;
+        TextView tvlikeCount;
+        TextView tvCmtCount;
         boolean likeFlag;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -644,12 +706,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvCount = (TextView) itemView.findViewById(R.id.tvCount);
             btnPostLike = (MaterialButton) itemView.findViewById(R.id.btnPostLike);
             btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostComment);
-
+            tvlikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
+            tvCmtCount = (TextView) itemView.findViewById(R.id.tvCmtCount);
+            likeFlag = false;
 //            frame = (FrameLayout) itemView.findViewById(R.id.framePostImage);
 
             imgPostAvatar.setOnClickListener((v) -> eventViewProfile());
             tvPostUserName.setOnClickListener((v) -> eventViewProfile());
-            likeFlag = false;
             btnReadMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -684,24 +747,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     context.startActivity(intent);
                 }
             });
-            btnPostLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!likeFlag){
-                        btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
-                        btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
-                        btnPostLike.setText("Bỏ thích");
-                        likeFlag = true;
-                    } else {
-                        btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
-                        btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
-                        btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
-                        btnPostLike.setText("Thích");
-                        likeFlag = false;
-                    }
-                }
-            });
+
         }
 
         private void eventViewProfile() {

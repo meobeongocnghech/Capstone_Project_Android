@@ -41,7 +41,8 @@
                     android:adjustViewBounds="true"
                     android:padding="5dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/avatar_default" />
+                    android:src="@drawable/avatar_default"
+                    android:contentDescription="TODO" />
 
                 <TextView
                     android:id="@+id/tvMainTitle"
@@ -81,11 +82,11 @@
                     android:layout_height="wrap_content"
                     android:icon="@drawable/ic_notification" />
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabMessage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_message" />
+                <!--<android.support.design.widget.TabItem-->
+                    <!--android:id="@+id/tabMessage"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:icon="@drawable/ic_message" />-->
 
                 <android.support.design.widget.TabItem
                     android:id="@+id/tabSearch"
@@ -111,6 +112,7 @@
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
         <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btnAddNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add"
@@ -118,6 +120,8 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"/>
     </android.support.design.widget.CoordinatorLayout>
+
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

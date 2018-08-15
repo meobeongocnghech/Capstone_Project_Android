@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,8 +20,8 @@
         <activity android:name=".controller.MainActivity" />
         <activity
             android:name=".controller.LoginActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:theme="@style/LoginTheme"/>
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".controller.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,13 +32,13 @@
         <activity android:name=".controller.ForgotPasswordActivity" />
         <activity
             android:name=".controller.register.RegisterActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".controller.post.PlaceDetailActivity" />
         <activity android:name=".TestActivity">
         </activity>
-        <activity android:name=".controller.profile.ProfileMemberActivity">
-        </activity>
-        <activity android:name=".controller.post.PostDetailActivity"></activity>
+        <activity android:name=".controller.profile.ProfileMemberActivity"></activity>
+        <activity android:name=".controller.post.PostDetailActivity" />
+        <activity android:name=".controller.post.PostAddActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

@@ -16,6 +16,7 @@ import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
+import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
@@ -39,6 +41,7 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -60,10 +63,14 @@ public class PostDetailActivity extends AppCompatActivity{
     EditText edtComment;
     MaterialButton btnPostLike;
     MaterialButton btnPostComent;
+    TextView tvCmtCount;
+    TextView tvLikeCount;
+    int id;
     Button btnSendCmtDetail;
     RecyclerView rcvPostImage;
     RecyclerView rcvCmtItem;
     CommentListAdapter cmtListAdapter;
+    APIService mWebService;
     boolean likeFlag;
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
 
@@ -77,6 +84,7 @@ public class PostDetailActivity extends AppCompatActivity{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        mWebService = APIUtils.getWebService();
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(KEY_CURRENT_POSITION, 0);
             // Return here to prevent adding additional GridFragments when changing orientation.
@@ -84,6 +92,7 @@ public class PostDetailActivity extends AppCompatActivity{
         }
 
         int id = getIntent().getIntExtra("id",0);
+        rcvPostImage = (RecyclerView) findViewById(R.id.rcvPostImage);
         cmtFocus = getIntent().getBooleanExtra("action",false);
         tvPostUserName = (TextView)findViewById(R.id.tvPostUserNameDetail);
         tvTime = (TextView) findViewById(R.id.tvTimeDetail);
@@ -96,46 +105,74 @@ public class PostDetailActivity extends AppCompatActivity{
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
         edtComment = (EditText) findViewById(R.id.edtInputComment);
         btnSendCmtDetail = (Button) findViewById(R.id.btnSendCmtDetail);
-        rcvPostImage = (RecyclerView) findViewById(R.id.rcvPostImage);
+        tvCmtCount = (TextView) findViewById(R.id.tvCmtCount);
+        tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
         likeFlag = false;
-        btnPostLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!likeFlag){
-                   btnPostLike.setIcon(getDrawable(R.drawable.ic_like_pressed));
-                   btnPostLike.setTextColor(getResources().getColor(R.color.colorPrimary));
-                   btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorPrimary));
-                   btnPostLike.setText("Bỏ thích");
-                   likeFlag = true;
-                } else {
-                    btnPostLike.setIcon(getDrawable(R.drawable.ic_like));
-                    btnPostLike.setTextColor(getResources().getColor(R.color.colorBlack));
-                    btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorBlack));
-                    btnPostLike.setText("Thích");
-                    likeFlag = false;
-                }
-            }
-        });
-
-
-
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         btnPostComent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 edtComment.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
+
+            }
+        });
+        rcvCmtItem = (RecyclerView) findViewById(R.id.rcvCmtListDetail);
+        rcvCmtItem.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
+        CommentListAdapter cmtListAdapter = new CommentListAdapter(PostDetailActivity.this);
+
+        btnSendCmtDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!edtComment.getText().toString().isEmpty()){
+                    if (edtComment.getHint().toString().contains("Bình luận bài viết")){
+                        mWebService.commentPost(MainActivity.user.getToken(), id, edtComment.getText().toString()).enqueue(new Callback<Post>() {
+                            @Override
+                            public void onResponse(Call<Post> call, Response<Post> response) {
+                                edtComment.setText("");
+                                edtComment.clearFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+                                List<Comment> list = response.body().getComments();
+                                cmtListAdapter.getList().add(list.get(list.size() - 1));
+                                cmtListAdapter.notifyDataSetChanged();
+                                tvCmtCount.setText(response.body().getCommentsCount()+" bình luận");
+                            }
+
+                            @Override
+                            public void onFailure(Call<Post> call, Throwable t) {
+
+                            }
+                        });
+                    } else {
+                        mWebService.commentOnComment(MainActivity.user.getToken(),id,cmtListAdapter.targetCmtid,edtComment.getText().toString()).enqueue(new Callback<Post>() {
+                            @Override
+                            public void onResponse(Call<Post> call, Response<Post> response) {
+                                edtComment.setText("");
+                                edtComment.clearFocus();
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+                                List<Comment> list = response.body().getComments();
+                                cmtListAdapter.setList(response.body().getComments());
+
+                                cmtListAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFailure(Call<Post> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                }
             }
         });
 
-        rcvCmtItem = (RecyclerView) findViewById(R.id.rcvCmtListDetail);
-        cmtListAdapter = new CommentListAdapter(PostDetailActivity.this);
-
-
-        APIService mWebService = APIUtils.getWebService();
         mWebService.getPostByPostId(MainActivity.user.getToken(),id).enqueue(new Callback<Post>() {
             @Override
-            public void onResponse(Call<Post> call, Response<Post> response) {imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
                 tvPostUserName = (TextView)findViewById(R.id.tvPostUserNameDetail);
                 tvTime = (TextView) findViewById(R.id.tvTimeDetail);
                 tvPostCategory = (TextView) findViewById(R.id.tvPostCategoryDetail);
@@ -148,10 +185,57 @@ public class PostDetailActivity extends AppCompatActivity{
 
                 Post post = response.body();
                 User user = post.getUser();
+
+                btnPostLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!likeFlag){
+                            btnPostLike.setClickable(false);
+                            mWebService.likePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                                @Override
+                                public void onResponse(Call<Post> call, Response<Post> response) {
+                                    btnPostLike.setIcon(getDrawable(R.drawable.ic_like_pressed));
+                                    btnPostLike.setTextColor(getResources().getColor(R.color.colorPrimary));
+                                    btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorPrimary));
+                                    btnPostLike.setText("Bỏ thích");
+                                    tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
+                                    likeFlag = true;
+                                    btnPostLike.setClickable(true);
+                                    tvCmtCount.setText(post.getCommentsCount() == 0 ? "" : post.getCommentsCount() + " bình luận");
+                                }
+
+                                @Override
+                                public void onFailure(Call<Post> call, Throwable t) {
+                                    btnPostLike.setClickable(true);
+                                }
+                            });
+                        } else {
+                            btnPostLike.setClickable(false);
+                            mWebService.unlikePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                                @Override
+                                public void onResponse(Call<Post> call, Response<Post> response) {
+                                    tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
+                                    btnPostLike.setIcon(getDrawable(R.drawable.ic_like));
+                                    btnPostLike.setTextColor(getResources().getColor(R.color.colorBlack));
+                                    btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorBlack));
+                                    btnPostLike.setText("Thích");
+                                    likeFlag = false;
+                                    btnPostLike.setClickable(true);
+                                }
+
+                                @Override
+                                public void onFailure(Call<Post> call, Throwable t) {
+                                    btnPostLike.setClickable(true);
+                                }
+                            });
+                        }
+                    }
+                });
+
                 btnPostOption.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        PopupMenu popupMenu = new PopupMenu(getApplicationContext(), btnPostOption);
+                        PopupMenu popupMenu = new PopupMenu(PostDetailActivity.this, btnPostOption);
                         popupMenu.getMenuInflater().inflate(R.menu.action_popup_menu, popupMenu.getMenu());
                         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
@@ -162,17 +246,30 @@ public class PostDetailActivity extends AppCompatActivity{
                                     EditText edtRP = new EditText(PostDetailActivity.this);
                                     edtRP.setInputType(InputType.TYPE_CLASS_TEXT);
                                     alertDialogBuilder.setView(edtRP);
-                                    alertDialogBuilder.setMessage("Vui lòng cho chúng tôi biết lý do báo cáo bài viết này.")
+                                    alertDialogBuilder.setMessage("Báo cáo của bạn đã được ghi nhận")
                                             .setCancelable(false)
                                             .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog,int id) {
-                                                    if (!edtRP.getText().toString().trim().equalsIgnoreCase("")){
-                                                        Toast.makeText(getApplicationContext(),"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
-                                                    } else {
-                                                        Toast.makeText(getApplicationContext(),"Vui lòng điền lý do.",Toast.LENGTH_LONG).show();
-                                                        edtRP.requestFocus();
-                                                    }
+                                                    if (!edtRP.getText().toString().matches("")){
+                                                        mWebService.reportPost(MainActivity.user.getToken(),post.getId(),edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                            @Override
+                                                            public void onResponse(Call<Post> call, Response<Post> response) {
+                                                                dialog.cancel();
+                                                                Toast.makeText(PostDetailActivity.this,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                                            }
 
+                                                            @Override
+                                                            public void onFailure(Call<Post> call, Throwable t) {
+
+                                                                Toast.makeText(PostDetailActivity.this,"Báo cáo không thành công, thử lại sau.",Toast.LENGTH_LONG).show();
+                                                                dialog.cancel();
+                                                            }
+                                                        });
+                                                        dialog.cancel();
+                                                    } else {
+                                                        Toast.makeText(PostDetailActivity.this,"Vui lòng điền lý do.",Toast.LENGTH_LONG).show();
+//                                                        edtRP.requestFocus();
+                                                    }
                                                 }
                                             }).setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                                         @Override
@@ -185,11 +282,48 @@ public class PostDetailActivity extends AppCompatActivity{
                                 } else
                                 if (MainActivity.user.getId() == post.getUser().getId()){
                                     if (menuItem.getTitle().equals("Sửa")){
+                                        Intent intent = new Intent(PostDetailActivity.this, PostAddActivity.class);
+                                        intent.putExtra("id",post.getId());
+                                        intent.putExtra("title",post.getName());
+                                        intent.putExtra("content",post.getContent());
+                                        startActivity(intent);
+                                    } else {
+                                        //Remove post pending
+                                        int[] postId = new int[1];
+                                        postId[0] = post.getId();
+                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PostDetailActivity.this,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                        alertDialogBuilder.setTitle("Cảnh báo");
+                                        alertDialogBuilder.setMessage("Bạn có muốn xóa bài viết này?")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        mWebService.removePost(MainActivity.user.getToken(),postId).enqueue(new Callback<Post>() {
+                                                            @Override
+                                                            public void onResponse(Call<Post> call, Response<Post> response) {
+                                                                Toast.makeText(PostDetailActivity.this, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                                startActivity(new Intent(PostDetailActivity.this,MainActivity.class));
+                                                            }
 
+                                                            @Override
+                                                            public void onFailure(Call<Post> call, Throwable t) {
+                                                                Toast.makeText(PostDetailActivity.this, "Có lỗi xảy ra, thử lại sau.",Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+
+                                                    }
+                                                })
+                                                .setNegativeButton("Quay lại",new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                        AlertDialog alertDialog = alertDialogBuilder.create();
+                                        alertDialog.show();
                                     }
                                 } else {
                                     if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa") ){
-                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext(),R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PostDetailActivity.this,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                         alertDialogBuilder.setTitle("Cảnh báo");
                                         alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bài viết của mình.")
                                                 .setCancelable(false)
@@ -210,8 +344,6 @@ public class PostDetailActivity extends AppCompatActivity{
                         });
                         popupMenu.show();
                     }
-
-
                 });
                 tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
                 String typPost = postType[post.getTypeId()-1];
@@ -243,11 +375,12 @@ public class PostDetailActivity extends AppCompatActivity{
                 btnPostLike.setTextColor(getApplicationContext().getResources().getColor(R.color.colorBlack));
                 btnPostLike.setIconTint(getApplicationContext().getResources().getColorStateList(R.color.colorBlack));
                 btnPostLike.setText("Thích");
+                tvLikeCount.setText(post.getLikesCount() == 0 ? "" : post.getLikesCount()+ " thích");
                 if (post.getLiked() != 0){
                     likeFlag = true;
-                    btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_like_pressed));
-                    btnPostLike.setTextColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
-                    btnPostLike.setIconTint(getApplicationContext().getResources().getColorStateList(R.color.colorPrimary));
+                    btnPostLike.setIcon(PostDetailActivity.this.getResources().getDrawable(R.drawable.ic_like_pressed));
+                    btnPostLike.setTextColor(PostDetailActivity.this.getResources().getColor(R.color.colorPrimary));
+                    btnPostLike.setIconTint(PostDetailActivity.this.getResources().getColorStateList(R.color.colorPrimary));
                     btnPostLike.setText("Đã thích");
                 }
                 try {
@@ -274,7 +407,7 @@ public class PostDetailActivity extends AppCompatActivity{
                 rcvPostImage.setAdapter(imageAdapter);
                 int size = post.getGallery().getMedia().size();
                 int width = LocalDisplay.getScreenWidth(getBaseContext());
-                rcvPostImage.getLayoutParams().height = (int)(width/3 * Math.ceil((double)size/3));
+                rcvPostImage.getLayoutParams().height = (int)(width/3 * (Math.ceil((double)size/3)) + width /3);
                 rcvPostImage.requestLayout();
                 //scrollToPosition();
             }

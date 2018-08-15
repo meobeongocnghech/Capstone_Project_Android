@@ -8,12 +8,15 @@ import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -90,17 +93,86 @@ public interface APIService {
                                          @Query("id") int id);
 
     @POST("post/like")
+    @FormUrlEncoded
     Call<Post> likePost(@Header("AUTH_TOKEN_ID") String token,
                                @Field("id") int id);
+    @POST("post/unlike")
+    @FormUrlEncoded
+    Call<Post> unlikePost(@Header("AUTH_TOKEN_ID") String token,
+                        @Field("id") int id);
 
-    @POST("comment/like")
+    @POST("post/like")
+    @FormUrlEncoded
     Call<Post> likeComment(@Header("AUTH_TOKEN_ID") String token,
                            @Field("id") int id,
-                           @Field("targetId") int targetId);
+                           @Field("commentId") int commentId);
+    @POST("post/unlike")
+    @FormUrlEncoded
+    Call<Post> unlikeComment(@Header("AUTH_TOKEN_ID") String token,
+                           @Field("id") int id,
+                           @Field("commentId") int commentId);
+
+    @POST("post/comment")
+    @FormUrlEncoded
+    Call<Post> commentPost(@Header("AUTH_TOKEN_ID") String token,
+                             @Field("id") int id,
+                             @Field("content") String content);
+
+    @POST("post/comment")
+    @FormUrlEncoded
+    Call<Post> commentOnComment(@Header("AUTH_TOKEN_ID") String token,
+                                @Field("id") int id,
+                                @Field("commentId") int commentId,
+                                @Field("content") String content);
+
+    @POST("post/report")
+    @FormUrlEncoded
+    Call<Post> reportComent(@Header("AUTH_TOKEN_ID") String token,
+                                @Field("id") int id,
+                                @Field("commentId") int commentId,
+                                @Field("reason") String reason);
+
+    @POST("post/report")
+    @FormUrlEncoded
+    Call<Post> reportPost(@Header("AUTH_TOKEN_ID") String token,
+                            @Field("id") int id,
+                            @Field("reason") String reason);
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "post/comment", hasBody = true)
+    Call<Post> removeComment(@Header("AUTH_TOKEN_ID") String token,
+                             @Field("id") int id,
+                             @Field("commentId") int commentId);
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "post", hasBody = true)
+    Call<Post> removePost(@Header("AUTH_TOKEN_ID") String token,
+                             @Field("id") int[] id);
+
     @GET("member")
     Call<User> getUserById(@Header("AUTH_TOKEN_ID") String token,
                            @Query("id") int id);
 
+    @GET("place/paging")
+    Call<ArrayList<Place>> searchPlace(@Header("AUTH_TOKEN_ID") String token,
+                                       @Query("page") int page,
+                                       @Query("pageSize") int pageSize,
+                                       @Query("orderBy") String orderBy,
+                                       @Query("search") String search);
+
+    @POST("post")
+    @FormUrlEncoded
+    Call<Post> addPost(@Header("AUTH_TOKEN_ID") String token,
+                          @Field("typeId") int typeId,
+                          @Field("content") String content,
+                            @Field("name") String name);
+
+    @PUT("post")
+    @FormUrlEncoded
+    Call<Post> updatePost(@Header("AUTH_TOKEN_ID") String token,
+                       @Field("id") int id,
+                       @Field("name") String name,
+                       @Field("content") String content);
     @POST("auth/profile")
     @FormUrlEncoded
     Call<User> updateUserProfile(@Header("AUTH_TOKEN_ID") String token,

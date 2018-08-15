@@ -94,8 +94,8 @@
 
         <TextView
             android:id="@+id/tvPostTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="172dp"
+            android:layout_height="23dp"
             android:layout_marginTop="3dp"
             android:fontFamily="sans-serif-medium"
             android:text="Lorem ipsum dolor"
@@ -270,26 +270,34 @@
 
                 </FrameLayout>
             </android.support.design.card.MaterialCardView>
+
         </android.support.constraint.ConstraintLayout>
 
-        <!--<FrameLayout-->
-        <!--android:id="@+id/framePostImage"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="500dp"-->
-        <!--app:layout_constraintTop_toBottomOf="@id/btnReadMore">-->
-        <!--&lt;!&ndash;<include&ndash;&gt;-->
-        <!--&lt;!&ndash;android:id="@+id/spannableImageGrid"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-        <!--&lt;!&ndash;layout="@layout/layout_spannable_grid" />&ndash;&gt;-->
-        <!--</FrameLayout>-->
+        <TextView
+            android:id="@+id/tvLikeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="3 thích"
+            app:layout_constraintTop_toBottomOf="@id/imagesLayout"
+            app:layout_constraintBottom_toTopOf="@id/btnPostLike"
+            app:layout_constraintStart_toStartOf="@+id/tvPostContent" />
 
+        <TextView
+            android:id="@+id/tvCmtCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:text="3 bình luận"
+            app:layout_constraintBottom_toTopOf="@+id/btnPostComment"
+            app:layout_constraintEnd_toEndOf="@+id/tvPostContent"
+            app:layout_constraintTop_toTopOf="@+id/tvLikeCount" />
         <android.support.design.button.MaterialButton
             android:id="@+id/btnPostLike"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="6dp"
             android:letterSpacing="0.01"
             android:text="Like"
             android:textAllCaps="false"
@@ -302,14 +310,14 @@
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toStartOf="@id/btnPostComment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagesLayout" />
+            app:layout_constraintTop_toBottomOf="@id/tvLikeCount" />
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btnPostComment"
             style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="6dp"
             android:letterSpacing="0.01"
             android:text="Comment"
             android:textAllCaps="false"
@@ -322,7 +330,7 @@
             app:iconTint="@color/colorTextFieldInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btnPostLike"
-            app:layout_constraintTop_toBottomOf="@id/imagesLayout" />
+            app:layout_constraintTop_toBottomOf="@id/tvLikeCount" />
 
         <View
             android:layout_width="match_parent"

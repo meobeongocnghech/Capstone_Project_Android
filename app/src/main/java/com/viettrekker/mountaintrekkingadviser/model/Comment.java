@@ -10,6 +10,9 @@ public class Comment {
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("targetId")
+    @Expose
+    private int targetId;
     @SerializedName("content")
     @Expose
     private String content;
@@ -34,10 +37,6 @@ public class Comment {
     @SerializedName("children")
     @Expose
     private List<Comment> children;
-
-    @SerializedName("targetId")
-    @Expose
-    private int targetId;
 
     public int getId() {
         return id;

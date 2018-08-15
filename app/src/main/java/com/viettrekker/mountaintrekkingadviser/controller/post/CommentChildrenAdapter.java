@@ -9,7 +9,6 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,23 +25,35 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
+import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildrenAdapter.ViewHolder>{
     private List<Comment> list;
     private Context context;
-
+    private int userId;
     public void setList(List<Comment> list) {
         this.list = list;
     }
-
+    APIService mWebService = APIUtils.getWebService();
     public CommentChildrenAdapter(Context context) {
         this.context = context;
+    }
+
+    public CommentChildrenAdapter(Context context, int commentId) {
+        this.context = context;
+        this.userId = commentId;
     }
 
     @NonNull
@@ -57,14 +68,57 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     public void onBindViewHolder(@NonNull CommentChildrenAdapter.ViewHolder viewHolder, int i) {
         Comment comment = list.get(i);
         User user = comment.getUser();
+        viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
         viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
+
         viewHolder.btnLikeCmt.setText("Thích");
         if (comment.getLiked() != 0){
             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.btnLikeCmt.setText("Đã thích");
+            viewHolder.likeCount.setText(comment.getLikesCount()+"");
         }
+        viewHolder.btnLikeCmt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!viewHolder.likeFlag){
+                    mWebService.likeComment(MainActivity.user.getToken(), userId,comment.getId()).enqueue(new Callback<Post>() {
+                        @Override
+                        public void onResponse(Call<Post> call, Response<Post> response) {
+                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                            viewHolder.btnLikeCmt.setText("Đã thích");
+                            viewHolder.likeCount.setText((comment.getLikesCount()) +"");
+                            viewHolder.likeFlag = true;
+                            ((PostDetailActivity)context).edtComment.clearFocus();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Post> call, Throwable t) {
+
+                        }
+                    });
+
+                } else {
+                    mWebService.unlikeComment(MainActivity.user.getToken(), userId,comment.getId()).enqueue(new Callback<Post>() {
+                        @Override
+                        public void onResponse(Call<Post> call, Response<Post> response) {
+                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
+                            viewHolder.btnLikeCmt.setText("Thích");
+                            viewHolder.likeCount.setText(comment.getLikesCount() <=1 ? "" : (comment.getLikesCount() - 1) +"");
+                            viewHolder.likeFlag = false;
+                            ((PostDetailActivity)context).edtComment.clearFocus();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Post> call, Throwable t) {
+
+                        }
+                    });
+
+                }
+            }
+        });
         viewHolder.likeCount.setText(comment.getLikesCount()+"");
         DateTimeUtils datetime = new DateTimeUtils();
         try {
@@ -111,8 +165,22 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                     .setCancelable(false)
                                     .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,int id) {
-                                            if (!edtRP.getText().toString().trim().equalsIgnoreCase("")){
-                                                Toast.makeText(context,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                            if (!edtRP.getText().toString().matches("")){
+                                                mWebService.reportComent(MainActivity.user.getToken(), userId, comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                    @Override
+                                                    public void onResponse(Call<Post> call, Response<Post> response) {
+                                                        dialog.cancel();
+                                                        Toast.makeText(context,"Cảm ơn bạn đã báo cáo bình luận này",Toast.LENGTH_LONG).show();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Post> call, Throwable t) {
+
+                                                        Toast.makeText(context,"Báo cáo không thành công, thử lại sau.",Toast.LENGTH_LONG).show();
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                                dialog.cancel();
                                             } else {
                                                 Toast.makeText(context,"Vui lòng điền lý do.",Toast.LENGTH_LONG).show();
                                                 edtRP.requestFocus();
@@ -143,9 +211,20 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int index) {
-                                                list.remove(i);
-                                                notifyItemRemoved(i);
-                                                Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                mWebService.removeComment(MainActivity.user.getToken(),userId,comment.getId()).enqueue(new Callback<Post>() {
+                                                    @Override
+                                                    public void onResponse(Call<Post> call, Response<Post> response) {
+                                                        list.remove(i);
+                                                        notifyDataSetChanged();
+                                                        Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Post> call, Throwable t) {
+                                                        Toast.makeText(context, "Có lỗi xảy ra, thử lại sau.",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
                                             }
                                         })
                                         .setNegativeButton("Quay lại",new DialogInterface.OnClickListener() {
@@ -200,6 +279,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         boolean likeFlag;
         boolean rmFlag;
         TextView tvReadMoreChild;
+        TextView likeCountRep;
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             imgAvtCmt = (ImageView) itemView.findViewById(R.id.imgAvtCmtRep);
@@ -210,21 +290,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
             likeCount = (TextView) itemView.findViewById(R.id.likeCountRep);
             tvTime = (TextView) itemView.findViewById(R.id.tvTimeRep);
             tvReadMoreChild = (TextView) itemView.findViewById(R.id.tvReadMoreChild);
+            likeCountRep = (TextView) itemView.findViewById(R.id.likeCountRep);
             rmFlag = false;
-            btnLikeCmt.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!likeFlag){
-                        btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                        btnLikeCmt.setText("Đã thích");
-                        likeFlag = true;
-                    } else {
-                        btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
-                        btnLikeCmt.setText("Thích");
-                        likeFlag = false;
-                    }
-                }
-            });
 
             tvReadMoreChild.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -60,21 +60,21 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.View
             }
         });
 
-        int width = itemClicked[i] ? 3 : 1;
-        int height = itemClicked[i] ? 3 : 1;
+        int width = itemClicked[i] ? 2 : 1;
+        int height = itemClicked[i] ? 2 : 1;
         SpanSize spanSize = new SpanSize(width, height);
         viewHolder.itemView.setLayoutParams(new SpanLayoutParams(spanSize));
 
-//        viewHolder.itemView.setOnClickListener((v)-> {
-////            itemClicked[position] = false;
-////            itemClicked[i] = true;
-////            notifyItemChanged(position);
-////            notifyItemChanged(i);
-////            position = i;
+        viewHolder.itemView.setOnClickListener((v)-> {
+            itemClicked[position] = false;
+            itemClicked[i] = true;
+            notifyItemChanged(position);
+            notifyItemChanged(i);
+            position = i;
 //            Collections.swap(medias, medias.size() - 1, i);
 //            notifyItemChanged(medias.size() - 1);
 //            notifyItemChanged(i);
-//        });
+        });
     }
 
     @Override

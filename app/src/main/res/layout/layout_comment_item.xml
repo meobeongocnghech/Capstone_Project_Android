@@ -38,7 +38,7 @@
                 android:src="@drawable/avatar_default"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvCmtContent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -46,6 +46,9 @@
                 android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :) vui lam nhe"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
+                android:clickable="false"
+                android:focusable="false"
+                android:background="@android:color/transparent"
                 android:maxLines="3"
                 android:ellipsize="end"
                 app:layout_constraintEnd_toStartOf="@id/btnActionCmt"
@@ -99,11 +102,20 @@
                 app:layout_constraintEnd_toEndOf="@id/tvCmtContent"
                 >
 
-                <TextView
+                <android.support.design.button.MaterialButton
                     android:id="@+id/btnLikeCmt"
                     android:layout_width="wrap_content"
-                    android:textSize="13dp"
                     android:layout_height="wrap_content"
+                    android:letterSpacing="0.01"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    app:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:insetTop="0dp"
+                    android:textColor="@color/colorGray"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="@android:color/transparent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="Like"/>
 
@@ -118,25 +130,33 @@
 
 
 
-                <TextView
-                    android:id="@+id/tvReplyComment"
-                    android:textSize="13dp"
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnReplyComment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="7dp"
-                    app:layout_constraintEnd_toStartOf="@id/cmtCount"
+                    android:letterSpacing="0.01"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    app:textAllCaps="false"
+                    android:textSize="14sp"
+                    android:insetTop="0dp"
+                    android:textColor="@color/colorGray"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="@android:color/transparent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     android:text="Trả lời"/>
 
                 <TextView
                     android:id="@+id/cmtCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:text="(5)"
                     android:textSize="12dp"
-                    android:layout_marginRight="130dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginLeft="7dp" />
+                    app:layout_constraintLeft_toRightOf="@id/btnReplyComment"
+                    app:layout_goneMarginLeft="5dp" />
 
             </android.support.constraint.ConstraintLayout>
 

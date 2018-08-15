@@ -2,16 +2,21 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.transition.ChangeImageTransform;
 import android.transition.Explode;
 import android.transition.Fade;
@@ -29,6 +34,7 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.message.MessageFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.search.SearchFragment;
@@ -42,6 +48,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     private TextView tvMainTitle;
     private SwipeRefreshLayout swipeContainer;
     private NavigationView navigationView;
+    private android.support.design.widget.FloatingActionButton btnAddNew;
 
 
     @Override
@@ -74,11 +83,21 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        btnAddNew = (FloatingActionButton) findViewById(R.id.btnAddNew);
+
         imgAvatar = (ImageView) findViewById(R.id.imgMainAvatar);
         imgAvatar.setOnClickListener((v) -> drawer.openDrawer(GravityCompat.START));
 
         View header = navigationView.getHeaderView(0);
         ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+
+        btnAddNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, PostAddActivity.class);
+                startActivity(intent);
+            }
+        });
 
         imgNavAvatar.setOnClickListener((v) -> {
             Intent i = new Intent(this, ProfileMemberActivity.class);
@@ -98,13 +117,13 @@ public class MainActivity extends AppCompatActivity
         if (user.getGallery() != null) {
 
             GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API +user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
                     .placeholder(getDrawable(R.drawable.avatar_default))
                     .fallback(getDrawable(R.drawable.avatar_default))
                     .into(imgAvatar);
 
             GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API +user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
                     .placeholder(getDrawable(R.drawable.avatar_default))
                     .fallback(getDrawable(R.drawable.avatar_default))
                     .into(imgNavAvatar);
@@ -125,7 +144,7 @@ public class MainActivity extends AppCompatActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
-        viewPager.setOffscreenPageLimit(4);
+//        viewPager.setOffscreenPageLimit(4);
 
         int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
         tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
@@ -212,10 +231,10 @@ public class MainActivity extends AppCompatActivity
             case 2:
                 adapter.getNotificationFragment().initLoad();
                 break;
+//            case 3:
+//                adapter.setMessageFragment(new MessageFragment());
+//                break;
             case 3:
-                adapter.setMessageFragment(new MessageFragment());
-                break;
-            case 4:
                 adapter.setSearchFragment(new SearchFragment());
                 break;
         }
@@ -260,7 +279,7 @@ public class MainActivity extends AppCompatActivity
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
             i.putExtra("viewProfile", true);
-            if (user.getGallery() != null ) {
+            if (user.getGallery() != null) {
                 i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
             }
             drawer.closeDrawer(GravityCompat.START);
@@ -269,77 +288,109 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    public LatLng getLatLng() {return mLatLng;}
+    public LatLng getLatLng() {
+        return mLatLng;
+    }
 
     private void initLocationListener() {
-        //Calculate distance
+
         location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        // CHecking network provider enable
-        if (location.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            location.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(android.location.Location location) {
-                    if (location != null) {
-                        double tlat = location.getLatitude();
-                        double tlng = location.getLongitude();
-                        mLatLng = new LatLng(tlat, tlng);
-                    } else {
-                        Toast.makeText(getApplicationContext(),"Location loading...",Toast.LENGTH_LONG).show();
+//        if (!location.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            buildAlertDialogNoGPS();
+//        } else {
+            if (location.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    buildAlertDialogNoGPS();
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                location.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(android.location.Location location) {
+                        if (location != null) {
+                            double tlat = location.getLatitude();
+                            double tlng = location.getLongitude();
+                            mLatLng = new LatLng(tlat, tlng);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Location loading...", Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
 
-                }
+                    }
 
-                @Override
-                public void onProviderEnabled(String s) {
+                    @Override
+                    public void onProviderEnabled(String s) {
 
-                }
+                    }
 
-                @Override
-                public void onProviderDisabled(String s) {
+                    @Override
+                    public void onProviderDisabled(String s) {
 
-                }
-            });
-        } else if (location.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                @Override
-                public void onLocationChanged(android.location.Location location) {
-                    double tlat = location.getLatitude();
-                    double tlng = location.getLongitude();
-                    mLatLng = new LatLng(tlat, tlng);
+                    }
+                });
+            } else if (location.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(android.location.Location location) {
+                        if (location != null) {
+                            double tlat = location.getLatitude();
+                            double tlng = location.getLongitude();
+                            mLatLng = new LatLng(tlat, tlng);
+                        } else {
+                            Toast.makeText(getApplicationContext(),"Location loading...",Toast.LENGTH_LONG).show();
+                        }
 
-                }
+                    }
 
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
 
-                }
+                    }
 
-                @Override
-                public void onProviderEnabled(String s) {
+                    @Override
+                    public void onProviderEnabled(String s) {
 
-                }
+                    }
 
-                @Override
-                public void onProviderDisabled(String s) {
+                    @Override
+                    public void onProviderDisabled(String s) {
 
-                }
-            });
+                    }
+                });
+//            }
+            }
+
+
         }
+        private void buildAlertDialogNoGPS(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Vui lòng bật GPS trên thiết bị của bạn")
+                .setCancelable(false)
+                .setPositiveButton("Bật", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity( new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                }).setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+        }
+
     }
 
 
-}
+

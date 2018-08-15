@@ -7,6 +7,8 @@ import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+import retrofit2.Call;
+import retrofit2.Response;
 
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,11 +26,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
-
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.viettrekker.mountaintrekkingadviser.customview.PtrLoadingHeader;
 import com.viettrekker.mountaintrekkingadviser.customview.RentalsSunHeaderView;
+import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -40,48 +46,17 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-//        GridLayout grid = (GridLayout) findViewById(R.id.content);
-//
-//        Spec row1 = GridLayout.spec(0);
-//        Spec row2 = GridLayout.spec(1);
-//        Spec row3 = GridLayout.spec(2);
-//        Spec row4 = GridLayout.spec(3);
-//
-//        Spec col0 = GridLayout.spec(0);
-//        Spec col1 = GridLayout.spec(1);
-//        Spec col2 = GridLayout.spec(2);
-//
-//        GridLayout gridLayout = new GridLayout(this);
-//        GridLayout.LayoutParams first = new GridLayout.LayoutParams(row1, col0);
-//        /*Here you can set options for first cell which is in first row and first column.*/
-//        first.width = LocalDisplay.getScreenWidth(this);
-//        first.height = LocalDisplay.getScreenWidth(this)/4 * 2;
-//        TextView twoByTwo1 = new TextView(this);
-//        twoByTwo1.setLayoutParams(first);
-//        twoByTwo1.setGravity(Gravity.CENTER);
-//        twoByTwo1.setBackgroundColor(Color.RED);
-//        twoByTwo1.setText("TOP");
-//        twoByTwo1.setTextAppearance(this, android.R.style.TextAppearance_Large);
-//        gridLayout.addView(twoByTwo1, first);
-
-
-        AppBarLayout layout = (AppBarLayout) findViewById(R.id.app_bar_layout);
-        ImageView imageView = (ImageView) findViewById(R.id.image);
-        int max = imageView.getLayoutParams().height;
-        int init = layout.getLayoutParams().height;
-        layout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        APIService s = APIUtils.getWebService();
+        s.removeComment("1|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpbmhudEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQwOCRoSkU3VUtQTXlXcHdKYmpqSE5kR3Z1NzBFUk1DLlZDZDlTZnhZOHFMMUlxa1M2ZFNtd0dneSIsImlhdCI6MTUzMDkzOTU5OSwiZXhwIjoxNTc0MTM5NTk5fQ.Ih0keKGJ2XK7TE9icXcY7qy87B-39VDOC5YT70Ey_E8",
+                100, 325).enqueue(new retrofit2.Callback<Post>() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                imageView.getLayoutParams().height = max + i;
-                imageView.requestLayout();
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                System.out.println("khong loi roi " + response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+                System.out.println("loi roi " + t.getMessage());
             }
         });
-    }
-
-    public void showPopup(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.test_menu, popup.getMenu());
-        popup.show();
-    }
-}
+}}
