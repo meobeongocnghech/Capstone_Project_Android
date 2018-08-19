@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.viettrekker.mountaintrekkingadviser.GlideApp;
+//import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
@@ -84,11 +84,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
                 imgCover.requestLayout();
                 toolbarLayout.getLayoutParams().height = (int) (size.x * 1.5 / 3);
                 toolbarLayout.requestLayout();
-                GlideApp.with(PlaceDetailActivity.this)
-                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(getBaseContext()))
-                        .fallback(R.drawable.default_background)
-                        .placeholder(R.drawable.default_background)
-                        .into(imgCover);
+//                GlideApp.with(PlaceDetailActivity.this)
+//                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(getBaseContext()))
+//                        .fallback(R.drawable.default_background)
+//                        .placeholder(R.drawable.default_background)
+//                        .into(imgCover);
             }
 
             @Override

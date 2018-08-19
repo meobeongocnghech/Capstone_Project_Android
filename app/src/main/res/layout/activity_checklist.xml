@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/tvChecklist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Việc cần làm"
+        android:gravity="center"
+        android:textColor="#b2b9c6"
+        app:layout_constraintTop_toBottomOf="@id/imgBackInCheckList"/>
+
+    <LinearLayout
+        android:id="@+id/layoutChecklistItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rectangle"
+        app:layout_constraintTop_toBottomOf="@+id/tvChecklist">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvChecklistItem"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_margin="4dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btnEditCheckList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="8dp"
+        android:insetTop="0dp"
+        android:letterSpacing="0.01"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:padding="0dp"
+        android:text="Sửa"
+        android:textAllCaps="false"
+        android:textColor="@color/colorGray"
+        android:textSize="16sp"
+        app:backgroundTint="@android:color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgBackInCheckList"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_arrow_back_green"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtAddChecklist"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="Thêm item mới..."
+        android:textSize="15dp"
+        app:layout_constraintStart_toStartOf="@id/layoutChecklistItem"
+        app:layout_constraintTop_toBottomOf="@id/layoutChecklistItem" />
+
+    <ImageView
+        android:id="@+id/imgAddChecklist"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_add_circle_primary"
+        app:layout_constraintEnd_toEndOf="@+id/layoutChecklistItem"
+        app:layout_constraintTop_toBottomOf="@+id/layoutChecklistItem" />
+
+</android.support.constraint.ConstraintLayout>

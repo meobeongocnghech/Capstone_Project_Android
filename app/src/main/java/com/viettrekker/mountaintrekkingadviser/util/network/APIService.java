@@ -1,10 +1,13 @@
 package com.viettrekker.mountaintrekkingadviser.util.network;
 
+import com.google.gson.JsonObject;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
+import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -191,27 +195,45 @@ public interface APIService {
     Call<Notification> markReadNotification(@Header("AUTH_TOKEN_ID") String token,
                                             @Field("id") int id);
 
-    @GET("member/paging")
-    Call<List<User>> searchUserSuggestion(@Header("AUTH_TOKEN_ID") String token,
-                                    @Query("page") int page,
-                                    @Query("pageSize") int size,
-                                    @Query("search") String search);
+    @GET("plan/paging")
+    Call<List<Plan>> getListPlan(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("page") int page,
+                                 @Query("pageSize") int pageSize,
+                                 @Query("orderBy") String orderBy);
 
-    @GET("place/paging")
-    Call<List<Place>> searchPlaceSuggestion(@Header("AUTH_TOKEN_ID") String token,
-                                      @Query("page") int page,
-                                      @Query("pageSize") int size,
-                                      @Query("search") String search);
-
-    @GET("post/paging")
-    Call<List<Post>> searchPostSuggestion(@Header("AUTH_TOKEN_ID") String token,
-                                    @Query("page") int page,
-                                    @Query("pageSize") int size,
-                                    @Query("orderBy") String orderBy,
-                                    @Query("order") String order,
-                                    @Query("search") String search);
+    @GET("plan")
+    Call<Plan> getPlanById(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("id") int id);
 
     @GET("place")
     Call<Place> getPlaceById(@Header("AUTH_TOKEN_ID") String token,
-                             @Query("id") int id);
+                           @Query("id") int id);
+
+    @GET("member/paging")
+    Call<List<User>> searchMember(@Header("AUTH_TOKEN_ID") String token,
+                              @Query("search") String search);
+    @POST("plan")
+    Call<Plan> createPlan(@Header("AUTH_TOKEN_ID") String token,
+                                  @Body Plan plan);
+
+    @GET("member/paging")
+    Call<List<User>> searchUserSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                          @Query("page") int page,
+                                          @Query("pageSize") int size,
+                                          @Query("search") String search);
+
+    @GET("place/paging")
+    Call<List<Place>> searchPlaceSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                            @Query("page") int page,
+                                            @Query("pageSize") int size,
+                                            @Query("search") String search);
+
+    @GET("post/paging")
+    Call<List<Post>> searchPostSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                          @Query("page") int page,
+                                          @Query("pageSize") int size,
+                                          @Query("orderBy") String orderBy,
+                                          @Query("order") String order,
+                                          @Query("search") String search);
+
 }

@@ -230,7 +230,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             }
         });
 
-        if (post.getGallery() == null) {
+        if (post.getGallery() == null || post.getGallery().getMedia().size() == 0) {
             viewHolder.rcvImagePreview.setVisibility(View.GONE);
         } else {
             int size = post.getGallery().getMedia().size();

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -172,14 +173,17 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         } else
                         if (MainActivity.user.getId() == comment.getUser().getId()){
                             if (menuItem.getTitle().equals("Sửa")){
-                                viewHolder.tvCmtContent.isCursorVisible();
-                                viewHolder.tvCmtContent.setFocusable(true);
-                                viewHolder.tvCmtContent.setClickable(true);
-                                viewHolder.tvCmtContent.requestFocus();
-//                                InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-//                                imm.showSoftInput(viewHolder.tvCmtContent, InputMethodManager.SHOW_IMPLICIT);
+                                ((PostDetailActivity)context).edtComment.setText(viewHolder.tvCmtContent.getText().toString());
+                                InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(((PostDetailActivity)context).edtComment, InputMethodManager.SHOW_IMPLICIT);
+                                ((PostDetailActivity)context).edtComment.setSelection(((PostDetailActivity)context).edtComment.getText().length());
+//                                ((PostDetailActivity)context).edtComment.setOnKeyListener(new View.OnKeyListener() {
+//                                    @Override
+//                                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                                        keyEvent.get
+//                                    }
+//                                });
 
-                                viewHolder.tvCmtContent.setSelection(viewHolder.tvCmtContent.getText().length());
                             }else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -76,4 +77,76 @@ public class DateTimeUtils {
         sdf.applyPattern("dd/MM/yyyy");
         return sdf.format(date);
     }
+
+    public static String parseStringTime(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("hh:mm a");
+        return sdf.format(date);
+    }
+
+    public static String parseStringDay(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("dd");
+        return sdf.format(date);
+    }
+
+    public static String parseStringDayinWeek(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("EEE");
+        return sdf.format(date);
+    }
+
+    public static Date parseStringToDate(String date){
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("EEE, MMM dd yyyy HH:mm:ss");
+        Date newDate = null;
+        try {
+            newDate = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDate;
+    }
+
+    public static Date changeTimeToLocale(String sDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        if (sDate.contains("Z")){
+            sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+            sdf.setTimeZone(TimeZone.getDefault());
+            Date date = sdf.parse(sDate);
+            return date;
+        } else {
+            sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
+            Date date = sdf.parse(sDate);
+            return date;
+        }
+
+    }
+
+    public static String caculatorStringTime(Date oldTime, Date timeNow) throws ParseException {
+        long diff = timeNow.getTime() - oldTime.getTime();
+
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000) % 24;
+        long diffDays = diff / (24 * 60 * 60 * 1000);
+        if (diffDays > 0){
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            return diffDays + " ngày";
+        } else if (diffHours > 0){
+            return diffHours + " giờ";
+        } else if (diffMinutes > 0){
+            return diffMinutes + " phút";
+        } else {
+            return "vài giây trước";
+        }
+    }
+
+//    public static void main(String[] args) throws Exception{
+////        Date d = changeTimeToLocale("2018-08-19 14:02");
+//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//
+////        System.out.println(parseStringDate(d) + " " + parseStringTime(d));
+//        System.out.println(sdf.parse("19-08-2018 14:02:00"));
+//    }
+
 }

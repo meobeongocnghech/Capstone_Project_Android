@@ -204,6 +204,19 @@ public class MainActivity extends AppCompatActivity
                             });
                         }
                         break;
+                    case 1:
+                        if (((PlanFragment) fragment).getCurrentScrollY() != 0) {
+                            ((PlanFragment) fragment).scrollToTop();
+                        } else {
+                            swipeContainer.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    swipeContainer.setRefreshing(true);
+                                    refreshData();
+                                }
+                            });
+                        }
+                        break;
                     case 2:
                         if (((NotificationFragment) fragment).getCurrentScrollY() != 0) {
                             ((NotificationFragment) fragment).scrollToTop();

@@ -1,86 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<ScrollView
 
-    <!--<include layout="@layout/toolbar1"/>-->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <LinearLayout
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chi tiết kế hoạch"
-        android:gravity="center"
-        android:textColor="#b2b9c6"
-        android:layout_marginTop="20dp"/>
-        <LinearLayout
+
+        <!--<include layout="@layout/toolbar1"/>-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chi tiết lịch trình"
+            android:gravity="center"
+            android:textColor="#b2b9c6"
+            android:layout_marginTop="10dp"/>
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcvTimelineList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:clipToPadding="false">
+            <LinearLayout
+                android:id="@+id/layoutTimelineItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rectangle"
+                app:layout_constraintTop_toTopOf="parent">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvTimelineList"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
 
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginBottom="20dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13dp"
-            android:text="Chọn ngày trong kế hoạch"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="40dp"
-            android:textColor="#c8cdd7"
-            />
-        <ImageView
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_clock"/>
+            <EditText
+                android:id="@+id/edtTimelineContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="15dp"
+                android:hint="Nhập nội dung công việc..."
+                android:textSize="14dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/edtTimelineTitle" />
+
+            <EditText
+                android:id="@+id/edtTimelineTitle"
+                android:layout_width="359dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:hint="Tiêu đề công việc..."
+                android:textSize="14dp"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layoutTimelineItem" />
+
+            <Button
+                android:id="@+id/btnTLDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Ngày"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toStartOf="@+id/edtTimelineContent"
+                app:layout_constraintTop_toBottomOf="@+id/edtTimelineContent" />
+
+            <Button
+                android:id="@+id/btnTLTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Giờ"
+                android:textAllCaps="false"
+                app:layout_constraintStart_toEndOf="@+id/btnTLDate"
+                app:layout_constraintTop_toTopOf="@+id/btnTLDate" />
+
+            <TextView
+                android:id="@+id/tvTLTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@+id/btnTLTime"
+                app:layout_constraintBottom_toBottomOf="@id/btnTLTime"/>
+            <ImageView
+                android:id="@+id/btnAddTimeline"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/ic_add_circle_primary"
+                app:layout_constraintEnd_toEndOf="@+id/edtTimelineContent"
+                app:layout_constraintTop_toBottomOf="@+id/edtTimelineContent" />
+        </android.support.constraint.ConstraintLayout>
+
+
+
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/calander_rect">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvDatePlan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
-        android:clipToPadding="false">
-
-    </android.support.v7.widget.RecyclerView>
-    </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:background="@drawable/shadow"/>
-    </LinearLayout>
-    </ScrollView>
-
-
-</LinearLayout>
+</ScrollView>

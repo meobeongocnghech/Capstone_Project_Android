@@ -57,9 +57,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         this.listNoti = listNoti;
     }
 
-    public List<Notification> getListNoti() {
-        return listNoti;
-    }
 
     @NonNull
     @Override
