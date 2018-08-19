@@ -190,4 +190,28 @@ public interface APIService {
     @FormUrlEncoded
     Call<Notification> markReadNotification(@Header("AUTH_TOKEN_ID") String token,
                                             @Field("id") int id);
+
+    @GET("member/paging")
+    Call<List<User>> searchUserSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                    @Query("page") int page,
+                                    @Query("pageSize") int size,
+                                    @Query("search") String search);
+
+    @GET("place/paging")
+    Call<List<Place>> searchPlaceSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                      @Query("page") int page,
+                                      @Query("pageSize") int size,
+                                      @Query("search") String search);
+
+    @GET("post/paging")
+    Call<List<Post>> searchPostSuggestion(@Header("AUTH_TOKEN_ID") String token,
+                                    @Query("page") int page,
+                                    @Query("pageSize") int size,
+                                    @Query("orderBy") String orderBy,
+                                    @Query("order") String order,
+                                    @Query("search") String search);
+
+    @GET("place")
+    Call<Place> getPlaceById(@Header("AUTH_TOKEN_ID") String token,
+                             @Query("id") int id);
 }

@@ -32,7 +32,6 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
-import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
@@ -41,7 +40,6 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +98,7 @@ public class PostDetailActivity extends AppCompatActivity{
         btnPostOption = (ImageButton) findViewById(R.id.btnPostOptionDetail);
         tvPostTitle = (TextView) findViewById(R.id.tvPostTitleDetail);
         tvPostContent = (TextView) findViewById(R.id.tvPostContentDetail);
-        tvCount = (TextView) findViewById(R.id.tvCount);
+//        tvCount = (TextView) findViewById(R.id.tvCount);
         btnPostLike = (MaterialButton) findViewById(R.id.btnPostLikeDetail);
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
         edtComment = (EditText) findViewById(R.id.edtInputComment);
@@ -169,7 +167,8 @@ public class PostDetailActivity extends AppCompatActivity{
             }
         });
 
-        mWebService.getPostByPostId(MainActivity.user.getToken(),id).enqueue(new Callback<Post>() {
+        String token = getIntent().getStringExtra("token");
+        mWebService.getPostByPostId(token,id).enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
                 imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
@@ -402,7 +401,7 @@ public class PostDetailActivity extends AppCompatActivity{
                 SpannedGridLayoutManager spannedGridLayoutManager = new SpannedGridLayoutManager(
                         SpannedGridLayoutManager.Orientation.VERTICAL, 3);
                 spannedGridLayoutManager.setItemOrderIsStable(true);
-                rcvPostImage.addItemDecoration(new SpaceItemDecorator1(new Rect(10, 10, 10, 10)));
+                rcvPostImage.addItemDecoration(new SpaceItemDecorator(new Rect(10, 10, 10, 10)));
                 rcvPostImage.setLayoutManager(spannedGridLayoutManager);
                 rcvPostImage.setAdapter(imageAdapter);
                 int size = post.getGallery().getMedia().size();
@@ -417,8 +416,6 @@ public class PostDetailActivity extends AppCompatActivity{
                 onBackPressed();
             }
         });
-
-        prepareTransitions();
     }
 
     private void eventViewProfile(User user) {
@@ -431,6 +428,7 @@ public class PostDetailActivity extends AppCompatActivity{
             i.putExtra("owner", false);
         }
         i.putExtra("id", user.getId());
+        i.putExtra("token", MainActivity.user.getToken());
         startActivity(i);
     }
 

@@ -5,13 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class SpaceItemDecorator1 extends android.support.v7.widget.RecyclerView.ItemDecoration {
+public class SpaceItemDecorator extends android.support.v7.widget.RecyclerView.ItemDecoration {
     private int left;
     private int right;
     private int top;
     private int bottom;
 
-    public SpaceItemDecorator1(Rect rect) {
+    public SpaceItemDecorator(Rect rect) {
         this.left = rect.left;
         this.right = rect.right;
         this.bottom = rect.bottom;

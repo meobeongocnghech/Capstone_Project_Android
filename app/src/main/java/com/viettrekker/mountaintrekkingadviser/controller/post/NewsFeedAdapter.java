@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -36,6 +38,8 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationAdapter;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.search.SmallPreviewImageAdapter;
+import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
@@ -77,7 +81,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public NewsFeedAdapter(Context context, Fragment fragment) {
         this.context = context;
         this.fragment = fragment;
-        this.width = LocalDisplay.getScreenWidth(context) - LocalDisplay.dp2px(40, context);
+        this.width = LocalDisplay.getScreenWidth(context);
     }
 
     public void setUserId(int userId) {
@@ -111,12 +115,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         int imgSize;
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
-        List<MyMedia> medias = post.getGallery().getMedia();
-        List<ImageView> listImgView = new ArrayList<>();
-        listImgView.add(viewHolder.imgPreview1);
-        listImgView.add(viewHolder.imgPreview2);
-        listImgView.add(viewHolder.imgPreview3);
-        listImgView.add(viewHolder.imgPreview4);
         typPost = postType[post.getTypeId() - 1];
 
         if (post.getUser().getGallery() != null) {
@@ -137,13 +135,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
         viewHolder.btnPostLike.setText("Thích");
-        viewHolder.tvlikeCount.setText(post.getLikesCount() == 0 ? "" : post.getLikesCount()+" thích");
+        if (post.getLikesCount() == 0) {
+            viewHolder.tvlikeCount.setVisibility(View.GONE);
+        } else {
+            viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
+            viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
+        }
         if (post.getLiked() != 0){
             viewHolder.likeFlag = true;
             viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like_pressed));
             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
             viewHolder.btnPostLike.setText("Đã thích");
+            viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
             viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
         }
         try {
@@ -151,7 +155,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         } catch (ParseException e) {
 
         }
-        viewHolder.btnReadMore.setVisibility(View.INVISIBLE);
+        viewHolder.btnReadMore.setVisibility(View.GONE);
         ViewTreeObserver vto = viewHolder.tvPostContent.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -180,6 +184,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
                             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
                             viewHolder.btnPostLike.setText("Bỏ thích");
+                            viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
                             viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) +" thích");
                             viewHolder.likeFlag = true;
                             viewHolder.btnPostLike.setClickable(true);
@@ -203,7 +208,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
                             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
                             viewHolder.btnPostLike.setText("Thích");
-                            viewHolder.tvlikeCount.setText(p.getLikesCount() <= 1 ? "" : (p.getLikesCount())+" thích");
+                            if (p.getLikesCount() <= 1) {
+                                viewHolder.tvlikeCount.setVisibility(View.GONE);
+                            } else {
+                                viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
+                                viewHolder.tvlikeCount.setText((p.getLikesCount())+" thích");
+                            }
                             viewHolder.likeFlag = false;
                             viewHolder.btnPostLike.setClickable(true);
                         }
@@ -220,383 +230,132 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             }
         });
 
-//        int lineContent = viewHolder.tvPostContent.getLayout().getLineCount();
-//        if (lineContent > 0){
-//            if (viewHolder.tvPostContent.getLayout().getEllipsisCount(lineContent-1) > 0){
-//                viewHolder.btnReadMore.setVisibility(View.VISIBLE);
-//            }
-//        }
-
-        viewHolder.tvCount.setVisibility(View.GONE);
-        imgSize = medias.size();
-        if (imgSize >= 5) {
-            if (Math.random() > 0.5d) {
-                imgSize = 5;
-            } else {
-                imgSize = 4;
-            }
-        }
-
-        switch (imgSize) {
-            case 0:
-                break;
-            case 1:
-                GlideApp.with(context)
-                        .asBitmap()
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
-                                viewHolder.imgPreview1.setImageBitmap(resource);
-                                if (resource.getHeight() / resource.getWidth() > 2) {
-                                    viewHolder.preview1.getLayoutParams().height = resource.getWidth() * 2;
-                                } else if (resource.getWidth() / resource.getHeight() > 2) {
-                                    viewHolder.preview1.getLayoutParams().height = resource.getWidth() / 2;
-                                }
-                                viewHolder.preview1.requestLayout();
-                                viewHolder.preview2.setVisibility(View.GONE);
-                                viewHolder.preview3.setVisibility(View.GONE);
-                                viewHolder.preview4.setVisibility(View.GONE);
-                                viewHolder.preview5.setVisibility(View.GONE);
-                                viewHolder.imagesLayout.setVisibility(View.VISIBLE);
+        if (post.getGallery() == null) {
+            viewHolder.rcvImagePreview.setVisibility(View.GONE);
+        } else {
+            int size = post.getGallery().getMedia().size();
+            APIService mWebService = APIUtils.getWebService();
+            switch (size) {
+                case 1:
+                    mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
+                        @Override
+                        public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                            ImageSize imgSize = response.body();
+                            float ratio = (float) imgSize.getHeight() / imgSize.getWidth();
+                            viewHolder.singlePreview.setVisibility(View.VISIBLE);
+                            GlideApp.with(context)
+                                    .load(APIUtils.BASE_URL_API + post.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + width)
+                                    .fallback(R.drawable.default_background)
+                                    .placeholder(R.drawable.default_background)
+                                    .centerCrop()
+                                    .into(viewHolder.singlePreview);
+                            if (ratio >= 1.5) {
+                                viewHolder.singlePreview.getLayoutParams().height = (int) (width * 1.5f);
+                            } else {
+                                viewHolder.singlePreview.getLayoutParams().height = (int) (width * ratio);
                             }
-                        });
-                break;
-            case 2:
-                float[] size1 = new float[]{1, 2};
-                float[] size2 = new float[]{1, 2};
-//                GlideApp.with(context)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .skipMemoryCache(true)
-//                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4))
-//                        .into(new SimpleTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
-//                                size1[0] = resource.getHeight();
-//                                size1[1] = resource.getWidth();
-//                                GlideApp.with(context)
-//                                        .asBitmap()
-//                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                                        .skipMemoryCache(true)
-//                                        .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4))
-//                                        .into(new SimpleTarget<Bitmap>() {
-//                                            @Override
-//                                            public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
-//                                                size2[0] = resource.getHeight();
-//                                                size2[1] = resource.getWidth();
-//
-//                                            }
-//                                        });
-//                            }
-//                        });
+                            viewHolder.singlePreview.requestLayout();
+                        }
 
-                if (ImageUtils.measureGridTwoItems(size1, size2) == ImageUtils.TWO_VERTICAL) {
-                    float[] trueSize = new float[]{16, 9};
+                        @Override
+                        public void onFailure(Call<ImageSize> call, Throwable t) {
+                            viewHolder.singlePreview.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                case 2:
+                    mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
+                        @Override
+                        public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                            float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
+                            mWebService.getImageSize(post.getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
+                                @Override
+                                public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                                    float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
+                                    PostImageAdapter adapter = new PostImageAdapter();
+                                    adapter.setContext(context);
+                                    adapter.setRatio1(ratio1);
+                                    adapter.setRatio2(ratio2);
+                                    adapter.setMedias(post.getGallery().getMedia());
+                                    adapter.setPreview(true);
+                                    SpannedGridLayoutManager layoutManager;
 
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = (int)((trueSize[0] / trueSize[1]) * width);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview2);
-                    viewHolder.preview2.getLayoutParams().height = (int)((trueSize[0] / trueSize[1]) * width);
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview2.requestLayout();
-                    viewHolder.preview3.setVisibility(View.GONE);
-                    viewHolder.preview4.setVisibility(View.GONE);
-                    viewHolder.preview5.setVisibility(View.GONE);
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                } else {
-                    float[] trueSize = new float[]{1, 1.3f};
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = (int)((trueSize[0] / trueSize[1]) * width);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview3);
-                    viewHolder.preview3.getLayoutParams().height = (int)((trueSize[0] / trueSize[1]) * width);
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview3.requestLayout();
-                    viewHolder.preview2.setVisibility(View.GONE);
-                    viewHolder.preview4.setVisibility(View.GONE);
-                    viewHolder.preview5.setVisibility(View.GONE);
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                }
+                                    viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
+                                    viewHolder.rcvImagePreview.setAdapter(adapter);
+                                    float ratio = (ratio1 + ratio2) / 2;
+                                    if (ratio < 1) {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                    } else {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                    }
+                                    viewHolder.rcvImagePreview.getLayoutParams().height = width;
+                                    viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                    viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
+                                    layoutManager.setItemOrderIsStable(true);
+                                    viewHolder.rcvImagePreview.requestLayout();
+                                }
 
-                break;
-            case 3:
-//                GlideApp.with(context)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .skipMemoryCache(true)
-//                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
-//                        .into(new SimpleTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//
-//                            }
-//                        });
-//                int mHeight = resource.getHeight();
-//                int mWidth = resource.getWidth();
-                float mRatio = 0.5f;
-                if (mRatio < 1) {
-//                                    GridLayout.LayoutParams params =
-//                                            new GridLayout.LayoutParams(viewHolder.imgPreview1.getLayoutParams());
-//                                    params.rowSpec = GridLayout.spec(0, 2);
-//                                    viewHolder.imgPreview1.setLayoutParams(params);
-//                                    viewHolder.imgPreview1.requestLayout();
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = (int) (width / 2);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview3);
-                    viewHolder.preview3.getLayoutParams().height = (int) (width / 2);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview4);
-                    viewHolder.preview4.getLayoutParams().height = (int) (width / 2);
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview3.requestLayout();
-                    viewHolder.preview4.requestLayout();
-                    viewHolder.preview2.setVisibility(View.GONE);
-                    viewHolder.preview5.setVisibility(View.GONE);
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                } else {
-//                                    GridLayout.LayoutParams params =
-//                                            new GridLayout.LayoutParams(viewHolder.imgPreview1.getLayoutParams());
-//                                    params.columnSpec = GridLayout.spec(0, 2);
-//                                    viewHolder.gridPostPicture;
-//                                    viewHolder.imgPreview1.setLayoutParams(params);
-//                                    viewHolder.imgPreview1.requestLayout();
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.imgPreview1.getLayoutParams().height = width;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview2);
-                    viewHolder.imgPreview2.getLayoutParams().height = width / 2;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview4);
-                    viewHolder.imgPreview4.getLayoutParams().height = width / 2;
-                    ((ConstraintLayout.LayoutParams) viewHolder.imgPreview4.getLayoutParams()).startToEnd = R.id.preview1;
-                    ((ConstraintLayout.LayoutParams) viewHolder.imgPreview4.getLayoutParams()).topToBottom = R.id.preview2;
+                                @Override
+                                public void onFailure(Call<ImageSize> call, Throwable t) {
+                                    viewHolder.rcvImagePreview.setVisibility(View.GONE);
+                                }
+                            });
+                        }
 
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview2.requestLayout();
-                    viewHolder.preview4.requestLayout();
-                    viewHolder.preview3.setVisibility(View.GONE);
-                    viewHolder.preview5.setVisibility(View.GONE);
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                }
-                break;
-            case 4:
-//                GlideApp.with(context)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                        .skipMemoryCache(true)
-//                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4))
-//                        .into(new SimpleTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-//                                int mHeight = resource.getHeight();
-//                                int mWidth = resource.getWidth();
-//
-//                            }
-//                        });
+                        @Override
+                        public void onFailure(Call<ImageSize> call, Throwable t) {
+                            viewHolder.rcvImagePreview.setVisibility(View.GONE);
+                        }
+                    });
+                    break;
+                default:
+                    mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
+                        @Override
+                        public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                            float ratio = (float) response.body().getHeight() / response.body().getWidth();
+                            PostImageAdapter adapter = new PostImageAdapter();
+                            adapter.setContext(context);
+                            adapter.setRatio1(ratio);
+                            adapter.setMedias(post.getGallery().getMedia());
+                            adapter.setPreview(true);
+                            SpannedGridLayoutManager layoutManager;
 
-                float mRatio1 = 0.5f;
-                if (mRatio1 < 1) {
-//                                    GridLayout.LayoutParams params =
-//                                            new GridLayout.LayoutParams(viewHolder.imgPreview1.getLayoutParams());
-//                                    params.rowSpec = GridLayout.spec(0, 2);
-//                                    viewHolder.imgPreview1.setLayoutParams(params);
-//                                    viewHolder.imgPreview1.requestLayout();
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = (int) (width * 2 / 3);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview3);
-                    viewHolder.preview3.getLayoutParams().height = (int) (width / 3);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview4);
-                    viewHolder.preview4.getLayoutParams().height = (int) (width / 3);
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(3).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview5);
-                    viewHolder.preview5.getLayoutParams().height = (int) (width / 3);
+                            viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
+                            viewHolder.rcvImagePreview.setAdapter(adapter);
 
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview3.requestLayout();
-                    viewHolder.preview4.requestLayout();
-                    viewHolder.preview5.requestLayout();
-                    viewHolder.preview2.setVisibility(View.GONE);
-                    if (medias.size() > 4) {
-                        viewHolder.tvCount.setVisibility(View.VISIBLE);
-                        viewHolder.tvCount.setText("+ " + (medias.size() - 4));
-                    }
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                } else if (mRatio1 > 1) {
-//                                    GridLayout.LayoutParams params =
-//                                            new GridLayout.LayoutParams(viewHolder.imgPreview1.getLayoutParams());
-//                                    params.columnSpec = GridLayout.spec(0, 2);
-//                                    viewHolder.gridPostPicture;
-//                                    viewHolder.imgPreview1.setLayoutParams(params);
-//                                    viewHolder.imgPreview1.requestLayout();
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width / 2 * 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = width;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview3);
-                    viewHolder.preview3.getLayoutParams().height = width / 3;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview4);
-                    viewHolder.preview4.getLayoutParams().height = width / 3;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview5);
-                    viewHolder.preview5.getLayoutParams().height = width / 3;
+                            if (size == 3) {
+                                if (ratio < 1) {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                } else {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                }
+                            } else {
+                                if (ratio < 1.1 && ratio >= 1) {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                } else {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 6);
+                                }
+                            }
 
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview3.requestLayout();
-                    viewHolder.preview4.requestLayout();
-                    viewHolder.preview5.requestLayout();
-                    viewHolder.preview2.setVisibility(View.GONE);
-                    if (medias.size() > 4) {
-                        viewHolder.tvCount.setVisibility(View.VISIBLE);
-                        viewHolder.tvCount.setText("+ " + (medias.size() - 4));
-                    }
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                } else {
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview1);
-                    viewHolder.preview1.getLayoutParams().height = width / 2;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview2);
-                    viewHolder.preview2.getLayoutParams().height = width / 2;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview3);
-                    viewHolder.preview3.getLayoutParams().height = width / 2;
-                    GlideApp.with(context)
-                            .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 2)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(viewHolder.imgPreview4);
-                    viewHolder.preview4.getLayoutParams().height = width / 2;
+                            viewHolder.rcvImagePreview.getLayoutParams().height = width;
+                            viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                            viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
+                            layoutManager.setItemOrderIsStable(true);
+                            viewHolder.rcvImagePreview.requestLayout();
+                        }
 
-                    viewHolder.preview1.requestLayout();
-                    viewHolder.preview2.requestLayout();
-                    viewHolder.preview3.requestLayout();
-                    viewHolder.preview4.requestLayout();
-                    viewHolder.preview5.setVisibility(View.GONE);
-                    if (medias.size() > 4) {
-                        viewHolder.tvCount.setVisibility(View.VISIBLE);
-                        viewHolder.tvCount.setText("+ " + (medias.size() - 4));
-                    }
-                    viewHolder.imagesLayout.setVisibility(View.VISIBLE);
-                }
-                break;
-            default:
-                GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + width / 2)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(viewHolder.imgPreview1);
-                viewHolder.preview1.getLayoutParams().height = width / 2;
-                GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + medias.get(1).getPath().substring(4) + "&w=" + width / 2)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(viewHolder.imgPreview2);
-                viewHolder.preview2.getLayoutParams().height = width / 2;
-                GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(viewHolder.imgPreview3);
-                viewHolder.preview3.getLayoutParams().height = width / 3;
-                GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(viewHolder.imgPreview4);
-                viewHolder.preview4.getLayoutParams().height = width / 3;
-                GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + medias.get(2).getPath().substring(4) + "&w=" + width / 3)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
-                        .into(viewHolder.imgPreview5);
-                viewHolder.preview5.getLayoutParams().height = width / 3;
-
-                viewHolder.preview1.requestLayout();
-                viewHolder.preview2.requestLayout();
-                viewHolder.preview3.requestLayout();
-                viewHolder.preview4.requestLayout();
-                viewHolder.preview4.requestLayout();
-                if (medias.size() > 5) {
-                    viewHolder.tvCount.setVisibility(View.VISIBLE);
-                    viewHolder.tvCount.setText("+ " + (medias.size() - 5));
-                }
-                viewHolder.imagesLayout.setVisibility(View.VISIBLE);
+                        @Override
+                        public void onFailure(Call<ImageSize> call, Throwable t) {
+                            viewHolder.rcvImagePreview.setVisibility(View.GONE);
+                        }
+                    });
+            }
         }
 
     }
@@ -665,23 +424,25 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView tvPostTitle;
         TextView tvPostContent;
         MaterialButton btnReadMore;
-        ConstraintLayout imagesLayout;
-        MaterialCardView preview1;
-        ImageView imgPreview1;
-        MaterialCardView preview2;
-        ImageView imgPreview2;
-        MaterialCardView preview3;
-        ImageView imgPreview3;
-        MaterialCardView preview4;
-        ImageView imgPreview4;
-        MaterialCardView preview5;
-        ImageView imgPreview5;
-        TextView tvCount;
+        RecyclerView rcvImagePreview;
+        //        ConstraintLayout imagesLayout;
+//        MaterialCardView preview1;
+//        ImageView imgPreview1;
+//        MaterialCardView preview2;
+//        ImageView imgPreview2;
+//        MaterialCardView preview3;
+//        ImageView imgPreview3;
+//        MaterialCardView preview4;
+//        ImageView imgPreview4;
+//        MaterialCardView preview5;
+//        ImageView imgPreview5;
+//        TextView tvCount;
         MaterialButton btnPostLike;
         MaterialButton btnPostComent;
         TextView tvlikeCount;
         TextView tvCmtCount;
         boolean likeFlag;
+        ImageView singlePreview;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
@@ -692,23 +453,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitle);
             tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContent);
             btnReadMore = (MaterialButton) itemView.findViewById(R.id.btnReadMore);
-            imagesLayout = (ConstraintLayout) itemView.findViewById(R.id.imagesLayout);
-            imgPreview1 = (ImageView) itemView.findViewById(R.id.imgPreview1);
-            imgPreview2 = (ImageView) itemView.findViewById(R.id.imgPreview2);
-            imgPreview3 = (ImageView) itemView.findViewById(R.id.imgPreview3);
-            imgPreview4 = (ImageView) itemView.findViewById(R.id.imgPreview4);
-            imgPreview5 = (ImageView) itemView.findViewById(R.id.imgPreview5);
-            preview1 = (MaterialCardView) itemView.findViewById(R.id.preview1);
-            preview2 = (MaterialCardView) itemView.findViewById(R.id.preview2);
-            preview3 = (MaterialCardView) itemView.findViewById(R.id.preview3);
-            preview4 = (MaterialCardView) itemView.findViewById(R.id.preview4);
-            preview5 = (MaterialCardView) itemView.findViewById(R.id.preview5);
-            tvCount = (TextView) itemView.findViewById(R.id.tvCount);
+            rcvImagePreview = (RecyclerView) itemView.findViewById(R.id.rcvImagePreview);
             btnPostLike = (MaterialButton) itemView.findViewById(R.id.btnPostLike);
             btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostComment);
             tvlikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
             tvCmtCount = (TextView) itemView.findViewById(R.id.tvCmtCount);
             likeFlag = false;
+            singlePreview = (ImageView) itemView.findViewById(R.id.imgSinglePreview);
 //            frame = (FrameLayout) itemView.findViewById(R.id.framePostImage);
 
             imgPostAvatar.setOnClickListener((v) -> eventViewProfile());
@@ -718,6 +469,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
+                    intent.putExtra("token", MainActivity.user.getToken());
                     context.startActivity(intent);
                 }
             });
@@ -726,6 +478,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
+                    intent.putExtra("token", MainActivity.user.getToken());
                     context.startActivity(intent);
                 }
             });
@@ -734,6 +487,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
+                    intent.putExtra("token", MainActivity.user.getToken());
                     context.startActivity(intent);
                 }
             });
@@ -744,10 +498,10 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     boolean action = true;
                     intent.putExtra("id", postId);
                     intent.putExtra("action", action);
+                    intent.putExtra("token", MainActivity.user.getToken());
                     context.startActivity(intent);
                 }
             });
-
         }
 
         private void eventViewProfile() {
@@ -755,6 +509,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             i.putExtra("firstname", user.getFirstName());
             i.putExtra("lastname", user.getLastName());
             i.putExtra("id", user.getId());
+            i.putExtra("token", MainActivity.user.getToken());
             if (MainActivity.user.getId() == user.getId()) {
                 i.putExtra("owner", true);
             } else {

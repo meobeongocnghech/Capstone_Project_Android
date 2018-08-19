@@ -12,115 +12,143 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:background="@color/colorBlack"
-            android:elevation="4dp">
+            android:orientation="vertical">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/white"
-                android:layout_weight="1"
-                android:elevation="1dp"
-                app:layout_scrollFlags="scroll|enterAlways">
-
-                <ImageView
-                    android:id="@+id/imgMainAvatar"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:padding="5dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/avatar_default"
-                    android:contentDescription="TODO" />
-
-                <TextView
-                    android:id="@+id/tvMainTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="36dp"
-                    android:text="Trang chủ"
-                    android:textColor="@color/colorTextFieldInput"
-                    android:textSize="20sp" />
-            </android.support.v7.widget.Toolbar>
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                app:tabIndicatorColor="@color/colorPrimary"
-                app:tabMaxWidth="0dp"
-                app:tabGravity="fill"
-                app:tabMode="fixed">
+                android:background="@color/colorBlack"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabPost"
-                    android:layout_width="wrap_content"
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_weight="1"
+                    android:background="@android:color/white"
+                    android:backgroundTint="@color/colorWhite"
+                    android:elevation="1dp"
+                    app:layout_scrollFlags="scroll|enterAlways">
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/imgMainAvatar"
+                            android:layout_width="?attr/actionBarSize"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:padding="8dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/avatar_default" />
+
+                        <TextView
+                            android:id="@+id/tvMainTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="8dp"
+                            android:text="Trang chủ"
+                            android:textColor="@color/colorTextFieldInput"
+                            android:textSize="20sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintLeft_toRightOf="@id/imgMainAvatar"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/search"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="16dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_search_black_24dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </android.support.constraint.ConstraintLayout>
+                </android.support.v7.widget.Toolbar>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_post" />
+                    android:background="@android:color/white"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/colorPrimary"
+                    app:tabMaxWidth="0dp"
+                    app:tabMode="fixed">
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabPlan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_plan" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabPost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/ic_post" />
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabNotification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_notification" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabPlan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/ic_plan" />
 
-                <!--<android.support.design.widget.TabItem-->
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabNotification"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/ic_notification" />
+
+                    <!--<android.support.design.widget.TabItem-->
                     <!--android:id="@+id/tabMessage"-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
                     <!--android:icon="@drawable/ic_message" />-->
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabSearch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:icon="@drawable/ic_search" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabSearch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:icon="@drawable/ic_search" />
 
-            </android.support.design.widget.TabLayout>
-        </android.support.design.widget.AppBarLayout>
+                </android.support.design.widget.TabLayout>
+            </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/container"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorDefaultBackground"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:layout_height="match_parent">
 
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </LinearLayout>
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorDefaultBackground"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+        </LinearLayout>
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btnAddNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
-            android:scaleType="centerCrop"
             android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"/>
-    </android.support.design.widget.CoordinatorLayout>
+            android:layout_margin="16dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_add" />
 
+        <FrameLayout
+            android:id="@+id/search_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"></FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 
     <android.support.design.widget.NavigationView
@@ -130,8 +158,8 @@
         android:layout_gravity="start"
         android:background="@android:color/white"
         android:fitsSystemWindows="true"
+        android:theme="@style/NavigationView"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"
-        android:theme="@style/NavigationView"/>
+        app:menu="@menu/activity_main_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

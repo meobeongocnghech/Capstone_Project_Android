@@ -68,20 +68,20 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
         searchFragment = new SearchFragment();
     }
 
-    @Override
-    public int getItemPosition(@NonNull Object object) {
-        if (object instanceof PostFragment) {
-            return 0;
-        } else if (object instanceof PlanFragment) {
-            return 1;
-        } else if (object instanceof NotificationFragment) {
-            return 2;
-        } else if (object instanceof SearchFragment) {
-            return 3;
-        } else {
-            return POSITION_NONE;
-        }
-    }
+//    @Override
+//    public int getItemPosition(@NonNull Object object) {
+//        if (object instanceof PostFragment) {
+//            return 0;
+//        } else if (object instanceof PlanFragment) {
+//            return 1;
+//        } else if (object instanceof NotificationFragment) {
+//            return 2;
+//        } else if (object instanceof SearchFragment) {
+//            return 3;
+//        } else {
+//            return POSITION_NONE;
+//        }
+//    }
 
     @Override
     public Fragment getItem(int position) {
@@ -102,6 +102,6 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return 4;
     }
 }

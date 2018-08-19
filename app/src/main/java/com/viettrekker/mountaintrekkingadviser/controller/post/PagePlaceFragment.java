@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -34,11 +35,11 @@ public class PagePlaceFragment extends Fragment {
 
         ParallaxPageTransformer pageTransformer = new ParallaxPageTransformer()
                 .addViewToParallax(new ParallaxTransformInformation(R.id.imgPlaceCover, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceName, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceAddress, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceTotalPlan, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDescription, -5f, -5f))
-                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDistance, -5f, -5f));
+                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceName, -3f, -3f))
+                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceAddress, -3f, -3f))
+                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceTotalPlan, -3f, -3f))
+                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDescription, -3f, -3f))
+                .addViewToParallax(new ParallaxTransformInformation(R.id.tvPlaceDistance, -3f, -3f));
 
         viewPager.setPageTransformer(true, pageTransformer);
         PlaceViewPagerAdapter placeAdapter = new PlaceViewPagerAdapter(getChildFragmentManager());
@@ -52,6 +53,7 @@ public class PagePlaceFragment extends Fragment {
             Place place = placeAdapter.getPlaceItem(viewPager.getCurrentItem());
             Intent i = new Intent(getActivity(), PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
+            i.putExtra("token", MainActivity.user.getToken());
             i.putExtra("name", place.getName());
             i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
             startActivity(i);

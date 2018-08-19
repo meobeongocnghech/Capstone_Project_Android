@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="0dp"
+    app:cardUseCompatPadding="false"
+    app:cardCornerRadius="0dp">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+        <ImageView
+            android:id="@+id/imgSearchPostAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="8dp"
+            android:adjustViewBounds="true"
+            android:padding="3dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_default"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSearchPostUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="User"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/tvSeachTime"
+            app:layout_constraintStart_toEndOf="@+id/imgSearchPostAvatar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="14dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/ic_play_arrow_16dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvSearchPostUserName"
+            app:layout_constraintStart_toEndOf="@id/tvSearchPostUserName"
+            app:layout_constraintTop_toTopOf="@id/tvSearchPostUserName" />
+
+        <TextView
+            android:id="@+id/tvSeachTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="20 m"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@id/imgSearchPostAvatar"
+            app:layout_constraintStart_toStartOf="@id/tvSearchPostUserName"
+            app:layout_constraintTop_toBottomOf="@id/tvSearchPostUserName" />
+
+        <TextView
+            android:id="@+id/tvSearchPostCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Chuyên mục khác"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/separator"
+            app:layout_constraintTop_toTopOf="@id/tvSearchPostUserName" />
+
+        <TextView
+            android:id="@+id/tvSearchPostTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Lorem ipsum dolor"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@id/tvSearchPostContent"
+            app:layout_constraintTop_toBottomOf="@id/imgSearchPostAvatar"
+            app:layout_constraintBottom_toTopOf="@id/tvSearchPostContent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <TextView
+            android:id="@+id/tvSearchPostContent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:text="@string/pseudo_para"
+            android:textColor="@color/colorTextFieldInput"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/tvSearchPostTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rcvSmallImagePreview"
+            app:layout_goneMarginRight="16dp"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvSmallImagePreview"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginRight="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgSearchPostAvatar">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/tvSearchLikeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="3 thích"
+            app:layout_constraintStart_toStartOf="@id/tvSearchPostContent"
+            app:layout_constraintTop_toBottomOf="@id/rcvSmallImagePreview" />
+
+        <TextView
+            android:id="@+id/tvSearchCmtCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 bình luận"
+            android:layout_marginRight="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvSearchLikeCount"
+            app:layout_goneMarginTop="8dp"/>
+    </android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bbb"
+        android:layout_gravity="bottom"/>
+</android.support.design.card.MaterialCardView>

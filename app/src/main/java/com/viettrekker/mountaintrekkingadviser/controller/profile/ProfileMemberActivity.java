@@ -95,11 +95,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member_profile);
 
         id = getIntent().getIntExtra("id", 0);
+        String token = getIntent().getStringExtra("token");
         final ProgressDialog progressDialog = new ProgressDialog(this, R.style.DialogStyle);
         progressDialog.setCancelable(false);
         progressDialog.show();
         APIService mWebService = APIUtils.getWebService();
-        mWebService.getUserById(MainActivity.user.getToken(), id).enqueue(new Callback<User>() {
+        mWebService.getUserById(token, id).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 User user = response.body();

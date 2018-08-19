@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:layout_marginLeft="16dp"
+    android:background="@color/colorWhite">
+
+    <android.support.design.card.MaterialCardView
+        android:id="@+id/cardPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="false"
+        app:cardCornerRadius="5dp">
+        <ImageView
+            android:id="@+id/imgSearchPlace"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/maps_test"/>
+    </android.support.design.card.MaterialCardView>
+    <TextView
+        android:id="@+id/tvSearchPlaceName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextFieldInput"
+        android:text="Ba Vì"
+        app:layout_constraintTop_toTopOf="@id/cardPlace"
+        app:layout_constraintBottom_toTopOf="@id/tvSearchAddress"
+        app:layout_constraintLeft_toRightOf="@id/cardPlace"
+        android:layout_marginLeft="16dp"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium"/>
+    <TextView
+        android:id="@+id/tvSearchAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ba vì, Hà Nội"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="@id/tvSearchPlaceName"
+        app:layout_constraintBottom_toBottomOf="@id/cardPlace"
+        app:layout_constraintTop_toBottomOf="@id/tvSearchPlaceName"/>
+</android.support.constraint.ConstraintLayout>

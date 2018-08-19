@@ -13,7 +13,7 @@
     <color name="colorGreyHint">#BDBDBD</color>
     <color name="colorBlack">#000000</color>
     <color name="colorDefaultBackground">#EEEEEE</color>
-    <color name="colorDefaultBackgroundDark">#FAFAFA</color>
+    <color name="colorDefaultBackgroundDark">#bcbcbc</color>
     <color name="colorTextFieldContainer">#1F000000</color> <!--black 12% alpha -->
     <color name="colorTextFieldLabel">#99000000</color> <!--black 60% alpha -->
     <color name="colorTextFieldInput">#DE000000</color> <!--black 87% alpha -->
@@ -21,7 +21,7 @@
     <color name="colorCorrect">#67c95a</color>
     <color name="colorViewHolder">#b2b2b2</color>
     <color name="colorWhite">#fff</color>
-    <color name="colorDisable">#99A1AC</color>
+    <color name="colorDisable">#99A1AC</color>"
 
     <color name="material_red">#FFC93437</color>
     <color name="material_blue">#FF375BF1</color>

@@ -68,4 +68,6 @@
     <string name="error_password">Mật khẩu quá ngắn</string>
     <string name="error_repassword">Nhập lại chưa chính xác</string>
     <string name="title_activity_maps">Map</string>
+    <string name="app_label">MTA</string>
+    <string name="search_hint">Nhập từ khóa</string>
 </resources>
