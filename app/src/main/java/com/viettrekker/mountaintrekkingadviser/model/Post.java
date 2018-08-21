@@ -54,7 +54,7 @@ public class Post {
     private List<Comment> comments;
     @SerializedName("direction")
     @Expose
-    private String direction;
+    private Direction direction;
     
 
     public int getId() {
@@ -177,11 +177,11 @@ public class Post {
         this.comments = comments;
     }
 
-    public String getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
-    public void setDirection(String direction) {
+    public void setDirection(Direction direction) {
         this.direction = direction;
     }
 

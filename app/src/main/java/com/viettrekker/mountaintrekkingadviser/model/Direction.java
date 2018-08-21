@@ -15,6 +15,9 @@ public class Direction {
     @SerializedName("placeId")
     @Expose
     private int placeId;
+    @SerializedName("place")
+    @Expose
+    private Place place;
 
     public int getId() {
         return id;
@@ -38,5 +41,13 @@ public class Direction {
 
     public void setPlaceId(int placeId) {
         this.placeId = placeId;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 }

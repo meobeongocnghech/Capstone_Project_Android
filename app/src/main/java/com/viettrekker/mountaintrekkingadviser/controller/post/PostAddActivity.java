@@ -194,8 +194,7 @@ static final int OPEN_MEDIA_PICKER = 1;
                     p.setContent(edtContent.getText().toString());
                     d.setPlaceId(placeId);
                     Gson gs = new Gson();
-
-                    p.setDirection(gs.toJson(d));
+                    p.setDirection(d);
                     p.setTypeId(typeId);
                     mWebService.addPost(MainActivity.user.getToken(), p).enqueue(new Callback<Post>() {
                         @Override

@@ -126,18 +126,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         typPost = postType[post.getTypeId() - 1];
         if (post.getTypeId() == 1){
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
-            viewHolder.tvPostCategory.setText(" Tại...");
-            mWebService.getPlaceById(MainActivity.user.getToken(), post.getDirectionId()).enqueue(new Callback<Place>() {
-                @Override
-                public void onResponse(Call<Place> call, Response<Place> response) {
-//                    viewHolder.tvPostCategory.setText(response.body().getName());
-                }
+            viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
 
-                @Override
-                public void onFailure(Call<Place> call, Throwable t) {
-
-                }
-            });
+//            mWebService.getPlaceById(MainActivity.user.getToken(), post.getDirectionId()).enqueue(new Callback<Place>() {
+//                @Override
+//                public void onResponse(Call<Place> call, Response<Place> response) {
+////                    viewHolder.tvPostCategory.setText(response.body().getName());
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Place> call, Throwable t) {
+//
+//                }
+//            });
         } else {
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
             viewHolder.tvPostCategory.setText(typPost);

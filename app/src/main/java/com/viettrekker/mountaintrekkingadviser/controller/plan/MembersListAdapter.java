@@ -133,6 +133,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
 //            i.putExtra("firstname", member.getFirstName());
 //            i.putExtra("lastname", member.getLastName());
             i.putExtra("id", member.getUserId());
+            i.putExtra("token",MainActivity.user.getToken());
             if (MainActivity.user.getId() == member.getUserId()) {
                 i.putExtra("owner", true);
             } else {
