@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private User user;
     private FrameLayout frame;
-
+    private static final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
     private LocationManager location;
     private LatLng mLatLng;
     private TextView tvMainTitle;
@@ -435,22 +435,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void buildAlertDialogNoGPS() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Vui lòng bật GPS trên thiết bị của bạn")
-                .setCancelable(false)
-                .setPositiveButton("Bật", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                }).setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    ACCESS_FINE_LOCATION_INTENT_ID);
+
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    ACCESS_FINE_LOCATION_INTENT_ID);
+        }
     }
 
     @Override

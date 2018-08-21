@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -221,7 +222,6 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
             @Override
             public void onSearchAction(String query) {
                 mLastQuery = query;
-
                 if (DataHelper.finishLoad) {
                     ((MainActivity) getActivity()).swipeTab(3);
                     SearchCardAdapter adapter = new SearchCardAdapter();

@@ -73,9 +73,6 @@ static final int OPEN_MEDIA_PICKER = 1;
     MaterialButton btnAddPhoto;
     MaterialButton btnLocation;
     MaterialButton btnPlan;
-    CheckBox cbImageSelect;
-    CheckBox cbLocationSelect;
-    CheckBox cbPlanSelect;
     TextView tvPostButton;
     RecyclerView rcvImageSelect;
     ArrayList<Place> places;
@@ -85,6 +82,7 @@ static final int OPEN_MEDIA_PICKER = 1;
     int idUpdate;
     String point = "";
     TextView tvBack;
+    Direction d;
     private List<Uri> mUris = new ArrayList<>();
     private StringBuilder mBuilder = new StringBuilder();
     private ProgressDialog mProgressDialog;
@@ -103,9 +101,6 @@ static final int OPEN_MEDIA_PICKER = 1;
         btnAddPhoto = (MaterialButton) findViewById(R.id.btnAddPhoto);
         btnLocation = (MaterialButton) findViewById(R.id.btnLocation);
         btnPlan = (MaterialButton) findViewById(R.id.btnPlan);
-        cbImageSelect = (CheckBox) findViewById(R.id.cbImageSelect);
-        cbLocationSelect = (CheckBox) findViewById(R.id.cbLocationSelect);
-        cbPlanSelect = (CheckBox) findViewById(R.id.cbPlanSelect);
         tvPostButton = (TextView) findViewById(R.id.tvPostButton);
         rcvImageSelect = (RecyclerView) findViewById(R.id.rcvImageSelect);
         tvBack = (TextView) findViewById(R.id.tvBack);
@@ -115,7 +110,6 @@ static final int OPEN_MEDIA_PICKER = 1;
 
         places = new ArrayList<>();
         btnLocation.setText("Chọn địa điểm");
-        cbLocationSelect.setChecked(false);
         placeId = -1;
         typeId = 4;
 
@@ -129,22 +123,13 @@ static final int OPEN_MEDIA_PICKER = 1;
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
                 places = response.body();
+                if (places != null)
                 places.remove(0);
             }
 
             @Override
             public void onFailure(Call<ArrayList<Place>> call, Throwable t) {
 
-            }
-        });
-
-        cbLocationSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (!b){
-                    btnLocation.setText("Chọn địa điểm");
-                    placeId = -1;
-                }
             }
         });
 
@@ -157,7 +142,6 @@ static final int OPEN_MEDIA_PICKER = 1;
                             @Override
                             public void onSelected(BaseSearchDialogCompat dialog,SearchPlace item, int position) {
                                 btnLocation.setText(item.getTitle());
-                                cbLocationSelect.setChecked(true);
                                 placeId = item.getId();
                                 point = item.getmTitle();
                                 Toast.makeText(PostAddActivity.this,item.getId()+"",Toast.LENGTH_LONG).show();
@@ -172,8 +156,10 @@ static final int OPEN_MEDIA_PICKER = 1;
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PostAddActivity.this,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                 String content = edtContent.getText().toString();
                 String title = edtTitlePost.getText().toString();
-                if (cbLocationSelect.isChecked()) {
+                if (placeId != -1) {
                     typeId = 1;
+                    d = new Direction();
+                    d.setPlaceId(placeId);
                 }
                 if (title.isEmpty() || content.isEmpty()){
                     alertDialogBuilder.setTitle("Cảnh báo");
@@ -188,13 +174,10 @@ static final int OPEN_MEDIA_PICKER = 1;
                     alertDialog.show();
 
                 } else if  (!tvPostButton.getText().equals("Sửa")){
-                    Direction d = new Direction();
                     Post p = new Post();
                     p.setId(idUpdate);
                     p.setName(edtTitlePost.getText().toString());
                     p.setContent(edtContent.getText().toString());
-                    d.setPlaceId(placeId);
-                    Gson gs = new Gson();
                     p.setDirection(d);
                     p.setTypeId(typeId);
                     mWebService.addPost(Session.getToken(PostAddActivity.this), p).enqueue(new Callback<Post>() {
@@ -260,9 +243,12 @@ static final int OPEN_MEDIA_PICKER = 1;
 
     private ArrayList<SearchPlace> createSampleData(){
         ArrayList<SearchPlace> items = new ArrayList<>();
-        for (Place p : places) {
-            items.add(new SearchPlace(p.getName(), p.getId()));
+        if (places != null){
+            for (Place p : places) {
+                items.add(new SearchPlace(p.getName(), p.getId()));
+            }
         }
+
         return items;
     }
 
@@ -293,16 +279,13 @@ static final int OPEN_MEDIA_PICKER = 1;
                 if (selectionResult.size() > 0){
                     imageAddAdapter.setContext(this);
                     imageAddAdapter.setListImg(selectionResult);
-                    cbImageSelect.setChecked(true);
                     btnAddPhoto.setText("Bạn đã chọn "+ (selectionResult.size()) +" ảnh");
                 } else {
                     imageAddAdapter.setListImg(selectionResult);
-                    cbImageSelect.setChecked(false);
                     btnAddPhoto.setText("Chọn ảnh");
                 }
 
             } else {
-                cbImageSelect.setChecked(false);
                 btnAddPhoto.setText("Chọn ảnh");
             }
             rcvImageSelect.setAdapter(imageAddAdapter);

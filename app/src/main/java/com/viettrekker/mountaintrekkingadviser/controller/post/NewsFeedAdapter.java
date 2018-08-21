@@ -125,25 +125,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.token = token;
         viewHolder.userId = userId;
         String typPost = "null";
-        int imgSize;
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
         typPost = postType[post.getTypeId() - 1];
-        if (post.getTypeId() == 1){
+        if (post.getTypeId() == 1 && (post.getDirection()) != null){
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
             viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
-
-//            mWebService.getPlaceById(MainActivity.user.getToken(), post.getDirectionId()).enqueue(new Callback<Place>() {
-//                @Override
-//                public void onResponse(Call<Place> call, Response<Place> response) {
-////                    viewHolder.tvPostCategory.setText(response.body().getName());
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Place> call, Throwable t) {
-//
-//                }
-//            });
         } else {
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
             viewHolder.tvPostCategory.setText(typPost);
@@ -400,7 +387,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     List<Post> list = response.body();
                     int lastPosition = listPost.size();
                     if (list != null) {
-                        list.remove(0);
                         for (Post p : list) {
                             listPost.add(p);
                         }

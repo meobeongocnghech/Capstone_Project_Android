@@ -214,6 +214,7 @@ public class NewPlanActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
                 places = response.body();
+                if (places != null)
                 places.remove(0);
             }
 

@@ -53,7 +53,6 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private int userId;
 
     int idCmtEdit = -1;
-
     public List<Comment> getList() {
         return list;
     }

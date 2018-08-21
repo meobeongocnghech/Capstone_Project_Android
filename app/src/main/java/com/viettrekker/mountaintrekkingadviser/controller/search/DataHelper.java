@@ -48,9 +48,9 @@ public class DataHelper {
     private static final String COLORS_FILE_NAME = "colors.json";
 
     private static APIService mWebService = APIUtils.getWebService();
-    public static List<User> users;
-    public static List<Place> places;
-    public static List<Post> posts;
+    public static List<User> users = new ArrayList<>();
+    public static List<Place> places = new ArrayList<>();
+    public static List<Post> posts = new ArrayList<>();
     private static Call<List<User>> callUsers;
     private static Call<List<Place>> callPlaces;
     private static Call<List<Post>> callPosts;
@@ -100,6 +100,7 @@ public class DataHelper {
                         @Override
                         public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                             users = response.body();
+                            if (users != null)
                             users.remove(0);
                             if (callPlaces != null) callPlaces.cancel();
                             callPlaces = mWebService.searchPlaceSuggestion(Session.getToken(context),
@@ -108,6 +109,7 @@ public class DataHelper {
                                 @Override
                                 public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
                                     places = response.body();
+                                    if (places != null)
                                     places.remove(0);
 
                                     if (callPosts != null) callPosts.cancel();
@@ -117,12 +119,14 @@ public class DataHelper {
                                         @Override
                                         public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                                             posts = response.body();
+                                            if (posts != null)
                                             posts.remove(0);
 
                                             finishLoad = true;
 
                                             suggestionList = new ArrayList<>();
                                             int i = 0;
+                                            if (users != null)
                                             for (User user : users) {
                                                 if (i == 2) break;
                                                 suggestionList.add(new MySearchSuggestion(user.getFirstName() + " " + user.getLastName(),user.getGallery() == null ? "" : user.getGallery().getMedia().get(0).getPath().substring(4) , user.getId()));
@@ -130,6 +134,7 @@ public class DataHelper {
                                             }
 
                                             i = 0;
+                                            if (places != null)
                                             for (Place place : places) {
                                                 if (i == 2) break;
                                                 suggestionList.add(new MySearchSuggestion(place.getName(), "place", place.getId()));
@@ -137,6 +142,7 @@ public class DataHelper {
                                             }
 
                                             i = 0;
+                                            if (posts != null)
                                             for (Post post : posts) {
                                                 if (i == 2) break;
                                                 suggestionList.add(new MySearchSuggestion(post.getName(), "post", post.getId()));

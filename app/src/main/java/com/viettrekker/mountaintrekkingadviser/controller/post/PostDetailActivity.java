@@ -66,11 +66,11 @@ public class PostDetailActivity extends AppCompatActivity{
     MaterialButton btnPostComent;
     TextView tvCmtCount;
     TextView tvLikeCount;
+    TextView separator;
     int id;
     Button btnSendCmtDetail;
     RecyclerView rcvPostImage;
     RecyclerView rcvCmtItem;
-    CommentListAdapter cmtListAdapter;
     APIService mWebService;
     boolean likeFlag;
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
@@ -109,6 +109,7 @@ public class PostDetailActivity extends AppCompatActivity{
         btnSendCmtDetail = (Button) findViewById(R.id.btnSendCmtDetail);
         tvCmtCount = (TextView) findViewById(R.id.tvCmtCount);
         tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
+        separator = (TextView) findViewById(R.id.separator);
         likeFlag = false;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -372,7 +373,13 @@ public class PostDetailActivity extends AppCompatActivity{
                 });
                 tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
                 String typPost = postType[post.getTypeId()-1];
-                tvPostCategory.setText(typPost);
+                if (post.getTypeId() == 1 && post.getDirection() != null){
+                    separator.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_location_on));
+                    tvPostCategory.setText(post.getDirection().getPlace().getName());
+                } else {
+                    tvPostCategory.setText(typPost);
+                    separator.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
+                }
                 tvPostTitle.setText(post.getName());
                 tvPostContent.setText(post.getContent());
                 cmtListAdapter.setList(post.getComments());
