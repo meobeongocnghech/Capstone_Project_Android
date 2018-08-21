@@ -18,6 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyClTInKfxZm_mBWQInGOp92Ta54EgzvqCc"/>
+
         <activity android:name=".controller.MainActivity" />
         <activity
             android:name=".controller.LoginActivity"
@@ -36,14 +41,20 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".controller.post.PlaceDetailActivity" />
         <activity android:name=".TestActivity">
+
         </activity>
         <activity android:name=".controller.profile.ProfileMemberActivity"></activity>
         <activity android:name=".controller.post.PostDetailActivity" />
-        <activity android:name=".controller.post.PostAddActivity" />
-        <activity android:name=".controller.plan.PlanDetailActivity"/>
-        <activity android:name=".controller.plan.TimeLinesActivity"/>
-        <activity android:name=".controller.plan.ChecklistActivity"/>
-        <activity android:name=".controller.plan.NewPlanActivity"/>
+        <activity android:name=".controller.post.PostAddActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".controller.plan.PlanDetailActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".controller.plan.TimeLinesActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".controller.plan.ChecklistActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".controller.plan.NewPlanActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity android:name=".controller.search.FullSearchActivity"/>
 
     </application>
@@ -51,8 +62,4 @@
     <meta-data
         android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"/>
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyDipE4YMrmnB4sWkfLogIxsOabzokTuqvw"/>
-
 </manifest>

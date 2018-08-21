@@ -2,9 +2,12 @@ package com.viettrekker.mountaintrekkingadviser.controller.plan;
 
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -12,7 +15,12 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.method.TextKeyListener;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +31,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -35,18 +46,22 @@ import com.tsongkha.spinnerdatepicker.DatePicker;
 import com.tsongkha.spinnerdatepicker.DatePickerDialog;
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.model.CheckList;
 import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
+import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Group;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
+import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -64,45 +79,107 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewPlanActivity extends AppCompatActivity{
-    EditText edtPlanName;
-    MaterialButton btnStartLoc;
-    TextView tvDateStart;
-    TextView tvDurationDate;
-    TextView tvDistance;
-    TextView tvDateEnd;
-    TextView tvMemberCount;
-    RecyclerView rcvListMembersPlan;
-    Switch swPublic;
-    Button btnTimeLines;
-    Button btnCheckList;
-    RelativeLayout layoutMembers;
-    ImageView imgAddMember;
-    MaterialButton btnStartDate;
-    MaterialButton btnStartTime;
-    MaterialButton btnEndDate;
-    MaterialButton btnEndTime;
-    TextView tvEndTime;
-    TextView tvStartTime;
-    MaterialButton btnEndLoc;
-    TextView tvNewPlan;
+public class NewPlanActivity extends AppCompatActivity {
+    private EditText edtPlanName;
+    private MaterialButton btnStartLoc;
+    private TextView tvDateStart;
+    private TextView tvDurationDate;
+    private TextView tvDistance;
+    private TextView tvDateEnd;
+    private Switch swPublic;
+    private Button btnTimeLines;
+    private Button btnCheckList;
+    private MaterialButton btnStartDateTime;
+    private MaterialButton btnEndDateTime;
+    private TextView tvEndTime;
+    private TextView tvStartTime;
+    private MaterialButton btnEndLoc;
+    private TextView tvNewPlan;
 
-    int placeId;
-    Calendar startDate;
-    Calendar endDate;
-    List<User> allMember;
-    List<Member> members;
-    Plan plan;
-    ArrayList<Place> places;
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    public static List<ChecklistItem> checkLists = new ArrayList<>();
-    public static List<TimeLines> timeLines  = new ArrayList<>();
+    private int placeId;
+    private Calendar startDate;
+    private Calendar endDate;
+    private Plan plan;
+    private ArrayList<Place> places;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    public static List<ChecklistItem> checkLists;
+    public static List<TimeLines> timeLines;
 
+    private boolean pickedSourceLocation = false;
+    private boolean pickedDestinationLocation = false;
+    private PlanLocation srcLocation = new PlanLocation();
+    private PlanLocation desLocation = new PlanLocation();
+
+    private boolean setStart = false;
+    private boolean setEnd = false;
+
+    private String token;
+
+    private SlideDateTimeListener listener = new SlideDateTimeListener() {
+
+        @Override
+        public void onDateTimeSet(Date date) {
+            if (setEnd) {
+                try {
+                    if (date.before(startDate.getTime())) {
+                        Toast.makeText(NewPlanActivity.this, "Lỗi: Sớm hơn gian thời gian xuất phát", Toast.LENGTH_LONG).show();
+                    } else {
+                        tvEndTime.setText(DateTimeUtils.parseStringTime(date));
+                        tvDateEnd.setText(DateTimeUtils.parseStringDate(date));
+                        endDate.setTime(date);
+
+                        tvDurationDate.setText(DateTimeUtils.caculatorStringTime(startDate.getTime(), endDate.getTime()));
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (setStart) {
+                tvStartTime.setText(DateTimeUtils.parseStringTime(date));
+                tvDateStart.setText(DateTimeUtils.parseStringDate(date));
+                startDate.setTime(date);
+
+                if (startDate.after(endDate)) {
+                    endDate.setTime(startDate.getTime());
+
+                    tvEndTime.setText(DateTimeUtils.parseStringTime(endDate.getTime()));
+                    tvDateEnd.setText(DateTimeUtils.parseStringDate(endDate.getTime()));
+
+                    try {
+                        tvDurationDate.setText(DateTimeUtils.caculatorStringTime(startDate.getTime(), endDate.getTime()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onDateTimeCancel() {
+            if (setEnd) {
+                setEnd = false;
+            } else if (setStart) {
+                setStart = false;
+            }
+        }
+    };
+
+    private static final String TAG = NewPlanActivity.class.getSimpleName();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_plan);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.addPlanToolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         APIService mWebService = APIUtils.getWebService();
         edtPlanName = (EditText) findViewById(R.id.edtPlanName);
         btnStartLoc = (MaterialButton) findViewById(R.id.btnStartLoc);
@@ -110,26 +187,19 @@ public class NewPlanActivity extends AppCompatActivity{
         tvDurationDate = (TextView) findViewById(R.id.tvDurationDate);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
         tvDateEnd = (TextView) findViewById(R.id.tvDateEnd);
-        tvMemberCount = (TextView) findViewById(R.id.tvMemberCount);
-        rcvListMembersPlan = (RecyclerView) findViewById(R.id.rcvListMembersPlan);
         swPublic = (Switch) findViewById(R.id.swPublic);
         btnTimeLines = (Button) findViewById(R.id.btnTimeLines);
         btnCheckList = (Button) findViewById(R.id.btnCheckList);
-        layoutMembers = (RelativeLayout) findViewById(R.id.layoutViewMember);
-        imgAddMember = (ImageView) findViewById(R.id.imgAddMember);
-        btnStartDate = (MaterialButton) findViewById(R.id.btnStartDate);
-        btnStartTime = (MaterialButton) findViewById(R.id.btnStartTime);
-        btnEndDate = (MaterialButton) findViewById(R.id.btnEndDate);
-        btnEndTime = (MaterialButton) findViewById(R.id.btnEndTime);
+        btnStartDateTime = (MaterialButton) findViewById(R.id.btnStartDateTime);
+        btnEndDateTime = (MaterialButton) findViewById(R.id.btnEndDateTime);
         tvEndTime = (TextView) findViewById(R.id.tvEndTime);
         tvStartTime = (TextView) findViewById(R.id.tvStartTime);
         btnEndLoc = (MaterialButton) findViewById(R.id.btnEndLoc);
         tvNewPlan = (TextView) findViewById(R.id.tvNewPlan);
-        members = new ArrayList<>();
         timeLines = new ArrayList<>();
         checkLists = new ArrayList<>();
-        btnStartLoc.requestFocus();
-        edtPlanName.setFocusable(false);
+
+        token = getIntent().getStringExtra("token");
 
         startDate = Calendar.getInstance();
         endDate = Calendar.getInstance();
@@ -137,70 +207,9 @@ public class NewPlanActivity extends AppCompatActivity{
         m.setUserId(MainActivity.user.getId());
         m.setRoleInGroupId(1);
         m.setVehicule("");
-        members.add(m);
-        rcvListMembersPlan.setLayoutManager(new LinearLayoutManager(NewPlanActivity.this));
-        MembersListAdapter membersListAdapter = new MembersListAdapter(NewPlanActivity.this);
-        rcvListMembersPlan.setVisibility(View.GONE);
-        membersListAdapter.setUsers(members);
-        membersListAdapter.notifyDataSetChanged();
-        rcvListMembersPlan.setNestedScrollingEnabled(false);
-        rcvListMembersPlan.setAdapter(membersListAdapter);
 
-        layoutMembers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (rcvListMembersPlan.getVisibility() == View.GONE){
-                    rcvListMembersPlan.setVisibility(View.VISIBLE);
-                } else {
-                    rcvListMembersPlan.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        imgAddMember.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (rcvListMembersPlan.getVisibility() == View.GONE){
-                    rcvListMembersPlan.setVisibility(View.VISIBLE);
-                }
-                new SimpleSearchDialogCompat(NewPlanActivity.this, "Tìm kiếm bạn đồng hành",
-                        "Nhập tên có dấu...", null, createMemberData(),
-                        new SearchResultListener<SearchMember>() {
-                            @Override
-                            public void onSelected(BaseSearchDialogCompat baseSearchDialogCompat, SearchMember searchMember, int i) {
-                                Member mem = new Member();
-                                mem.setRoleInGroupId(3);
-                                mem.setUserId(searchMember.getId());
-                                mem.setVehicule("");
-                                if (!checkMemberExist(mem)){
-                                    members.add(mem);
-                                    membersListAdapter.notifyDataSetChanged();
-                                    tvMemberCount.setText(members.size() + " người");
-                                } else {
-                                    Toast.makeText(NewPlanActivity.this,"Bạn không thể mời thêm thành viên này!",Toast.LENGTH_SHORT).show();
-                                }
-
-                                baseSearchDialogCompat.dismiss();
-                            }
-                        }).show();
-
-            }
-        });
-        allMember = new ArrayList<>();
-        mWebService.searchMember(MainActivity.user.getToken(),"").enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                allMember = response.body();
-                allMember.remove(0);
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-
-            }
-        });
         places = new ArrayList<>();
-        mWebService.searchPlace(MainActivity.user.getToken(),1,100,"id","").enqueue(new Callback<ArrayList<Place>>() {
+        mWebService.searchPlace(token, 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
                 places = response.body();
@@ -214,67 +223,137 @@ public class NewPlanActivity extends AppCompatActivity{
         });
         //Place picker
         btnEndLoc.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 new SimpleSearchDialogCompat(NewPlanActivity.this, "Tìm kiếm địa điểm",
-                         "Nhập tên địa điểm có dấu...", null, createSampleData(),
-                         new SearchResultListener<SearchPlace>() {
-                             @Override
-                             public void onSelected(BaseSearchDialogCompat dialog, SearchPlace item, int position) {
-                                 btnEndLoc.setText(item.getTitle());
-                                 placeId = item.getId();
-                                 dialog.dismiss();
-                             }
-                         }).show();
-             }
-         });
-
-         btnTimeLines.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 Intent intent = new Intent(NewPlanActivity.this, TimeLinesActivity.class);
-                 intent.putExtra("state","new");
-                 startActivity(intent);
-             }
-         });
-         btnCheckList.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View view) {
-                 Intent intent = new Intent(NewPlanActivity.this, ChecklistActivity.class);
-                 intent.putExtra("state", "new");
-                 startActivity(intent);
-             }
-         });
-        btnStartLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnStartLoc.requestFocus();
-                try {
-                    Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                                    .build(NewPlanActivity.this);
-                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                new SimpleSearchDialogCompat(NewPlanActivity.this, "Tìm kiếm địa điểm",
+                        "Nhập tên địa điểm có dấu...", null, createSampleData(),
+                        new SearchResultListener<SearchPlace>() {
+                            @Override
+                            public void onSelected(BaseSearchDialogCompat dialog, SearchPlace item, int position) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                btnEndLoc.setText(item.getTitle());
+                                placeId = item.getId();
+                                mWebService.getPlaceById(token, placeId).enqueue(new Callback<Place>() {
+                                    @Override
+                                    public void onResponse(Call<Place> call, Response<Place> response) {
+                                        Place place = response.body();
+                                        desLocation.setName(place.getName());
+                                        desLocation.setLat(place.getLocation().getLatitude());
+                                        desLocation.setLng(place.getLocation().getLongitude());
 
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    // TODO: Handle the error.
-                }
+                                        if (pickedSourceLocation) {
+                                            Location start = new Location("");
+                                            start.setLatitude(srcLocation.getLat());
+                                            start.setLongitude(srcLocation.getLng());
+                                            Location end = new Location("");
+                                            end.setLatitude(desLocation.getLat());
+                                            end.setLongitude(desLocation.getLng());
+                                            float dist = start.distanceTo(end) / 1000;
+                                            tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Place> call, Throwable t) {
+
+                                    }
+                                });
+                                pickedDestinationLocation = true;
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
-         //Datepicker
-         btnStartDate.setOnClickListener((v) -> datePick(1));
-         btnStartTime.setOnClickListener((v) -> timePick(1));
-        btnEndDate.setOnClickListener((v) -> datePick(2));
-        btnEndTime.setOnClickListener((v) -> timePick(2));
+
+        btnTimeLines.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewPlanActivity.this, TimeLinesActivity.class);
+                intent.putExtra("state", "new");
+                startActivity(intent);
+            }
+        });
+        btnCheckList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewPlanActivity.this, ChecklistActivity.class);
+                intent.putExtra("state", "new");
+                startActivity(intent);
+            }
+        });
+        btnStartLoc.setOnClickListener((v) -> openAutocompleteActivity());
+        //Datepicker
+        btnStartDateTime.setOnClickListener((v) -> {
+            setStart = true;
+            setEnd = false;
+            Date maxDate = Calendar.getInstance().getTime();
+            maxDate.setYear(maxDate.getYear() + 1);
+            new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                    .setListener(listener)
+                    .setInitialDate(startDate.getTime())
+                    .setMinDate(new Date())
+                    .setMaxDate(maxDate)
+                    .setIs24HourTime(false)
+                    .setTheme(SlideDateTimePicker.HOLO_LIGHT)
+                    .build()
+                    .show();
+        });
+        btnEndDateTime.setOnClickListener((v) -> {
+            if (setStart) {
+                setEnd = true;
+                Date maxDate = startDate.getTime();
+                maxDate.setYear(maxDate.getYear() + 1);
+                new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                        .setListener(listener)
+                        .setInitialDate(startDate.getTime())
+                        .setMinDate(startDate.getTime())
+                        .setMaxDate(maxDate)
+                        .setIs24HourTime(false)
+                        .setTheme(SlideDateTimePicker.HOLO_LIGHT)
+                        .build()
+                        .show();
+            } else {
+                Toast.makeText(NewPlanActivity.this, "Chưa có gian thời gian xuất phát" ,Toast.LENGTH_LONG).show();
+            }
+        });
         tvNewPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int check = 0;
                 plan = new Plan();
                 Group g = new Group();
-                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(NewPlanActivity.this,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(NewPlanActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                 alertDialogBuilder.setTitle("Cảnh báo");
-                if (tvStartTime.getText().toString().equalsIgnoreCase("--:--") || tvDateStart.getText().toString().equalsIgnoreCase("--/--/----")){
+
+                if (edtPlanName.getText().toString().trim().isEmpty()) {
+                    alertDialogBuilder.setMessage("Hãy nhập tên kế hoạch")
+                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                    return;
+                } else {
+                    check++;
+                    g.setName(edtPlanName.getText().toString());
+                }
+
+                if (pickedSourceLocation && pickedDestinationLocation) {
+                    check++;
+                } else {
+                    alertDialogBuilder.setMessage("Vui lòng chọn địa điểm đi và đến")
+                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                    return;
+                }
+
+                if (tvStartTime.getText().toString().equalsIgnoreCase("--:--") || tvDateStart.getText().toString().equalsIgnoreCase("--/--/----")) {
                     alertDialogBuilder.setMessage("Vui lòng chọn thời gian khởi hành")
                             .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
                                 @Override
@@ -282,34 +361,34 @@ public class NewPlanActivity extends AppCompatActivity{
                                     dialogInterface.dismiss();
                                 }
                             }).show();
-                } else
-                    if (tvEndTime.getText().toString().equalsIgnoreCase("--:--") || tvDateEnd.getText().toString().equalsIgnoreCase("--/--/----")){
-                        alertDialogBuilder.setMessage("Vui lòng chọn thời gian hoàn thành")
-                                .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                }).show();
-                    } else {
+                    return;
+                } else if (tvEndTime.getText().toString().equalsIgnoreCase("--:--") || tvDateEnd.getText().toString().equalsIgnoreCase("--/--/----")) {
+                    alertDialogBuilder.setMessage("Vui lòng chọn thời gian hoàn thành")
+                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                    return;
+                } else {
                     check++;
-                       Date d1 = startDate.getTime();
-                       Date d2 = endDate.getTime();
-                       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                       plan.setStartTime(sdf.format(d1));
-                       plan.setFinishTime(sdf.format(d2));
-//                       Toast.makeText(NewPlanActivity.this,plan.getStartTime(),Toast.LENGTH_LONG).show();
-                    }
-                    if (!edtPlanName.getText().toString().isEmpty()){
-                        check++;
-                        g.setName(edtPlanName.getText().toString());
-                    }
+                    Date d1 = startDate.getTime();
+                    Date d2 = endDate.getTime();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    plan.setStartTime(sdf.format(d1));
+                    plan.setFinishTime(sdf.format(d2));
+                }
 
-                    g.setMembers(members);
+
+                List<Member> members = new ArrayList<>();
+                members.add(m);
+
+                g.setMembers(members);
                 plan.setGroup(g);
-                if (swPublic.isChecked()){
+                if (swPublic.isChecked()) {
                     plan.setIsPublic(1);
-                }else {
+                } else {
                     plan.setIsPublic(0);
                 }
                 plan.setState(0);
@@ -342,16 +421,32 @@ public class NewPlanActivity extends AppCompatActivity{
 //                System.out.println("test thu : " + jobject.toString());
 
 
-                if (check >= 2) {
-                    mWebService.createPlan(MainActivity.user.getToken(), plan).enqueue(new Callback<Plan>() {
+                if (check >= 3) {
+                    List<PlanLocation> locs = new ArrayList<>();
+                    locs.add(srcLocation);
+                    locs.add(desLocation);
+                    Direction direction = new Direction();
+                    direction.setPlaceId(placeId);
+                    direction.setPlanLocation(new Gson().toJson(locs));
+                    plan.setDirection(direction);
+                    final ProgressDialog progressDialog = new ProgressDialog(NewPlanActivity.this, R.style.DialogStyle);
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                    mWebService.createPlan(token, plan).enqueue(new Callback<Plan>() {
                         @Override
                         public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            progressDialog.dismiss();
                             Toast.makeText(NewPlanActivity.this, "Thành công", Toast.LENGTH_LONG).show();
+                            setResult(RESULT_OK, null);
+                            finish();
                         }
 
                         @Override
                         public void onFailure(Call<Plan> call, Throwable t) {
-                            Toast.makeText(NewPlanActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+                            Toast.makeText(NewPlanActivity.this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                            setResult(RESULT_CANCELED, null);
+                            finish();
                         }
                     });
                 }
@@ -360,135 +455,72 @@ public class NewPlanActivity extends AppCompatActivity{
         });
     }
 
-    private void datePick(int index) {
-        Calendar currentDate = Calendar.getInstance();
-        switch(index) {
-            case 1 :
-                SpinnerDatePickerDialogBuilder datepicker = new SpinnerDatePickerDialogBuilder()
-                        .context(NewPlanActivity.this)
-                        .callback(new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                tvDateStart.setText(String.format("%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year));
-                                startDate.set(Calendar.YEAR,year);
-                                startDate.set(Calendar.MONTH,monthOfYear);
-                                startDate.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-                            }
-                        })
-                        .spinnerTheme(R.style.NumberPickerStyle)
-                        .showTitle(true)
-                        .showDaySpinner(true)
-                        .maxDate(currentDate.get(Calendar.YEAR) + 1, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH))
-                        .minDate(endDate.get(Calendar.YEAR), endDate.get(Calendar.MONTH), endDate.get(Calendar.DAY_OF_MONTH));
-                datepicker.defaultDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-                datepicker.build().show();
-                break;
-            case 2:
-                SpinnerDatePickerDialogBuilder datepicker1 = new SpinnerDatePickerDialogBuilder()
-                        .context(NewPlanActivity.this)
-                        .callback(new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                tvDateEnd.setText(String.format("%02d/%02d/%d", dayOfMonth, monthOfYear + 1, year));
-                                endDate.set(Calendar.YEAR,year);
-                                endDate.set(Calendar.MONTH,monthOfYear);
-                                endDate.set(Calendar.DAY_OF_MONTH,dayOfMonth);
-                            }
-                        })
-                        .spinnerTheme(R.style.NumberPickerStyle)
-                        .showTitle(true)
-                        .showDaySpinner(true)
-                        .maxDate(currentDate.get(Calendar.YEAR) + 1, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH))
-                        .minDate(startDate.get(Calendar.YEAR), startDate.get(Calendar.MONTH), startDate.get(Calendar.DAY_OF_MONTH));
-                datepicker1.defaultDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-                datepicker1.build().show();
-                break;
+    private void openAutocompleteActivity() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
+                    0 /* requestCode */).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            Log.e(TAG, message);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void timePick(int index){
-        Calendar currentDate = Calendar.getInstance();
-        switch (index){
-            case 1 :
-
-                TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if (view.isShown()) {
-                            startDate.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                            startDate.set(Calendar.MINUTE,minute);
-                            currentDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                            currentDate.set(Calendar.MINUTE, minute);
-                            tvStartTime.setText(String.format("%02d:%02d", hourOfDay, minute));
-
-                        }
-                    }
-                };
-                TimePickerDialog timePickerDialog = new TimePickerDialog(NewPlanActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                        myTimeListener, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true);
-                timePickerDialog.setTitle("Chọn giờ");
-                timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                timePickerDialog.show();
-                break;
-            case 2:
-                Calendar currentDate1 = Calendar.getInstance();
-                TimePickerDialog.OnTimeSetListener myTimeListener1 = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if (view.isShown()) {
-                            currentDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                            currentDate.set(Calendar.MINUTE, minute);
-                            endDate.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                            endDate.set(Calendar.MINUTE,minute);
-                            tvEndTime.setText(String.format("%02d:%02d", hourOfDay, minute));
-
-                        }
-                    }
-                };
-                TimePickerDialog timePickerDialog1 = new TimePickerDialog(NewPlanActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                        myTimeListener1, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true);
-                timePickerDialog1.setTitle("Chọn giờ");
-                timePickerDialog1.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                timePickerDialog1.show();
-        }
-
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 
-    private ArrayList<SearchPlace> createSampleData(){
+    private ArrayList<SearchPlace> createSampleData() {
         ArrayList<SearchPlace> items = new ArrayList<>();
         for (Place p : places) {
             items.add(new SearchPlace(p.getName(), p.getId()));
         }
         return items;
     }
-    private ArrayList<SearchMember> createMemberData(){
-        ArrayList<SearchMember> items = new ArrayList<>();
-        for (User p : allMember) {
-            String title = p.getFirstName() + " " + p.getLastName();
-            items.add(new SearchMember(title,  p.getId(), p.getFirstName(), p.getLastName()));
-        }
-        return items;
-    }
-    private boolean checkMemberExist(Member m){
-        for (Member memb: members) {
-            if (memb.getUserId()==m.getUserId())
-                return true;
-        }
-        return false;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
-            if (resultCode == RESULT_OK){
-                com.google.android.gms.location.places.Place place = PlaceAutocomplete.getPlace(this,data);
-                btnStartLoc.setText("duoc roi");
-            } else  if (resultCode == RESULT_CANCELED){
-                btnStartLoc.setText("chua duoc");
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                com.google.android.gms.location.places.Place place = PlaceAutocomplete.getPlace(this, data);
+                btnStartLoc.setText(place.getName());
+                pickedSourceLocation = true;
+                srcLocation.setName(place.getName().toString());
+                srcLocation.setLat(place.getLatLng().latitude);
+                srcLocation.setLng(place.getLatLng().longitude);
+
+                if (pickedDestinationLocation) {
+                    Location start = new Location("");
+                    start.setLatitude(srcLocation.getLat());
+                    start.setLongitude(srcLocation.getLng());
+                    Location end = new Location("");
+                    end.setLatitude(desLocation.getLat());
+                    end.setLongitude(desLocation.getLng());
+                    float dist = start.distanceTo(end) / 1000;
+                    tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                btnStartLoc.setText("Điểm đi");
+                pickedSourceLocation = false;
             }
         } else {
-            btnStartLoc.setText("chua duoc nua");
+            btnStartLoc.setText("Điểm đi");
+            pickedSourceLocation = false;
         }
     }
 }

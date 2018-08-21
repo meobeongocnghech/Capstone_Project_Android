@@ -19,6 +19,7 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
@@ -30,7 +31,7 @@ import retrofit2.Response;
 public class PlanFragment extends Fragment {
     RecyclerView rcvPlanListItem;
     PlanAdapter planAdapter;
-    ImageView imgNewPlan;
+    ProgressBar progressPlan;
 
     public PlanFragment() {
 
@@ -40,7 +41,7 @@ public class PlanFragment extends Fragment {
     }
 
     public void scrollToTop() {
-        rcvPlanListItem.smoothScrollToPosition(4);
+        rcvPlanListItem.smoothScrollToPosition(0);
     }
 
     @Override
@@ -60,11 +61,13 @@ public class PlanFragment extends Fragment {
                     planAdapter.setListPlan(plans);
                     planAdapter.notifyDataSetChanged();
                 }
+                progressPlan.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(Call<List<Plan>> call, Throwable t) {
                 Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_LONG).show();
+                progressPlan.setVisibility(View.GONE);
             }
         });
     }
@@ -72,7 +75,6 @@ public class PlanFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imgNewPlan = (ImageView) view.findViewById(R.id.imgNewPlan);
         rcvPlanListItem = (RecyclerView) view.findViewById(R.id.rcvPlanListItem);
         rcvPlanListItem.setNestedScrollingEnabled(false);
         rcvPlanListItem.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -81,12 +83,7 @@ public class PlanFragment extends Fragment {
         planAdapter.setFragment(this);
         initLoad();
         rcvPlanListItem.setAdapter(planAdapter);
-        imgNewPlan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(),NewPlanActivity.class);
-                startActivity(intent);
-            }
-        });
+
+        progressPlan = (ProgressBar) view.findViewById(R.id.progressPlan);
     }
 }

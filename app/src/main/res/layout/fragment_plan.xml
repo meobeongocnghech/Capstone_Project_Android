@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
     tools:context=".controller.plan.PlanFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rcvPlanListItem"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp"/>
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rcvPlanListItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingBottom="5dp"
+            android:nestedScrollingEnabled="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-    <ProgressBar
-        android:id="@+id/progressPlan"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        app:layout_constraintTop_toBottomOf="@id/imgNewPlan"
-        />
+        <ProgressBar
+            android:id="@+id/progressPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/rcvPlanListItem"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/imgNewPlan"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="3dp"
-        android:src="@drawable/ic_add_circle_primary"
-        app:layout_constraintEnd_toEndOf="@+id/rcvPlanListItem"
-        app:layout_constraintTop_toBottomOf="@+id/rcvPlanListItem" />
 
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -86,6 +86,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         if (position == getItemCount() - 1) {
+            ((NotificationFragment) fragment).showProgress();
             APIService mWebService = APIUtils.getWebService();
             mWebService.getOldNoti(MainActivity.user.getToken(), olderId).enqueue(new Callback<List<Notification>>() {
                 @Override
@@ -98,12 +99,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             listNoti.add(notifi);
                             notifyDataSetChanged();
                         }
-                    } else {
                     }
+                    ((NotificationFragment) fragment).stopProgress();
                 }
 
                 @Override
                 public void onFailure(Call<List<Notification>> call, Throwable t) {
+                    ((NotificationFragment) fragment).stopProgress();
                 }
             });
         }

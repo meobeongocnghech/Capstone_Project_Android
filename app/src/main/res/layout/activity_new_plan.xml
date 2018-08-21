@@ -1,20 +1,20 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <!--<fragment-->
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <!--<fragment-->
         <!--android:id="@+id/map"-->
         <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--tools:context="com.viettrekker.mountaintrekkingadviser.controller.plan.NewPlanActivity"-->
         <!--/>-->
-    <!--<fragment-->
+        <!--<fragment-->
         <!--android:id="@+id/place_autocomplete_fragment"-->
         <!--android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"-->
         <!--android:layout_width="match_parent"-->
@@ -22,416 +22,348 @@
         <!--android:background="@drawable/ic_search"-->
         <!--/>-->
 
-    <ImageView
-        android:id="@+id/imgBackIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/ic_arrow_back_green"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/edtPlanName"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:hint="Nhập tên kế hoạch của bạn"
-        android:textSize="15dp"
-        app:layout_constraintStart_toEndOf="@+id/imgBackIcon"
-        app:layout_constraintTop_toTopOf="parent" />
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/llPlanDetail"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:layout_marginTop="2dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/edtPlanName">
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/addPlanToolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="4dp"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:titleTextColor="@android:color/white"
+            app:titleTextAppearance="@style/ToolbarTitleTheme">
 
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginLeft="2dp"
-                android:src="@drawable/gree_circle" />
+            <EditText
+                android:id="@+id/edtPlanName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Nhập tên kế hoạch của bạn"
+                android:textSize="15dp" />
+        </android.support.v7.widget.Toolbar>
+        <!--<ImageView-->
+            <!--android:id="@+id/imgBackIcon"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:background="@drawable/ic_arrow_back_green"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/llPlanDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/addPlanToolbar">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginLeft="2dp"
+                    android:src="@drawable/gree_circle" />
+
+                <View
+                    android:id="@+id/view4"
+                    android:layout_width="1dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="9dp"
+                    android:background="@color/colorDisable" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_location_on" />
+            </LinearLayout>
+
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnStartLoc"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/opensans_bold"
+                android:text="Điểm đi"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlack"
+                android:textSize="12dp"
+                android:layout_marginEnd="20dp"
+                app:backgroundTint="@android:color/white"
+                app:iconSize="35dp"
+                app:iconTint="@color/colorSecondary"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnEndLoc"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/opensans_bold"
+                android:text="Điểm đến"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/colorBlack"
+                android:textSize="12dp"
+                android:layout_marginEnd="20dp"
+                app:backgroundTint="@android:color/white"
+                app:iconSize="35dp"
+                app:iconTint="@color/colorSecondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <View
-                android:id="@+id/view4"
-                android:layout_width="1dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="9dp"
-                android:background="@color/colorDisable" />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_location_on" />
-        </LinearLayout>
-
-
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btnStartLoc"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Điểm đến"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textColor="@color/colorBlack"
-            android:textSize="12dp"
-            android:fontFamily="@font/opensans_bold"
-            app:backgroundTint="@android:color/white"
-            app:iconSize="35dp"
-            app:iconTint="@color/colorSecondary"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <android.support.design.button.MaterialButton
-            android:id="@+id/btnEndLoc"
-            android:layout_width="300dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Điểm đến"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textColor="@color/colorBlack"
-            android:textSize="12dp"
-            android:fontFamily="@font/opensans_bold"
-            app:backgroundTint="@android:color/white"
-            app:iconSize="35dp"
-            app:iconTint="@color/colorSecondary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/linearLayout" />
-        <View
-            android:id="@+id/viewFirst"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="3dp"
-            android:background="#99A1AC"
-            app:layout_constraintTop_toBottomOf="@+id/btnEndLoc"/>
-    </android.support.constraint.ConstraintLayout>
-    <LinearLayout
-        android:id="@+id/layoutView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/rectangle"
-        app:layout_constraintTop_toBottomOf="@id/llPlanDetail"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="20dp">
-            <LinearLayout
+                android:id="@+id/viewFirst"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvDateStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorGray"
-                    android:textSize="10dp"
-                    android:text="--/--/----"/>
-
-                <TextView
-                    android:id="@+id/tvStartTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="--:--"
-                    android:textSize="20dp"/>
-
-                <TextView
-                    android:id="@+id/tvStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Khởi hành"
-                    android:textColor="@color/colorGray"
-                    android:textSize="10dp" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvDurationDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="--------"
-                    android:textColor="#E63C2E"
-                    android:textSize="11dp" />
-                <TextView
-                    android:id="@+id/tvDistance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Chưa rõ"
-                    android:textSize="9.5dp"
-                    android:textColor="@color/colorGray"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvDateEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorGray"
-                    android:text="--/--/----"
-                    android:textSize="10dp" />
-
-                <TextView
-                    android:id="@+id/tvEndTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="--:--"
-                    android:textSize="20dp"/>
-
-                <TextView
-                    android:id="@+id/tvEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Kết thúc"
-                    android:textColor="@color/colorGray"
-                    android:textSize="10dp" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="20dp"
-                android:layout_alignParentStart="true">
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/btnStartDate"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="Ngày"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="11dp"
-                    app:backgroundTint="@android:color/white"/>
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/btnStartTime"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="Giờ"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="11dp"
-                    app:backgroundTint="@android:color/white"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginEnd="20dp"
-                android:layout_alignParentEnd="true">
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/btnEndDate"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="Ngày"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="11dp"
-                    app:backgroundTint="@android:color/white"/>
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/btnEndTime"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="Giờ"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="11dp"
-                    app:backgroundTint="@android:color/white"/>
-            </LinearLayout>
-        </RelativeLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="#cccdce"/>
-
-        <RelativeLayout
-            android:id="@+id/layoutViewMember"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="15dp"
-            android:clipToPadding="false"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/tvMember"
-                android:layout_alignParentStart="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thành viên ▼"
-                android:layout_marginLeft="14dp"
-                android:textSize="13.5dp"
-                android:textColor="@color/colorGray"/>
-            <TextView
-                android:id="@+id/tvMemberCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="200dp"
-                android:text="1 người"/>
-            <ImageView
-                android:id="@+id/imgAddMember"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="5dp"
-                android:layout_alignParentEnd="true"
-                android:background="@drawable/ic_add_circle_primary"/>
-
-
-
-
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/viewMember"
-            android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="#cccdce"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rcvListMembersPlan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-
-        </android.support.v7.widget.RecyclerView>
-        <RelativeLayout
-            android:id="@+id/layoutOther"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="14dp"
+                android:layout_height="1dp"
                 android:layout_marginTop="3dp"
-                android:text="Riêng tư"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/colorGray"
-                android:textSize="13.5dp" />
+                android:background="#99A1AC"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintTop_toBottomOf="@+id/btnEndLoc"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </android.support.constraint.ConstraintLayout>
 
-            <Switch
-                android:id="@+id/swPublic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:layout_alignParentEnd="true">
-            </Switch>
-
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.7dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="#cccdce"/>
-
-        <RelativeLayout
-            android:id="@+id/layoutTimeline"
+        <LinearLayout
+            android:id="@+id/layoutView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="10dp">
-            <Button
-                android:id="@+id/btnTimeLines"
-                android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rectangle"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/llPlanDetail">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Timelines"
-                android:textAllCaps="false"
-                android:layout_alignParentStart="true"/>
-            <Button
-                android:id="@+id/btnCheckList"
-                android:layout_width="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDateStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--/--/----"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/tvStartTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--:--"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/tvStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Khởi hành"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10dp" />
+
+                    <android.support.design.button.MaterialButton
+                        android:id="@+id/btnStartDateTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:letterSpacing="0.01"
+                        android:textColor="@color/colorPrimary"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="1dp"
+                        app:backgroundTint="@android:color/transparent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDurationDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="--------"
+                        android:textColor="#E63C2E"
+                        android:textSize="11dp" />
+
+                    <TextView
+                        android:id="@+id/tvDistance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chưa rõ"
+                        android:textColor="@color/colorGray"
+                        android:textSize="9.5dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvDateEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--/--/----"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/tvEndTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--:--"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/tvEnd"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Kết thúc"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10dp" />
+
+                    <android.support.design.button.MaterialButton
+                        android:id="@+id/btnEndDateTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chọn"
+                        android:textSize="12sp"
+                        android:textAllCaps="false"
+                        android:letterSpacing="0.01"
+                        android:textColor="@color/colorPrimary"
+                        app:strokeColor="@color/colorPrimary"
+                        app:strokeWidth="1dp"
+                        app:backgroundTint="@android:color/transparent" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.7dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="#cccdce" />
+
+            <RelativeLayout
+                android:id="@+id/layoutOther"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="CheckList"
-                android:textAllCaps="false"/>
-        </RelativeLayout>
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginTop="3dp"
+                    android:text="Riêng tư"
+                    android:textColor="@color/colorGray"
+                    android:textSize="13.5dp" />
+
+                <Switch
+                    android:id="@+id/swPublic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="5dp"></Switch>
 
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layoutTimeline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnTimeLines"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Thời gian biểu"
+                    android:textAllCaps="false"
+                    android:letterSpacing="0.01"
+                    android:textSize="12sp"
+                    app:cornerRadius="5dp"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnCheckList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="Danh sách đầu việc"
+                    android:textAllCaps="false"
+                    android:letterSpacing="0.01"
+                    android:textSize="12sp"
+                    app:cornerRadius="5dp"/>
+            </RelativeLayout>
 
 
+        </LinearLayout>
 
-    </LinearLayout>
-    <TextView
-        android:id="@+id/tvNewPlan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/roun_rect_orange"
-        android:fontFamily="@font/opensans_bold"
-        android:text="Tạo kế hoạch"
-        android:textColor="@color/colorBackroundWhite"
-        android:textSize="14dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutView"
-        app:layout_constraintEnd_toEndOf="@id/layoutView"/>
+        <android.support.design.button.MaterialButton
+            android:id="@+id/tvNewPlan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            app:backgroundTint="@color/colorOrange"
+            android:fontFamily="@font/opensans_bold"
+            android:text="Tạo kế hoạch"
+            android:textColor="@color/colorBackroundWhite"
+            android:textAllCaps="false"
+            android:letterSpacing="0.01"
+            android:textSize="12sp"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="@id/layoutView"
+            app:layout_constraintTop_toBottomOf="@id/layoutView" />
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>

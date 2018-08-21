@@ -99,6 +99,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             public void onClick(View view) {
                 Intent intent = new Intent(context,PlanDetailActivity.class);
                 intent.putExtra("id", plan.getId());
+                intent.putExtra("token", MainActivity.user.getToken());
+                intent.putExtra("userId", MainActivity.user.getId());
                 context.startActivity(intent);
             }
         });

@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CheckList {
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("description")
     @Expose
     private String description;

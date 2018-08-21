@@ -54,6 +54,10 @@
         <item name="colorControlNormal">@android:color/white</item>
     </style>
 
+    <style name="PrimaryBackToolbar">
+        <item name="colorControlNormal">@color/colorPrimary</item>
+    </style>
+
     <style name="ToolbarTitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">sans-serif</item>
     </style>

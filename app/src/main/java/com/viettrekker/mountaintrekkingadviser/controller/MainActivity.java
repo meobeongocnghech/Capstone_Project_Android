@@ -11,6 +11,8 @@ import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.NewPlanActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
@@ -71,6 +74,8 @@ public class MainActivity extends AppCompatActivity
 
     private ImageButton search;
 
+    private int PLAN_RESULT = 10;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,19 +111,19 @@ public class MainActivity extends AppCompatActivity
         btnAddNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, PostAddActivity.class);
-                startActivity(intent);
+                if (tabs.getSelectedTabPosition() == 0) {
+                    Intent intent = new Intent(MainActivity.this, PostAddActivity.class);
+                    startActivity(intent);
+                } else if (tabs.getSelectedTabPosition() == 1) {
+                    Intent intent = new Intent(MainActivity.this,NewPlanActivity.class);
+                    intent.putExtra("token", user.getToken());
+                    startActivityForResult(intent, PLAN_RESULT);
+                }
             }
         });
 
         imgNavAvatar.setOnClickListener((v) -> {
             Intent i = new Intent(this, ProfileMemberActivity.class);
-            i.putExtra("firstname", user.getFirstName());
-            i.putExtra("lastname", user.getLastName());
-            i.putExtra("email", user.getEmail());
-            i.putExtra("birthdate", user.getBirthDate().getTime());
-            i.putExtra("phone", user.getPhone());
-            i.putExtra("gender", user.getGender());
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
             i.putExtra("token", user.getToken());
@@ -170,8 +175,21 @@ public class MainActivity extends AppCompatActivity
                 int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
                 tab.getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
 
-                if (tab.getPosition() == 2) {
+                if (tab.getPosition() == 0) {
+                    tvMainTitle.setText("Trang chủ");
+                    btnAddNew.getLayoutParams().height = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+                    btnAddNew.getLayoutParams().width = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+                    btnAddNew.requestLayout();
+                } else if (tab.getPosition() == 1) {
+                    tvMainTitle.setText("Kế hoạch");
+                    btnAddNew.getLayoutParams().height = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+                    btnAddNew.getLayoutParams().width = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+                    btnAddNew.requestLayout();
+                } else if (tab.getPosition() == 2) {
                     tvMainTitle.setText("Thông báo");
+                    btnAddNew.getLayoutParams().height = 0;
+                    btnAddNew.getLayoutParams().width = 0;
+                    btnAddNew.requestLayout();
                 } else if (tab.getPosition() == 3) {
                     tvMainTitle.setText("Tìm kiếm");
                     btnAddNew.getLayoutParams().height = 0;
@@ -260,7 +278,7 @@ public class MainActivity extends AppCompatActivity
                 adapter.getPostFragment().refreshData();
                 break;
             case 1:
-                adapter.setPlanFragment(new PlanFragment());
+                adapter.getPlanFragment().initLoad();
                 break;
             case 2:
                 adapter.getNotificationFragment().initLoad();
@@ -313,12 +331,6 @@ public class MainActivity extends AppCompatActivity
 
         if (item.equals(item1)) {
             Intent i = new Intent(this, ProfileMemberActivity.class);
-            i.putExtra("firstname", user.getFirstName());
-            i.putExtra("lastname", user.getLastName());
-            i.putExtra("email", user.getEmail());
-            i.putExtra("birthdate", user.getBirthDate().getTime());
-            i.putExtra("phone", user.getPhone());
-            i.putExtra("gender", user.getGender());
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
             i.putExtra("viewProfile", true);
@@ -438,6 +450,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
         searchView.attachNavigationDrawerToMenuButton(drawer);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLAN_RESULT) {
+            if (resultCode == RESULT_OK) {
+                adapter.getPlanFragment().initLoad();
+            }
+        }
     }
 }
 

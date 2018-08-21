@@ -1,6 +1,7 @@
 package com.viettrekker.mountaintrekkingadviser.controller.plan;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +48,12 @@ public class ChecklistAdapter extends  RecyclerView.Adapter<ChecklistAdapter.Vie
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+        viewHolder.item = list.get(i);
         viewHolder.tvCheckListItem.setText(list.get(i).getContent());
+        viewHolder.btnDeleteItem.setOnClickListener((v) -> {
+            list.remove(viewHolder.item);
+            notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -60,12 +66,15 @@ public class ChecklistAdapter extends  RecyclerView.Adapter<ChecklistAdapter.Vie
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         Context context;
+        ChecklistItem item;
         TextView tvCheckListItem;
+        ImageView btnDeleteItem;
 
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             this.context = context;
             tvCheckListItem = (TextView) itemView.findViewById(R.id.tvCheckListItem);
+            btnDeleteItem = (ImageView) itemView.findViewById(R.id.btnDeleteItem);
         }
 
     }

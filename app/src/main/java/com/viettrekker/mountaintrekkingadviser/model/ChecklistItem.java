@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ChecklistItem {
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("content")
     @Expose
     private String content;

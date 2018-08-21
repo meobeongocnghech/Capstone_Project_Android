@@ -1,42 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--<include layout="@layout/toolbar1"/>-->
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Chi tiết lịch trình"
-            android:gravity="center"
-            android:textColor="#b2b9c6"
-            android:layout_marginTop="10dp"/>
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/timelinesToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                android:theme="@style/Toolbar"
+                app:title="@string/title_timelines"
+                app:titleTextAppearance="@style/ToolbarTitleTheme"
+                app:titleTextColor="@android:color/white">
+
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnEditTimeline"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:letterSpacing="0.01"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:text="Sửa"
+                app:strokeWidth="0dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:layout_marginEnd="8dp"
+                app:cornerRadius="56dp"
+                app:backgroundTint="@android:color/transparent"
+                android:layout_alignParentEnd="true"/>
+        </RelativeLayout>
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:id="@+id/layoutTimelineItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="vertical"
+                android:layout_marginLeft="8dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="8dp"
                 android:background="@drawable/rectangle"
+                android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent">
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcvTimelineList"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="200dp"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
 
@@ -48,67 +76,89 @@
                 android:id="@+id/edtTimelineContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="15dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 android:hint="Nhập nội dung công việc..."
-                android:textSize="14dp"
                 android:maxLines="1"
+                android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/edtTimelineTitle" />
 
             <EditText
                 android:id="@+id/edtTimelineTitle"
-                android:layout_width="359dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
                 android:hint="Tiêu đề công việc..."
-                android:textSize="14dp"
                 android:maxLines="1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layoutTimelineItem" />
+                android:textSize="14dp"
+                app:layout_constraintTop_toBottomOf="@id/layoutTimelineItem"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
-            <Button
-                android:id="@+id/btnTLDate"
+            <TextView
+                android:id="@+id/tvTLDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Ngày"
-                android:textAllCaps="false"
+                android:layout_marginStart="10dp"
+                android:text="ABCXYZ"
+                app:layout_constraintTop_toBottomOf="@id/edtTimelineContent"
                 app:layout_constraintStart_toStartOf="@+id/edtTimelineContent"
-                app:layout_constraintTop_toBottomOf="@+id/edtTimelineContent" />
-
-            <Button
-                android:id="@+id/btnTLTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Giờ"
-                android:textAllCaps="false"
-                app:layout_constraintStart_toEndOf="@+id/btnTLDate"
-                app:layout_constraintTop_toTopOf="@+id/btnTLDate" />
+                android:visibility="invisible"/>
 
             <TextView
                 android:id="@+id/tvTLTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                app:layout_constraintStart_toEndOf="@+id/btnTLTime"
-                app:layout_constraintBottom_toBottomOf="@id/btnTLTime"/>
-            <ImageView
+                android:text="ABCXYZ"
+                app:layout_constraintTop_toBottomOf="@id/edtTimelineContent"
+                app:layout_constraintStart_toEndOf="@+id/tvTLDate"
+                android:visibility="invisible"/>
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnTLDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.01"
+                android:text="Ngày"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                app:backgroundTint="@color/colorWhite"
+                app:layout_constraintStart_toStartOf="@+id/tvTLDate"
+                app:layout_constraintTop_toBottomOf="@+id/tvTLDate"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="1dp" />
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnTLTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:letterSpacing="0.01"
+                android:text="Giờ"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                app:backgroundTint="@color/colorWhite"
+                app:layout_constraintStart_toEndOf="@+id/btnTLDate"
+                app:layout_constraintTop_toTopOf="@+id/btnTLDate"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="1dp" />
+
+            <android.support.design.button.MaterialButton
                 android:id="@+id/btnAddTimeline"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/ic_add_circle_primary"
+                android:letterSpacing="0.01"
+                android:text="Thêm"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/edtTimelineContent"
-                app:layout_constraintTop_toBottomOf="@+id/edtTimelineContent" />
+                app:layout_constraintTop_toTopOf="@+id/btnTLTime" />
         </android.support.constraint.ConstraintLayout>
-
-
-
     </LinearLayout>
 </ScrollView>

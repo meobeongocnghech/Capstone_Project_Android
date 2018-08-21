@@ -56,16 +56,16 @@ public class DateTimeUtils {
         long diffMinutes = diff / (60 * 1000) % 60;
         long diffHours = diff / (60 * 60 * 1000) % 24;
         long diffDays = diff / (24 * 60 * 60 * 1000);
-        if (diffDays > 0){
+        if (diffDays > 0) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             if (diffDays > 2) {
                 Date date = new Date(oldTime);
                 return sdf.format(date);
             }
             return diffDays + " ngày";
-        } else if (diffHours > 0){
+        } else if (diffHours > 0) {
             return diffHours + " giờ";
-        } else if (diffMinutes > 0){
+        } else if (diffMinutes > 0) {
             return diffMinutes + " phút";
         } else {
             return "vài giây trước";
@@ -75,28 +75,36 @@ public class DateTimeUtils {
     public static String parseStringDate(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("dd/MM/yyyy");
+        sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(date);
     }
 
-    public static String parseStringTime(Date date){
+    public static String parseStringTime(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("hh:mm a");
+        sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(date);
     }
 
-    public static String parseStringDay(Date date){
+    public static Date parseDateTimeToString(String sDate) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("dd/MM/yyyy hh:mm a");
+        return sdf.parse(sDate);
+    }
+
+    public static String parseStringDay(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("dd");
         return sdf.format(date);
     }
 
-    public static String parseStringDayinWeek(Date date){
+    public static String parseStringDayinWeek(Date date) {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("EEE");
         return sdf.format(date);
     }
 
-    public static Date parseStringToDate(String date){
+    public static Date parseStringToDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("EEE, MMM dd yyyy HH:mm:ss");
         Date newDate = null;
@@ -110,9 +118,9 @@ public class DateTimeUtils {
 
     public static Date changeTimeToLocale(String sDate) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat();
-        if (sDate.contains("Z")){
+        if (sDate.contains("Z")) {
             sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
-            sdf.setTimeZone(TimeZone.getDefault());
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date date = sdf.parse(sDate);
             return date;
         } else {
@@ -120,7 +128,6 @@ public class DateTimeUtils {
             Date date = sdf.parse(sDate);
             return date;
         }
-
     }
 
     public static String caculatorStringTime(Date oldTime, Date timeNow) throws ParseException {
@@ -129,16 +136,23 @@ public class DateTimeUtils {
         long diffMinutes = diff / (60 * 1000) % 60;
         long diffHours = diff / (60 * 60 * 1000) % 24;
         long diffDays = diff / (24 * 60 * 60 * 1000);
-        if (diffDays > 0){
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        if (diffDays > 0) {
             return diffDays + " ngày";
-        } else if (diffHours > 0){
+        } else if (diffHours > 0) {
             return diffHours + " giờ";
-        } else if (diffMinutes > 0){
+        } else if (diffMinutes > 0) {
             return diffMinutes + " phút";
         } else {
-            return "vài giây trước";
+            return "vài giây";
         }
+    }
+
+    public static String change24to12Format(String sTime) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat();
+        sdf.applyPattern("HH:mm");
+        Date date = sdf.parse(sTime);
+        sdf.applyPattern("hh:mm a");
+        return sdf.format(date);
     }
 
 //    public static void main(String[] args) throws Exception{

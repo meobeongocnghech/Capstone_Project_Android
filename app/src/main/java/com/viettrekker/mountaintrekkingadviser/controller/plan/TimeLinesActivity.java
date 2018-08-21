@@ -4,9 +4,12 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +25,7 @@ import com.tsongkha.spinnerdatepicker.DatePickerDialog;
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.model.CheckList;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -38,34 +42,50 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TimeLinesActivity  extends AppCompatActivity{
-    APIService mWebService;
-    RecyclerView rcvTimelineList;
-    EditText edtTimelineTitle;
-    EditText edtTimelineContent;
-    ImageView btnAddTimeline;
-    Button btnTLDate;
-    Button btnTLTime;
-    TextView tvTLTime;
-    int id;
-    String state= "";
+    private APIService mWebService;
+    private RecyclerView rcvTimelineList;
+    private EditText edtTimelineTitle;
+    private EditText edtTimelineContent;
+    private MaterialButton btnAddTimeline;
+    private MaterialButton btnTLDate;
+    private MaterialButton btnTLTime;
+    private TextView tvTLTime;
+    private TextView tvTLDate;
+    private int id;
+    private String state= "";
+
+    private Plan plan;
+    private String token;
+
+    List<TimeLines> timeLines;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline_details);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.timelinesToolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mWebService = APIUtils.getWebService();
         edtTimelineTitle = (EditText) findViewById(R.id.edtTimelineTitle);
         edtTimelineContent = (EditText) findViewById(R.id.edtTimelineContent);
-        btnAddTimeline = (ImageView) findViewById(R.id.btnAddTimeline);
-        btnTLDate = (Button) findViewById(R.id.btnTLDate);
-        btnTLTime = (Button) findViewById(R.id.btnTLTime);
+        btnAddTimeline = (MaterialButton) findViewById(R.id.btnAddTimeline);
+        btnTLDate = (MaterialButton) findViewById(R.id.btnTLDate);
+        btnTLTime = (MaterialButton) findViewById(R.id.btnTLTime);
         tvTLTime = (TextView) findViewById(R.id.tvTLTime);
+        tvTLDate = (TextView) findViewById(R.id.tvTLDate);
 
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
         id = getIntent().getIntExtra("id",-1);
         edtTimelineTitle.setVisibility(View.GONE);
         edtTimelineContent.setVisibility(View.GONE);
         btnAddTimeline.setVisibility(View.GONE);
+        btnTLDate.setVisibility(View.GONE);
+        btnTLTime.setVisibility(View.GONE);
         rcvTimelineList = findViewById(R.id.rcvTimelineList);
         NewPlanActivity newPlanActivity = new NewPlanActivity();
         TimelinesListAdapter timelinesListAdapter = new TimelinesListAdapter(TimeLinesActivity.this);
@@ -73,16 +93,56 @@ public class TimeLinesActivity  extends AppCompatActivity{
         rcvTimelineList.setNestedScrollingEnabled(false);
         rcvTimelineList.setAdapter(timelinesListAdapter);
 
+        token = getIntent().getStringExtra("token");
+
+        MaterialButton btnEditTimeline = (MaterialButton) findViewById(R.id.btnEditTimeline);
+        btnEditTimeline.setOnClickListener((v) -> {
+            if (btnEditTimeline.getText().toString().equalsIgnoreCase("sửa")) {
+                edtTimelineTitle.setVisibility(View.VISIBLE);
+                edtTimelineContent.setVisibility(View.VISIBLE);
+                btnAddTimeline.setVisibility(View.VISIBLE);
+                btnTLDate.setVisibility(View.VISIBLE);
+                btnTLTime.setVisibility(View.VISIBLE);
+                btnEditTimeline.setText("Xong");
+            } else {
+                edtTimelineTitle.setVisibility(View.GONE);
+                edtTimelineContent.setVisibility(View.GONE);
+                btnAddTimeline.setVisibility(View.GONE);
+                btnTLDate.setVisibility(View.GONE);
+                btnTLTime.setVisibility(View.GONE);
+                btnEditTimeline.setText("Sửa");
+                tvTLDate.setVisibility(View.INVISIBLE);
+                tvTLDate.setText("");
+                tvTLTime.setVisibility(View.INVISIBLE);
+                tvTLTime.setText("");
+
+                plan.setTimelines(new Gson().toJson(timeLines));
+                Log.d("ABC", new Gson().toJson(plan));
+                mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
+                    @Override
+                    public void onResponse(Call<Plan> call, Response<Plan> response) {
+                        Toast.makeText(TimeLinesActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Plan> call, Throwable t) {
+                        Toast.makeText(TimeLinesActivity.this, "Thất bại", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
         if (id > -1){
-            mWebService.getPlanById(MainActivity.user.getToken(),id).enqueue(new Callback<Plan>() {
+            mWebService.getPlanById(token,id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
+                    plan = response.body();
                     String timeline = response.body().getTimelines();
                     Type type = new TypeToken<ArrayList<TimeLines>>(){}.getType();
                     Gson gson = new Gson();
-                    List<TimeLines> timeLines = gson.fromJson(timeline, type);
+                    timeLines = gson.fromJson(timeline, type);
                     timelinesListAdapter.setList(timeLines);
-                    timelinesListAdapter.notifyDataSetChanged();
+                    timelinesListAdapter.sortTimelines();
                 }
 
                 @Override
@@ -93,33 +153,35 @@ public class TimeLinesActivity  extends AppCompatActivity{
 
         }
 
-        if (state.equalsIgnoreCase("new")){
+        if (state.equalsIgnoreCase("new")) {
             edtTimelineTitle.setVisibility(View.VISIBLE);
             edtTimelineContent.setVisibility(View.VISIBLE);
             btnAddTimeline.setVisibility(View.VISIBLE);
+            btnTLDate.setVisibility(View.VISIBLE);
+            btnTLTime.setVisibility(View.VISIBLE);
+            btnEditTimeline.setVisibility(View.GONE);
             timelinesListAdapter.setList(newPlanActivity.timeLines);
-            timelinesListAdapter.notifyDataSetChanged();
-            btnTLDate.setOnClickListener((v) -> datePick());
-            btnTLTime.setOnClickListener((v) -> timePick());
-            btnAddTimeline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //TODO here
-                    TimeLines t = new TimeLines();
-                    t.setName(edtTimelineTitle.getText().toString());
-                    t.setContent(edtTimelineContent.getText().toString());
-                    t.setTime(tvTLTime.getText().toString());
-                    newPlanActivity.timeLines.add(t);
-                    timelinesListAdapter.setList(newPlanActivity.timeLines);
-                    timelinesListAdapter.notifyDataSetChanged();
-                }
-            });
-
+            timelinesListAdapter.sortTimelines();
         }
+        btnTLDate.setOnClickListener((v) -> datePick());
+        btnTLTime.setOnClickListener((v) -> timePick());
 
-
-
-
+        btnAddTimeline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO here
+                TimeLines t = new TimeLines();
+                t.setName(edtTimelineTitle.getText().toString());
+                t.setContent(edtTimelineContent.getText().toString());
+                t.setTime(tvTLDate.getText().toString() + tvTLTime.getText().toString());
+                if (state.equalsIgnoreCase("new")) {
+                    newPlanActivity.timeLines.add(t);
+                } else {
+                    timeLines.add(t);
+                }
+                timelinesListAdapter.sortTimelines();
+            }
+        });
     }
     private void datePick(){
         Calendar currentDate = Calendar.getInstance();
@@ -128,7 +190,8 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 .callback(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        tvTLTime.setText(String.format("%d-%02d-%02d",year , monthOfYear + 1, dayOfMonth));
+                        tvTLDate.setText(String.format("%d-%02d-%02d",year , monthOfYear + 1, dayOfMonth));
+                        tvTLDate.setVisibility(View.VISIBLE);
                     }
                 })
                 .spinnerTheme(R.style.NumberPickerStyle)
@@ -146,8 +209,8 @@ public class TimeLinesActivity  extends AppCompatActivity{
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 if (view.isShown()) {
-                    tvTLTime.append(String.format(" %02d:%02d:00", hourOfDay, minute));
-
+                    tvTLTime.setText(String.format(" %02d:%02d:00", hourOfDay, minute));
+                    tvTLTime.setVisibility(View.VISIBLE);
                 }
             }
         };
@@ -156,5 +219,11 @@ public class TimeLinesActivity  extends AppCompatActivity{
         timePickerDialog.setTitle("Chọn giờ");
         timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         timePickerDialog.show();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 }

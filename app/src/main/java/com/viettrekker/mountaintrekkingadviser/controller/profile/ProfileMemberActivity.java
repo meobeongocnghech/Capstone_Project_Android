@@ -72,7 +72,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private TabItem tabProfile;
     private ViewPager profileViewpager;
     private MaterialButton addImage;
-
+    private MaterialButton invite;
 
     private ProfileMemberPostAdapter adapter;
 
@@ -125,6 +125,14 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     if (viewProfile) {
                         selectProfileTab();
                     }
+
+                    if (owner) {
+                        invite.setVisibility(View.GONE);
+                    } else {
+                        invite.setOnClickListener((v) -> {
+                            Toast.makeText(ProfileMemberActivity.this, "TODO: Invite to a plan", Toast.LENGTH_SHORT).show();
+                        });
+                    }
                 }
             }
 
@@ -156,6 +164,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
         tabProfile = (TabItem) findViewById(R.id.tabProfile);
         profileViewpager = (ViewPager) findViewById(R.id.profileViewpager);
         addImage = (MaterialButton) findViewById(R.id.addAvatar);
+        invite = (MaterialButton) findViewById(R.id.btnInvite);
 
         setSupportActionBar(profileToolbar);
 

@@ -1,114 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:layout_marginLeft="5dp">
+    android:background="@color/colorWhite">
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/layoutTwo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:gravity="center">-->
-        <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="15dp"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:layout_marginRight="120dp"-->
-            <!--/>-->
-        <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="15dp"-->
-            <!--android:background="@color/colorPrimary"/>-->
+    <TextView
+        android:id="@+id/tvDateMilestones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/opensans_bold"
+        android:textColor="@color/black"
+        android:visibility="gone"/>
 
-    <!--</LinearLayout>-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        card_view:layout_constraintTop_toBottomOf="@id/tvDateMilestones">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/card_view"
-                android:layout_width="match_parent"
-                android:layout_height="70dp">
-                <!--android:layout_marginBottom="3dp"-->
-                <!--card_view:cardCornerRadius="10dp"-->
-                <!--card_view:cardElevation="5dp"-->
-                card_view:layout_constraintTop_toBottomOf="@id/layoutTwo">
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+            <View
+                android:id="@+id/view4"
+                android:layout_width="1dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="4.5dp"
+                android:background="@color/colorDisable"
+                card_view:layout_constraintStart_toStartOf="@id/imgCircleState" />
 
-                    <View
-                        android:id="@+id/view4"
-                        android:layout_width="1dp"
-                        android:layout_height="70dp"
-                        android:layout_marginLeft="4.5dp"
-                        android:background="@color/colorDisable"
-                        card_view:layout_constraintStart_toStartOf="@id/imgCircleState" />
+            <ImageView
+                android:id="@+id/imgCircleState"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/orange_circle"
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
-                    <ImageView
-                        android:id="@+id/imgCircleState"
-                        android:layout_width="10dp"
-                        android:layout_height="10dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="30dp"
-                        android:src="@drawable/orange_circle"
-                        card_view:layout_constraintStart_toStartOf="parent"
-                        card_view:layout_constraintTop_toTopOf="parent"/>
+            <TextView
+                android:id="@+id/tvTlTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/opensans_bold"
+                android:maxLines="1"
+                android:text="Tập chung"
+                android:textColor="@color/colorBlack"
+                card_view:layout_constraintStart_toEndOf="@+id/tvTimeInDetail"
+                card_view:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvTlTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/opensans_bold"
-                        android:maxLines="1"
-                        android:text="Tập chung"
-                        android:textColor="@color/colorBlack"
-                        card_view:layout_constraintStart_toEndOf="@+id/tvTimeInDetail"
-                        card_view:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tvTlContent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="Tập chung mọi người kiểm kê đồ đạc, sau đó điểm danh để di chuyển về nới xuất"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintStart_toStartOf="@+id/tvTlTitle"
+                card_view:layout_constraintTop_toBottomOf="@+id/tvTlTitle" />
 
-                    <TextView
-                        android:id="@+id/tvTlContent"
-                        android:layout_width="270dp"
-                        android:layout_height="wrap_content"
-                        android:maxLines="2"
-                        android:text="Tập chung mọi người kiểm kê đồ đạc, sau đó điểm danh để di chuyển về nới xuất"
-                        card_view:layout_constraintStart_toStartOf="@+id/tvTlTitle"
-                        card_view:layout_constraintTop_toBottomOf="@+id/tvTlTitle" />
+            <TextView
+                android:id="@+id/tvTimeInDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="27dp"
+                android:maxLines="1"
+                android:text="6:00 AM"
+                android:textColor="@color/colorBlack"
+                android:textSize="12dp"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintStart_toEndOf="@id/imgCircleState" />
 
-                    <TextView
-                        android:id="@+id/tvTimeInDetail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="27dp"
-                        android:layout_marginLeft="8dp"
-                        android:maxLines="1"
-                        android:text="6:00 AM"
-                        android:textSize="12dp"
-                        android:textColor="@color/colorBlack"
-                        card_view:layout_constraintBottom_toBottomOf="parent"
-                        card_view:layout_constraintStart_toEndOf="@id/imgCircleState" />
-
-                    <ImageView
-                        android:id="@+id/imgEditTimeline"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/ic_edit_black_24dp"
-                        card_view:layout_constraintBottom_toTopOf="@+id/tvTlContent"
-                        card_view:layout_constraintEnd_toEndOf="parent" />
+            <ImageView
+                android:id="@+id/imgDeleteTimeline"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/ic_close_red_24dp"
+                card_view:layout_constraintBottom_toTopOf="@+id/tvTlContent"
+                card_view:layout_constraintEnd_toEndOf="parent" />
 
 
-                </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
 
 
-            </android.support.v7.widget.CardView>
+    </android.support.v7.widget.CardView>
 
 
 </android.support.constraint.ConstraintLayout>

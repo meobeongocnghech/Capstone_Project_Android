@@ -35,6 +35,14 @@ public class NotificationFragment extends Fragment {
 
     }
 
+    public void showProgress() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    public void stopProgress() {
+        progress.setVisibility(View.GONE);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,6 +59,8 @@ public class NotificationFragment extends Fragment {
         notiAdapter.setFragment(this);
         initLoad();
         rcvNotiItem.setAdapter(notiAdapter);
+
+        progress = (ProgressBar) view.findViewById(R.id.progressNoti);
     }
 
     public int getCurrentScrollY() {
@@ -58,7 +68,7 @@ public class NotificationFragment extends Fragment {
     }
 
     public void scrollToTop() {
-        rcvNotiItem.smoothScrollToPosition(4);
+        rcvNotiItem.smoothScrollToPosition(0);
     }
 
     public void initLoad() {
@@ -72,12 +82,14 @@ public class NotificationFragment extends Fragment {
                     list.remove(0);
                     notiAdapter.setListNoti(list);
                     notiAdapter.notifyDataSetChanged();
+                    stopProgress();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Notification>> call, Throwable t) {
                 Toast.makeText(getContext(), "Xảy ra lỗi", Toast.LENGTH_LONG).show();
+                stopProgress();
             }
         });
     }

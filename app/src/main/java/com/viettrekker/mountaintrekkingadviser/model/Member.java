@@ -7,6 +7,9 @@ public class Member {
     @SerializedName("userId")
     @Expose
     private int userId;
+    @SerializedName("groupId")
+    @Expose
+    private int groupId;
     @SerializedName("roleInGroupId")
     @Expose
     private int roleInGroupId;
@@ -37,7 +40,6 @@ public class Member {
     public void setRoleInGroupId(int roleInGroupId) {
         this.roleInGroupId = roleInGroupId;
     }
-
 
     public int getSosDelay() {
         return sosDelay;

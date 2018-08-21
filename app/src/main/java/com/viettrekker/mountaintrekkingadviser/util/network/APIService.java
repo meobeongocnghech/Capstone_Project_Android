@@ -216,6 +216,10 @@ public interface APIService {
     Call<Plan> createPlan(@Header("AUTH_TOKEN_ID") String token,
                                   @Body Plan plan);
 
+    @PUT("plan")
+    Call<Plan> updatePlan(@Header("AUTH_TOKEN_ID") String token,
+                          @Body Plan plan);
+
     @GET("member/paging")
     Call<List<User>> searchUserSuggestion(@Header("AUTH_TOKEN_ID") String token,
                                           @Query("page") int page,

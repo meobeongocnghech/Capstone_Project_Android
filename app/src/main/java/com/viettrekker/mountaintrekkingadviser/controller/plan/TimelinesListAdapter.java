@@ -15,7 +15,10 @@ import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
     private Fragment fragment;
     private Context context;
     private List<TimeLines> list;
+    private Date lastDate;
 
     public void setContext(Context context) {
         this.context = context;
@@ -51,20 +55,30 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         TimeLines timeLines = list.get(i);
-        //TODO compare date
+        viewHolder.timeLines = timeLines;
+
         viewHolder.tvTlTitle.setText(timeLines.getName());
         viewHolder.tvTlContent.setText(timeLines.getContent());
         try {
             Date newDate = DateTimeUtils.changeTimeToLocale(timeLines.getTime());
+            if (i == 0
+                    || lastDate.getDay() != newDate.getDay()
+                    || lastDate.getMonth() != newDate.getMonth()
+                    || lastDate.getYear() != newDate.getYear()) {
+                lastDate = newDate;
+                viewHolder.tvDateMilestones.setVisibility(View.VISIBLE);
+                viewHolder.tvDateMilestones.setText(DateTimeUtils.parseStringDate(newDate));
+            }
             viewHolder.tvTimeInDetail.setText(DateTimeUtils.parseStringTime(newDate));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        viewHolder.imgEditTimeline.setOnClickListener(new View.OnClickListener() {
+        viewHolder.imgDeleteTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO edit timeline here
+                list.remove(viewHolder.timeLines);
+                notifyDataSetChanged();
             }
         });
 
@@ -78,13 +92,30 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
         return list.size();
     }
 
+    public void sortTimelines() {
+        Comparator<TimeLines> comp = new Comparator<TimeLines>() {
+            @Override
+            public int compare(TimeLines timeLines, TimeLines t1) {
+                try {
+                    return DateTimeUtils.changeTimeToLocale(timeLines.getTime()).compareTo(DateTimeUtils.changeTimeToLocale(t1.getTime()));
+                } catch (ParseException e) {
+                    return 0;
+                }
+            }
+        };
+        Collections.sort(list, comp);
+        notifyDataSetChanged();
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         Context context;
+        TimeLines timeLines;
         ImageView imgCircleState;
         TextView tvTlTitle;
         TextView tvTlContent;
         TextView tvTimeInDetail;
-        ImageView imgEditTimeline;
+        ImageView imgDeleteTimeline;
+        TextView tvDateMilestones;
 
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -93,8 +124,8 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
             tvTlTitle = (TextView) itemView.findViewById(R.id.tvTlTitle);
             tvTlContent = (TextView) itemView.findViewById(R.id.tvTlContent);
             tvTimeInDetail = (TextView) itemView.findViewById(R.id.tvTimeInDetail);
-            imgEditTimeline = (ImageView) itemView.findViewById(R.id.imgEditTimeline);
+            imgDeleteTimeline = (ImageView) itemView.findViewById(R.id.imgDeleteTimeline);
+            tvDateMilestones = (TextView) itemView.findViewById(R.id.tvDateMilestones);
         }
-
     }
 }

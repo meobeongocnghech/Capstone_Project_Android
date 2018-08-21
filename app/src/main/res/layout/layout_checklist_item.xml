@@ -4,17 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    >
+    android:layout_margin="10dp">
 
     <TextView
         android:id="@+id/tvCheckListItem"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/opensans_bold"
-        android:text="Đây là chẹck list cần làm... khong duoc viet dai qua chi gioi han trong 2 dong thoi"
+        android:text="Đây là check list cần làm... khong duoc viet dai qua chi gioi han trong 2 dong thoi"
         android:textSize="16dp"
         android:maxLines="2"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnDeleteItem"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/btnDeleteItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_close_red_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvCheckListItem"/>
 </android.support.constraint.ConstraintLayout>

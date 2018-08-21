@@ -91,10 +91,10 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         viewHolder.imgRemoveUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                users.remove(i);
+                users.remove(viewHolder.member);
                 notifyItemRemoved(i);
-                NewPlanActivity newPlanActivity = new NewPlanActivity();
-                newPlanActivity.members = users;
+//                NewPlanActivity newPlanActivity = new NewPlanActivity();
+//                newPlanActivity.members = users;
             }
         });
 

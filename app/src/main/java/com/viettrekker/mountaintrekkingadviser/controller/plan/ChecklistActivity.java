@@ -7,9 +7,11 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
@@ -26,29 +28,39 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChecklistActivity extends AppCompatActivity {
-    RecyclerView rcvChecklistItem;
-    MaterialButton btnEditCheckList;
-    ImageView imgBackInCheckList;
-    EditText edtAddChecklist;
-    ImageView imgAddChecklist;
-    APIService mWebService;
-    int id;
-    String state;
+    private RecyclerView rcvChecklistItem;
+    private MaterialButton btnEditCheckList;
+    private EditText edtAddChecklist;
+    private MaterialButton btnAddChecklist;
+    private APIService mWebService;
+    private int id;
+    private String state;
+    private Plan plan;
+    private String token;
+    private List<ChecklistItem> items;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checklist);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarChecklist);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        token = getIntent().getStringExtra("token");
+
         NewPlanActivity newPlanActivity = new NewPlanActivity();
         mWebService = APIUtils.getWebService();
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
         id = getIntent().getIntExtra("id", -1);
         rcvChecklistItem = (RecyclerView) findViewById(R.id.rcvChecklistItem);
         btnEditCheckList = (MaterialButton) findViewById(R.id.btnEditCheckList);
-        imgBackInCheckList = (ImageView) findViewById(R.id.imgBackInCheckList);
         edtAddChecklist = (EditText) findViewById(R.id.edtAddChecklist);
-        imgAddChecklist = (ImageView) findViewById(R.id.imgAddChecklist);
+        btnAddChecklist = (MaterialButton) findViewById(R.id.btnAddChecklist);
 
-        imgAddChecklist.setVisibility(View.GONE);
+        btnAddChecklist.setVisibility(View.GONE);
         edtAddChecklist.setVisibility(View.GONE);
         rcvChecklistItem.setLayoutManager(new LinearLayoutManager(ChecklistActivity.this));
         ChecklistAdapter checklistAdapter = new ChecklistAdapter(ChecklistActivity.this);
@@ -56,8 +68,8 @@ public class ChecklistActivity extends AppCompatActivity {
             mWebService.getPlanById(MainActivity.user.getToken(), id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
-                    Plan plan = response.body();
-                    List<ChecklistItem> items = plan.getChecklist().getItems();
+                    plan = response.body();
+                    items = plan.getChecklist().getItems();
                     checklistAdapter.setList(items);
                     checklistAdapter.notifyDataSetChanged();
                 }
@@ -69,13 +81,13 @@ public class ChecklistActivity extends AppCompatActivity {
             });
         }
         if (state.equalsIgnoreCase("new")){
-            btnEditCheckList.setText("Xong");
+            btnEditCheckList.setVisibility(View.GONE);
             checklistAdapter.setList(newPlanActivity.checkLists);
             checklistAdapter.notifyDataSetChanged();
             List<ChecklistItem> items = new ArrayList<>();
-            imgAddChecklist.setVisibility(View.VISIBLE);
+            btnAddChecklist.setVisibility(View.VISIBLE);
             edtAddChecklist.setVisibility(View.VISIBLE);
-            imgAddChecklist.setOnClickListener(new View.OnClickListener() {
+            btnAddChecklist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ChecklistItem c = new ChecklistItem();
@@ -86,17 +98,52 @@ public class ChecklistActivity extends AppCompatActivity {
                     checklistAdapter.notifyDataSetChanged();
                 }
             });
-            btnEditCheckList.setOnClickListener(new View.OnClickListener() {
+        } else {
+            btnAddChecklist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onBackPressed();
+                    ChecklistItem c = new ChecklistItem();
+                    c.setContent(edtAddChecklist.getText().toString());
+                    c.setState(0);
+                    items.add(c);
+                    checklistAdapter.setList(items);
+                    checklistAdapter.notifyDataSetChanged();
                 }
             });
 
+            btnEditCheckList.setOnClickListener((v) -> {
+                if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
+                    btnEditCheckList.setText("Xong");
+                    btnAddChecklist.setVisibility(View.VISIBLE);
+                    edtAddChecklist.setVisibility(View.VISIBLE);
+                } else {
+                    btnEditCheckList.setText("Sửa");
+                    btnAddChecklist.setVisibility(View.GONE);
+                    edtAddChecklist.setVisibility(View.GONE);
+
+                    plan.getChecklist().setItems(items);
+                    mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
+                        @Override
+                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Plan> call, Throwable t) {
+                            Toast.makeText(ChecklistActivity.this, "Thất bại", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         }
 
         rcvChecklistItem.setNestedScrollingEnabled(false);
         rcvChecklistItem.setAdapter(checklistAdapter);
+    }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
     }
 }

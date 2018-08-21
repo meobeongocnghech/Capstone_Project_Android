@@ -35,30 +35,40 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:title="Thông tin cá nhân"
                 app:titleTextAppearance="@style/ToolbarTitleTheme"
-                app:titleTextColor="@android:color/white">
+                app:titleTextColor="@android:color/white"></android.support.v7.widget.Toolbar>
 
-            </android.support.v7.widget.Toolbar>
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnInvite"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                app:backgroundTint="@android:color/transparent"
+                app:icon="@drawable/ic_person_add_primary_24dp"
+                android:paddingLeft="8dp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                app:cornerRadius="48dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/profileToolbar"/>
 
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/avatar_default"
+                app:layout_constraintBottom_toTopOf="@id/tvUserNamePrf"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/avatar_default"
-                    app:layout_constraintBottom_toTopOf="@id/tvUserNamePrf"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/addAvatar"
-                    app:icon="@drawable/ic_plus_primary_24dp"
-                    app:iconGravity="start"
-                    android:padding="0dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/profile_image"
-                    app:layout_constraintRight_toRightOf="@id/profile_image" />
+            <android.support.design.button.MaterialButton
+                android:id="@+id/addAvatar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:padding="0dp"
+                android:visibility="gone"
+                app:icon="@drawable/ic_plus_primary_24dp"
+                app:iconGravity="start"
+                app:layout_constraintBottom_toBottomOf="@id/profile_image"
+                app:layout_constraintRight_toRightOf="@id/profile_image" />
 
             <TextView
                 android:id="@+id/tvUserNamePrf"
@@ -194,11 +204,11 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:focusableInTouchMode="true"
+            android:visibility="gone"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabMaxWidth="0dp"
-            app:tabMode="fixed"
-            android:visibility="gone">
+            app:tabMode="fixed">
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabUserPost"

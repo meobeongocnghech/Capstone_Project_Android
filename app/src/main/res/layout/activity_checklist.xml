@@ -4,31 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:id="@+id/tvChecklist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Việc cần làm"
-        android:gravity="center"
-        android:textColor="#b2b9c6"
-        app:layout_constraintTop_toBottomOf="@id/imgBackInCheckList"/>
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarChecklist"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/Toolbar"
+        app:title="@string/title_checklist"
+        app:titleTextAppearance="@style/ToolbarTitleTheme"
+        app:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </android.support.v7.widget.Toolbar>
     <LinearLayout
         android:id="@+id/layoutChecklistItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="vertical"
         android:layout_marginTop="20dp"
         android:background="@drawable/rectangle"
-        app:layout_constraintTop_toBottomOf="@+id/tvChecklist">
+        app:layout_constraintTop_toBottomOf="@+id/toolbarChecklist">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvChecklistItem"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_margin="4dp">
+            android:layout_height="200dp">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -36,52 +39,60 @@
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btnEditCheckList"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="8dp"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
         android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:letterSpacing="0.01"
         android:minHeight="0dp"
         android:minWidth="0dp"
         android:padding="0dp"
         android:text="Sửa"
+        app:strokeWidth="0dp"
         android:textAllCaps="false"
-        android:textColor="@color/colorGray"
-        android:textSize="16sp"
+        android:textColor="@color/colorWhite"
+        android:layout_marginEnd="8dp"
+        app:cornerRadius="56dp"
         app:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imgBackInCheckList"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_arrow_back_green"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/toolbarChecklist"/>
 
     <EditText
         android:id="@+id/edtAddChecklist"
-        android:layout_width="270dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:text="Thêm item mới..."
+        android:hint="Thêm item mới..."
         android:textSize="15dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintStart_toStartOf="@id/layoutChecklistItem"
+        app:layout_constraintEnd_toStartOf="@id/btnAddChecklist"
         app:layout_constraintTop_toBottomOf="@id/layoutChecklistItem" />
 
-    <ImageView
-        android:id="@+id/imgAddChecklist"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btnAddChecklist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_add_circle_primary"
+        android:letterSpacing="0.01"
+        android:textSize="14sp"
+        android:textColor="@color/colorWhite"
+        android:text="Thêm"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toEndOf="@id/edtAddChecklist"
         app:layout_constraintEnd_toEndOf="@+id/layoutChecklistItem"
         app:layout_constraintTop_toBottomOf="@+id/layoutChecklistItem" />
+
+    <TextView
+        android:id="@+id/checklistEmptyMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/edtAddChecklist"
+        app:layout_constraintStart_toStartOf="@id/edtAddChecklist"
+        android:text="Chưa có đầu việc nào được thêm"
+        app:layout_goneMarginTop="16dp"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,9 @@ public class Group {
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("userId")
+    @Expose
+    private int userId;
     @SerializedName("name")
     @Expose
     private String name;
