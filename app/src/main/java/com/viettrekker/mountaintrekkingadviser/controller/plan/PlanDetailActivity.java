@@ -235,7 +235,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         });
 
         addViewMaps.setOnClickListener((v) -> {
-            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?saddr="+srcLocation.getLat() + "," + srcLocation.getLng()+"&daddr="+desLocation.getLat() + "," + desLocation.getLng());
+            Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?saddr=" + srcLocation.getLat() + "," + srcLocation.getLng() + "&daddr=" + desLocation.getLat() + "," + desLocation.getLng());
             //Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
@@ -323,14 +323,14 @@ public class PlanDetailActivity extends AppCompatActivity {
                                             desLocation.setLat(place.getLocation().getLatitude());
                                             desLocation.setLng(place.getLocation().getLongitude());
 
-                                                Location start = new Location("");
-                                                start.setLatitude(srcLocation.getLat());
-                                                start.setLongitude(srcLocation.getLng());
-                                                Location end = new Location("");
-                                                end.setLatitude(desLocation.getLat());
-                                                end.setLongitude(desLocation.getLng());
-                                                float dist = start.distanceTo(end) / 1000;
-                                                tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                                            Location start = new Location("");
+                                            start.setLatitude(srcLocation.getLat());
+                                            start.setLongitude(srcLocation.getLng());
+                                            Location end = new Location("");
+                                            end.setLatitude(desLocation.getLat());
+                                            end.setLongitude(desLocation.getLng());
+                                            float dist = start.distanceTo(end) / 1000;
+                                            tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
                                         }
 
                                         @Override
@@ -449,21 +449,21 @@ public class PlanDetailActivity extends AppCompatActivity {
                 srcLocation.setLat(place.getLatLng().latitude);
                 srcLocation.setLng(place.getLatLng().longitude);
 
-                    Location start = new Location("");
-                    start.setLatitude(srcLocation.getLat());
-                    start.setLongitude(srcLocation.getLng());
-                    Location end = new Location("");
-                    end.setLatitude(desLocation.getLat());
-                    end.setLongitude(desLocation.getLng());
-                    float dist = start.distanceTo(end) / 1000;
-                    tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                Location start = new Location("");
+                start.setLatitude(srcLocation.getLat());
+                start.setLongitude(srcLocation.getLng());
+                Location end = new Location("");
+                end.setLatitude(desLocation.getLat());
+                end.setLongitude(desLocation.getLng());
+                float dist = start.distanceTo(end) / 1000;
+                tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
             } else if (resultCode == RESULT_CANCELED) {
             }
         } else {
         }
     }
 
-    private void loadPlan(){
+    private void loadPlan() {
         mWebService.getPlanById(token, id).enqueue(new Callback<Plan>() {
             @Override
             public void onResponse(Call<Plan> call, Response<Plan> response) {
@@ -520,6 +520,8 @@ public class PlanDetailActivity extends AppCompatActivity {
                 end.setLongitude(desLocation.getLng());
                 float dist = start.distanceTo(end) / 1000;
                 tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+
+                placeId = plan.getDirection().getPlaceId();
             }
 
 

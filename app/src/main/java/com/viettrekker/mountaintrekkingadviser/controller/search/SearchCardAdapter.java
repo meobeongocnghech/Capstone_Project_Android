@@ -20,14 +20,22 @@ import com.viettrekker.mountaintrekkingadviser.model.User;
 import java.util.List;
 
 public class SearchCardAdapter extends RecyclerView.Adapter<SearchCardAdapter.ViewHolder> {
-
-    private int totalCard = 0;
     private List<User> users;
     private List<Place> places;
     private List<Post> posts;
     private boolean isUser = false;
     private boolean isPlace = false;
     private boolean isPost = false;
+    private String token;
+    private int userId;
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     private String query;
 
@@ -89,6 +97,8 @@ public class SearchCardAdapter extends RecyclerView.Adapter<SearchCardAdapter.Vi
             adapter.setUser(true);
             adapter.setPlace(false);
             adapter.setPost(false);
+            adapter.setToken(token);
+            adapter.setUserId(userId);
             if (users.size() <= 3) viewHolder.btnViewAll.setVisibility(View.GONE);
             if (users.size() > 3) users.remove(users.size() - 1);
             adapter.setUsers(users);
@@ -97,7 +107,7 @@ public class SearchCardAdapter extends RecyclerView.Adapter<SearchCardAdapter.Vi
             viewHolder.rcvSearchItem.setAdapter(adapter);
             viewHolder.btnViewAll.setOnClickListener((v) -> {
                 Intent intent = new Intent(context, FullSearchActivity.class);
-                intent.putExtra("token", MainActivity.user.getToken());
+                intent.putExtra("token", token);
                 intent.putExtra("type", "user");
                 intent.putExtra("query", query);
                 context.startActivity(intent);
@@ -118,7 +128,7 @@ public class SearchCardAdapter extends RecyclerView.Adapter<SearchCardAdapter.Vi
             viewHolder.rcvSearchItem.setAdapter(adapter);
             viewHolder.btnViewAll.setOnClickListener((v) -> {
                 Intent intent = new Intent(context, FullSearchActivity.class);
-                intent.putExtra("token", MainActivity.user.getToken());
+                intent.putExtra("token", token);
                 intent.putExtra("type", "place");
                 intent.putExtra("query", query);
                 context.startActivity(intent);
@@ -139,7 +149,7 @@ public class SearchCardAdapter extends RecyclerView.Adapter<SearchCardAdapter.Vi
             viewHolder.rcvSearchItem.setAdapter(adapter);
             viewHolder.btnViewAll.setOnClickListener((v) -> {
                 Intent intent = new Intent(context, FullSearchActivity.class);
-                intent.putExtra("token", MainActivity.user.getToken());
+                intent.putExtra("token", token);
                 intent.putExtra("type", "post");
                 intent.putExtra("query", query);
                 context.startActivity(intent);

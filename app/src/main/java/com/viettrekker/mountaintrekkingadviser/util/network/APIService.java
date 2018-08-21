@@ -264,4 +264,6 @@ public interface APIService {
             @Part("description") RequestBody description,
             @Part List<MultipartBody.Part> files);
 
+    @POST("auth/token")
+    Call<User> validToken(@Header("AUTH_TOKEN_ID") String token);
 }

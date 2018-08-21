@@ -34,6 +34,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -99,7 +100,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 APIService mWebService = APIUtils.getWebService();
                 new Handler().postDelayed(() -> {
                     try {
-                        mWebService.updateUserProfile(MainActivity.user.getToken(),
+                        mWebService.updateUserProfile(Session.getToken(getActivity()),
                                 ((ProfileMemberActivity) getActivity()).getId(),
                                 ((ProfileMemberActivity) getActivity()).getFirstName(),
                                 ((ProfileMemberActivity) getActivity()).getLastName(),

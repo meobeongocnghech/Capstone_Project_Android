@@ -31,6 +31,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -48,6 +49,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private APIService mWebService = APIUtils.getWebService();
     int targetCmtid = -1;
     int idCmtChild = 0;
+    private String token;
+    private int userId;
 
     int idCmtEdit = -1;
 
@@ -61,6 +64,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     public CommentListAdapter(Context context) {
         this.context = context;
+        token = Session.getToken(context);
+        userId = Session.getUserId(context);
     }
 
     @NonNull
@@ -77,7 +82,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         Comment comment = list.get(position);
         User user = comment.getUser();
         DateTimeUtils datetime = new DateTimeUtils();
-        CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId());
+        CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId(), token, userId);
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(position).getUser().getLastName());
         viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
@@ -144,7 +149,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                     .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,int id) {
                                             if (!edtRP.getText().toString().matches("")){
-                                                mWebService.reportComent(MainActivity.user.getToken(),comment.getTargetId(), comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                mWebService.reportComent(token,comment.getTargetId(), comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
                                                         dialog.cancel();
@@ -174,7 +179,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                             AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
                         } else
-                        if (MainActivity.user.getId() == comment.getUser().getId()){
+                        if (userId == comment.getUser().getId()){
                             if (menuItem.getTitle().equals("Sửa")){
                                 ((PostDetailActivity)context).edtComment.setText(viewHolder.tvCmtContent.getText().toString());
                                 InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -190,7 +195,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
-                                                mWebService.removeComment(MainActivity.user.getToken(),comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
+                                                mWebService.removeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
                                                         list.remove(position);
@@ -242,7 +247,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             public void onClick(View view) {
 
                 if (!viewHolder.likeFlag){
-                    mWebService.likeComment(MainActivity.user.getToken(),comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
+                    mWebService.likeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
@@ -260,7 +265,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     });
 
                 } else {
-                    mWebService.unlikeComment(MainActivity.user.getToken(),comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
+                    mWebService.unlikeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
@@ -375,7 +380,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         Intent i = new Intent(context, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        if (MainActivity.user.getId() == user.getId()) {
+        if (userId == user.getId()) {
             i.putExtra("owner", true);
         } else {
             i.putExtra("owner", false);

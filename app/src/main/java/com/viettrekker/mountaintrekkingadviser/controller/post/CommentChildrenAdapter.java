@@ -44,19 +44,18 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     private List<Comment> list;
     private Context context;
     private int userId;
-    int cmtId = 0;
-    int cmtChild = 0;
     public void setList(List<Comment> list) {
         this.list = list;
     }
-    APIService mWebService = APIUtils.getWebService();
-    public CommentChildrenAdapter(Context context) {
-        this.context = context;
-    }
+    private APIService mWebService = APIUtils.getWebService();
+    private String token;
+    private int accountUserId;
 
-    public CommentChildrenAdapter(Context context, int commentId) {
+    public CommentChildrenAdapter(Context context, int commentId, String token, int uId) {
         this.context = context;
         this.userId = commentId;
+        this.token = token;
+        accountUserId = uId;
     }
 
     @NonNull
@@ -71,7 +70,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     public void onBindViewHolder(@NonNull CommentChildrenAdapter.ViewHolder viewHolder, int i) {
         Comment comment = list.get(i);
         User user = comment.getUser();
-        CommentListAdapter commentListAdapter = new CommentListAdapter(context);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
@@ -87,7 +85,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
             @Override
             public void onClick(View view) {
                 if (!viewHolder.likeFlag){
-                    mWebService.likeComment(MainActivity.user.getToken(), userId,comment.getId()).enqueue(new Callback<Post>() {
+                    mWebService.likeComment(token, userId,comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
@@ -106,7 +104,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                     });
 
                 } else {
-                    mWebService.unlikeComment(MainActivity.user.getToken(), userId,comment.getId()).enqueue(new Callback<Post>() {
+                    mWebService.unlikeComment(token, userId,comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
@@ -175,7 +173,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                     .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,int id) {
                                             if (!edtRP.getText().toString().matches("")){
-                                                mWebService.reportComent(MainActivity.user.getToken(), userId, comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                mWebService.reportComent(token, userId, comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
                                                         dialog.cancel();
@@ -205,7 +203,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                             AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
                         } else
-                        if (MainActivity.user.getId() == user.getId()){
+                        if (accountUserId == user.getId()){
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn có muốn xóa bình luận?")
@@ -213,7 +211,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                         .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int index) {
-                                                mWebService.removeComment(MainActivity.user.getToken(),userId,comment.getId()).enqueue(new Callback<Post>() {
+                                                mWebService.removeComment(token,userId,comment.getId()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
                                                         list.remove(i);
@@ -324,7 +322,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         Intent i = new Intent(context, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        if (MainActivity.user.getId() == user.getId()) {
+        if (accountUserId == user.getId()) {
             i.putExtra("owner", true);
         } else {
             i.putExtra("owner", false);

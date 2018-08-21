@@ -35,6 +35,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.post.PlaceDetailActivi
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
@@ -45,6 +46,8 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
     private final String TAG = SlidingSearchResultsFragment.class.getSimpleName();
 
     private SearchFragment searchFragment;
+    private String token;
+    private int userId;
 
     public void setSearchFragment(SearchFragment searchFragment) {
         this.searchFragment = searchFragment;
@@ -85,6 +88,8 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        token = Session.getToken(getActivity());
+        userId = Session.getUserId(getActivity());
         mSearchView = (FloatingSearchView) view.findViewById(R.id.floating_search_view);
 //        mSearchResultsList = (RecyclerView) view.findViewById(R.id.search_results_list);
         //search = (ImageButton) view.findViewById(R.id.search);
@@ -169,7 +174,9 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
                     adapter.setUsers(DataHelper.users);
                     adapter.setPlaces(DataHelper.places);
                     adapter.setPosts(DataHelper.posts);
-                    adapter.setContext(getContext());
+                    adapter.setContext(getActivity());
+                    adapter.setToken(token);
+                    adapter.setUserId(userId);
                     searchFragment.getRcvSearch().setAdapter(adapter);
                     mSearchView.setSearchFocused(false);
                 } else if (rs[1].equalsIgnoreCase("place")) {
@@ -180,7 +187,7 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
                         mSearchView.setSearchFocused(false);
                         Toast.makeText(getContext(), "Đã xảy ra lỗi", Toast.LENGTH_LONG).show();
                     }
-                    i.putExtra("token", MainActivity.user.getToken());
+                    i.putExtra("token", Session.getToken(getActivity()));
                     mSearchView.setSearchFocused(false);
                     startActivity(i);
                 } else if (rs[1].equalsIgnoreCase("post")) {
@@ -190,19 +197,19 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
                     } catch (Exception e) {
                         Toast.makeText(getContext(), "Đã xảy ra lỗi", Toast.LENGTH_LONG).show();
                     }
-                    i.putExtra("token", MainActivity.user.getToken());
+                    i.putExtra("token", token);
                     mSearchView.setSearchFocused(false);
                     startActivity(i);
                 } else {
                     Intent i = new Intent(getContext(), ProfileMemberActivity.class);
                     try {
                         i.putExtra("id", Integer.parseInt(rs[rs.length - 1]));
-                        i.putExtra("owner", (Integer.parseInt(rs[rs.length - 1])) == MainActivity.user.getId());
+                        i.putExtra("owner", (Integer.parseInt(rs[rs.length - 1])) == userId);
                     } catch (Exception e) {
                         mSearchView.setSearchFocused(false);
                         Toast.makeText(getContext(), "Đã xảy ra lỗi", Toast.LENGTH_LONG).show();
                     }
-                    i.putExtra("token", MainActivity.user.getToken());
+                    i.putExtra("token", token);
                     mSearchView.setSearchFocused(false);
                     startActivity(i);
                 }

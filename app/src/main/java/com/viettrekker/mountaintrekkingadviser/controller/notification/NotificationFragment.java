@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -73,7 +74,7 @@ public class NotificationFragment extends Fragment {
 
     public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
-        mWebService.getNoti(MainActivity.user.getToken()).enqueue(new Callback<List<Notification>>() {
+        mWebService.getNoti(Session.getToken(getActivity())).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 List<Notification> list = response.body();

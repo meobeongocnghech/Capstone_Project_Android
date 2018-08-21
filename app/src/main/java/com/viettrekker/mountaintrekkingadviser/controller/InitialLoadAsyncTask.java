@@ -5,6 +5,18 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class InitialLoadAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -49,6 +61,30 @@ public class InitialLoadAsyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        context.startActivity(new Intent(context, LoginActivity.class));
+
+
+        APIService mWebService = APIUtils.getWebService();
+        mWebService.validToken(Session.getToken(context)).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == HttpsURLConnection.HTTP_OK) {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, "Lỗi kết nối", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
 }

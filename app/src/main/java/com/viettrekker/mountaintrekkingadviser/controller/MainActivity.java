@@ -46,6 +46,8 @@ import com.viettrekker.mountaintrekkingadviser.controller.search.BaseExampleFrag
 import com.viettrekker.mountaintrekkingadviser.controller.search.SlidingSearchResultsFragment;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
+import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +57,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
+import java.net.HttpURLConnection;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, BaseExampleFragment.BaseExampleFragmentCallbacks {
     private TabLayout tabs;
@@ -62,7 +70,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView imgAvatar;
     private MainScreenPagerAdapter adapter;
     private DrawerLayout drawer;
-    public static User user;
+    private User user;
     private FrameLayout frame;
 
     private LocationManager location;
@@ -81,13 +89,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        user = Session.getUser(MainActivity.this);
         init();
-        initSearchFrame();
         initLocationListener();
-    }
-
-    private void initSearchFrame() {
-
     }
 
     public void swipeTab(int index) {
@@ -96,16 +100,19 @@ public class MainActivity extends AppCompatActivity
 
     private void init() {
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         btnAddNew = (FloatingActionButton) findViewById(R.id.btnAddNew);
-
         imgAvatar = (ImageView) findViewById(R.id.imgMainAvatar);
+        viewPager = (ViewPager) findViewById(R.id.container);
+        tabs = (TabLayout) findViewById(R.id.tabs);
+        tvMainTitle = (TextView) findViewById(R.id.tvMainTitle);
+
+        navigationView.setNavigationItemSelectedListener(this);
         imgAvatar.setOnClickListener((v) -> drawer.openDrawer(GravityCompat.START));
 
         View header = navigationView.getHeaderView(0);
+        TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
+        TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
         ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
 
         btnAddNew.setOnClickListener(new View.OnClickListener() {
@@ -115,8 +122,8 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(MainActivity.this, PostAddActivity.class);
                     startActivity(intent);
                 } else if (tabs.getSelectedTabPosition() == 1) {
-                    Intent intent = new Intent(MainActivity.this,NewPlanActivity.class);
-                    intent.putExtra("token", user.getToken());
+                    Intent intent = new Intent(MainActivity.this, NewPlanActivity.class);
+                    intent.putExtra("token", Session.getToken(MainActivity.this));
                     startActivityForResult(intent, PLAN_RESULT);
                 }
             }
@@ -126,48 +133,10 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(this, ProfileMemberActivity.class);
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
-            i.putExtra("token", user.getToken());
-            //i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
+            i.putExtra("token", Session.getToken(MainActivity.this));
             drawer.closeDrawer(GravityCompat.START);
             startActivity(i);
         });
-
-        if (!user.getGallery().getMedia().get(0).getPath().isEmpty()) {
-
-            GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
-                    .placeholder(getDrawable(R.drawable.avatar_default))
-                    .fallback(getDrawable(R.drawable.avatar_default))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(imgAvatar);
-
-            GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
-                    .placeholder(getDrawable(R.drawable.avatar_default))
-                    .fallback(getDrawable(R.drawable.avatar_default))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(imgNavAvatar);
-        }
-
-        TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
-        tvNavName.setText(user.getLastName() + " " + user.getFirstName());
-
-        TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
-        tvNavEmail.setText(user.getEmail());
-
-        viewPager = (ViewPager) findViewById(R.id.container);
-        tabs = (TabLayout) findViewById(R.id.tabs);
-
-        adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
-
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-
-//        viewPager.setOffscreenPageLimit(4);
-
-        int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
-        tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -248,14 +217,9 @@ public class MainActivity extends AppCompatActivity
                             });
                         }
                         break;
-                    default:
                 }
             }
         });
-
-
-        //setupWindowAnimations();
-        tvMainTitle = (TextView) findViewById(R.id.tvMainTitle);
 
         initRefreshLayout();
     }
@@ -309,8 +273,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-//        Bundle transitionBundle = ActivityOptionsCompat.makeSceneTransitionAnimation(this, findViewById(R.id.imgPlaceCover), "placeImg").toBundle();
-//        adapter.setTransitionBundle(transitionBundle);
+        bindData();
 
         SlidingSearchResultsFragment fragment = new SlidingSearchResultsFragment();
         search = (ImageButton) findViewById(R.id.search);
@@ -318,8 +281,45 @@ public class MainActivity extends AppCompatActivity
         fragment.setSearch(search);
         fragment.setFrame(frame);
         getSupportFragmentManager().beginTransaction().replace(R.id.search_frame, fragment).commit();
-//        adapter.setSearchFragment(searchFragment);
         fragment.setSearchFragment(adapter.getSearchFragment());
+    }
+
+    private void bindData() {
+        View header = navigationView.getHeaderView(0);
+        TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
+        TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
+        ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+
+        if (!user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .placeholder(getDrawable(R.drawable.avatar_default))
+                    .fallback(getDrawable(R.drawable.avatar_default))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(imgAvatar);
+
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
+                    .placeholder(getDrawable(R.drawable.avatar_default))
+                    .fallback(getDrawable(R.drawable.avatar_default))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(imgNavAvatar);
+        }
+
+        tvNavName.setText(user.getLastName() + " " + user.getFirstName());
+        tvNavEmail.setText(user.getEmail());
+
+        adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
+        int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
+        tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
+
+        //        viewPager.setOffscreenPageLimit(4)
     }
 
     @Override
@@ -328,18 +328,27 @@ public class MainActivity extends AppCompatActivity
         //item.getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
 
         MenuItem item1 = navigationView.getMenu().findItem(R.id.nav_profile);
+        MenuItem item2 = navigationView.getMenu().findItem(R.id.nav_logout);
 
         if (item.equals(item1)) {
             Intent i = new Intent(this, ProfileMemberActivity.class);
             i.putExtra("owner", true);
             i.putExtra("id", user.getId());
             i.putExtra("viewProfile", true);
-            i.putExtra("token", user.getToken());
+            i.putExtra("token", Session.getToken(this));
             if (user.getGallery() != null) {
                 i.putExtra("avatar", user.getGallery().getMedia().get(0).getPath());
             }
             drawer.closeDrawer(GravityCompat.START);
             startActivity(i);
+            return true;
+        }
+
+        if (item.equals(item2)) {
+            Session.clearSession(this);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
         return false;
     }
@@ -422,10 +431,7 @@ public class MainActivity extends AppCompatActivity
 
                 }
             });
-//            }
         }
-
-
     }
 
     private void buildAlertDialogNoGPS() {

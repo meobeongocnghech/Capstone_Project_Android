@@ -17,6 +17,7 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -65,7 +66,7 @@ public class ChecklistActivity extends AppCompatActivity {
         rcvChecklistItem.setLayoutManager(new LinearLayoutManager(ChecklistActivity.this));
         ChecklistAdapter checklistAdapter = new ChecklistAdapter(ChecklistActivity.this);
         if (id != -1){
-            mWebService.getPlanById(MainActivity.user.getToken(), id).enqueue(new Callback<Plan>() {
+            mWebService.getPlanById(Session.getToken(this), id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
                     plan = response.body();

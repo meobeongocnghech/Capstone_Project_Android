@@ -37,6 +37,7 @@ import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -127,7 +128,7 @@ public class PostDetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if (btnSendCmtDetail.getText().toString().equalsIgnoreCase("Sửa")){
-                        mWebService.updateComment(MainActivity.user.getToken(), id, cmtListAdapter.idCmtEdit,
+                        mWebService.updateComment(Session.getToken(PostDetailActivity.this), id, cmtListAdapter.idCmtEdit,
                                 edtComment.getText().toString()).enqueue(new Callback<Post>() {
                             @Override
                             public void onResponse(Call<Post> call, Response<Post> response) {
@@ -150,7 +151,7 @@ public class PostDetailActivity extends AppCompatActivity{
                     } else
                 if (!edtComment.getText().toString().isEmpty()){
                     if (edtComment.getHint().toString().contains("Bình luận bài viết")){
-                        mWebService.commentPost(MainActivity.user.getToken(), id, edtComment.getText().toString()).enqueue(new Callback<Post>() {
+                        mWebService.commentPost(Session.getToken(PostDetailActivity.this), id, edtComment.getText().toString()).enqueue(new Callback<Post>() {
                             @Override
                             public void onResponse(Call<Post> call, Response<Post> response) {
                                 edtComment.setText("");
@@ -168,7 +169,7 @@ public class PostDetailActivity extends AppCompatActivity{
                             }
                         });
                     } else {
-                        mWebService.commentOnComment(MainActivity.user.getToken(),id,cmtListAdapter.targetCmtid,edtComment.getText().toString()).enqueue(new Callback<Post>() {
+                        mWebService.commentOnComment(Session.getToken(PostDetailActivity.this),id,cmtListAdapter.targetCmtid,edtComment.getText().toString()).enqueue(new Callback<Post>() {
                             @Override
                             public void onResponse(Call<Post> call, Response<Post> response) {
                                 edtComment.setText("");
@@ -214,7 +215,7 @@ public class PostDetailActivity extends AppCompatActivity{
                     public void onClick(View view) {
                         if (!likeFlag){
                             btnPostLike.setClickable(false);
-                            mWebService.likePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                            mWebService.likePost(Session.getToken(PostDetailActivity.this),post.getId()).enqueue(new Callback<Post>() {
                                 @Override
                                 public void onResponse(Call<Post> call, Response<Post> response) {
                                     btnPostLike.setIcon(getDrawable(R.drawable.ic_like_pressed));
@@ -233,7 +234,7 @@ public class PostDetailActivity extends AppCompatActivity{
                             });
                         } else {
                             btnPostLike.setClickable(false);
-                            mWebService.unlikePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                            mWebService.unlikePost(Session.getToken(PostDetailActivity.this),post.getId()).enqueue(new Callback<Post>() {
                                 @Override
                                 public void onResponse(Call<Post> call, Response<Post> response) {
                                     tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
@@ -273,7 +274,7 @@ public class PostDetailActivity extends AppCompatActivity{
                                             .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog,int id) {
                                                     if (!edtRP.getText().toString().matches("")){
-                                                        mWebService.reportPost(MainActivity.user.getToken(),post.getId(),edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                        mWebService.reportPost(Session.getToken(PostDetailActivity.this),post.getId(),edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                             @Override
                                                             public void onResponse(Call<Post> call, Response<Post> response) {
                                                                 dialog.cancel();
@@ -302,7 +303,7 @@ public class PostDetailActivity extends AppCompatActivity{
                                     AlertDialog alertDialog = alertDialogBuilder.create();
                                     alertDialog.show();
                                 } else
-                                if (MainActivity.user.getId() == post.getUser().getId()){
+                                if (Session.getUserId(PostDetailActivity.this) == post.getUser().getId()){
                                     if (menuItem.getTitle().equals("Sửa")){
                                         Intent intent = new Intent(PostDetailActivity.this, PostAddActivity.class);
                                         intent.putExtra("id",post.getId());
@@ -322,7 +323,7 @@ public class PostDetailActivity extends AppCompatActivity{
                                                         List<Integer> li = new ArrayList<>();
                                                         li.add(post.getId());
                                                         pi.setId(li);
-                                                        mWebService.removePost(MainActivity.user.getToken(),pi).enqueue(new Callback<Post>() {
+                                                        mWebService.removePost(Session.getToken(PostDetailActivity.this),pi).enqueue(new Callback<Post>() {
                                                             @Override
                                                             public void onResponse(Call<Post> call, Response<Post> response) {
                                                                 Toast.makeText(PostDetailActivity.this, "Đã xóa",Toast.LENGTH_SHORT).show();
@@ -446,13 +447,13 @@ public class PostDetailActivity extends AppCompatActivity{
         Intent i = new Intent(this, ProfileMemberActivity.class);
         i.putExtra("firstname", user.getFirstName());
         i.putExtra("lastname", user.getLastName());
-        if (MainActivity.user.getId() == user.getId()) {
+        if (Session.getUserId(PostDetailActivity.this) == user.getId()) {
             i.putExtra("owner", true);
         } else {
             i.putExtra("owner", false);
         }
         i.putExtra("id", user.getId());
-        i.putExtra("token", MainActivity.user.getToken());
+        i.putExtra("token", Session.getToken(PostDetailActivity.this));
         startActivity(i);
     }
 

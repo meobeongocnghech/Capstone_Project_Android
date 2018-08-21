@@ -16,6 +16,7 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -88,6 +89,8 @@ public class FullSearchActivity extends AppCompatActivity {
                     adapter.setPlace(false);
                     adapter.setPost(false);
                     adapter.setUsers(users);
+                    adapter.setToken(token);
+                    adapter.setUserId(Session.getUserId(FullSearchActivity.this));
                     adapter.setContext(getBaseContext());
                     rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                     rcv.setAdapter(adapter);
@@ -119,6 +122,8 @@ public class FullSearchActivity extends AppCompatActivity {
                     adapter.setUser(false);
                     adapter.setPlace(true);
                     adapter.setPost(false);
+                    adapter.setToken(token);
+                    adapter.setUserId(Session.getUserId(FullSearchActivity.this));
                     adapter.setPlaces(places);
                     adapter.setContext(getBaseContext());
                     rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
@@ -153,6 +158,8 @@ public class FullSearchActivity extends AppCompatActivity {
                             adapter.setUser(false);
                             adapter.setPlace(false);
                             adapter.setPost(true);
+                            adapter.setToken(token);
+                            adapter.setUserId(Session.getUserId(FullSearchActivity.this));
                             adapter.setPosts(posts);
                             adapter.setContext(getBaseContext());
                             rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));

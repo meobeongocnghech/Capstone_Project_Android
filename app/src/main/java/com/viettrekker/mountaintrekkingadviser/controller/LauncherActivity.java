@@ -39,12 +39,5 @@ public class LauncherActivity extends AppCompatActivity {
             InitialLoadAsyncTask task = new InitialLoadAsyncTask(progress, this);
             task.execute();
         }, 1500);
-
-//        int SPLASH_DISPLAY_LENGTH = 2000;
-//        new Handler().postDelayed(() -> {
-//            Intent intent = new Intent(this, LoginActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }, SPLASH_DISPLAY_LENGTH);
     }
 }

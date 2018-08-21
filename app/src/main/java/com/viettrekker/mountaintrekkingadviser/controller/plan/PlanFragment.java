@@ -14,6 +14,7 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -52,7 +53,8 @@ public class PlanFragment extends Fragment {
 
     public  void initLoad(){
         APIService mWebService = APIUtils.getWebService();
-        mWebService.getListPlan(MainActivity.user.getToken(), 1,10,"id").enqueue(new Callback<List<Plan>>() {
+        showProgress();
+        mWebService.getListPlan(Session.getToken(getActivity()), 1,10,"id").enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
                 List<Plan> plans = response.body();
@@ -61,13 +63,13 @@ public class PlanFragment extends Fragment {
                     planAdapter.setListPlan(plans);
                     planAdapter.notifyDataSetChanged();
                 }
-                progressPlan.setVisibility(View.GONE);
+                hideProgress();
             }
 
             @Override
             public void onFailure(Call<List<Plan>> call, Throwable t) {
-                Toast.makeText(getContext(),t.getMessage(),Toast.LENGTH_LONG).show();
-                progressPlan.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Lỗi",Toast.LENGTH_LONG).show();
+                hideProgress();
             }
         });
     }
@@ -75,6 +77,7 @@ public class PlanFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        progressPlan = (ProgressBar) view.findViewById(R.id.progressPlan);
         rcvPlanListItem = (RecyclerView) view.findViewById(R.id.rcvPlanListItem);
         rcvPlanListItem.setNestedScrollingEnabled(false);
         rcvPlanListItem.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -83,7 +86,13 @@ public class PlanFragment extends Fragment {
         planAdapter.setFragment(this);
         initLoad();
         rcvPlanListItem.setAdapter(planAdapter);
+    }
 
-        progressPlan = (ProgressBar) view.findViewById(R.id.progressPlan);
+    public void showProgress() {
+        progressPlan.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgress() {
+        progressPlan.setVisibility(View.GONE);
     }
 }

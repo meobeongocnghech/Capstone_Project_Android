@@ -18,6 +18,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.notification.Notificat
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -30,17 +31,16 @@ import retrofit2.Response;
 
 public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.ViewHolder> {
     private List<Member> users;
-    private Fragment fragment;
     private Context context;
+    private String token;
+    private int userId;
 
     APIService mWebService = APIUtils.getWebService();
 
     public void setContext(Context context) {
         this.context = context;
-    }
-
-    public void setFragment(Fragment fragment) {
-        this.fragment = fragment;
+        token = Session.getToken(context);
+        userId = Session.getUserId(context);
     }
 
     public void setUsers(List<Member> users) {
@@ -63,7 +63,9 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
         viewHolder.member = users.get(i);
-        mWebService.getUserById(MainActivity.user.getToken(),viewHolder.member.getUserId()).enqueue(new Callback<User>() {
+        viewHolder.token = token;
+        viewHolder.userId = userId;
+        mWebService.getUserById(token, viewHolder.member.getUserId()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                            viewHolder.tvNameItem.setText(response.body().getFirstName() + " " + response.body().getLastName());
@@ -75,10 +77,10 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
             }
         });
         viewHolder.tvGenderItem.setText("Thành viên");
-        if (MainActivity.user.getId() == viewHolder.member.getUserId() && viewHolder.member.getRoleInGroupId() == 1){
+        if (userId == viewHolder.member.getUserId() && viewHolder.member.getRoleInGroupId() == 1){
             viewHolder.imgRemoveUser.setVisibility(View.INVISIBLE);
         }
-        if (MainActivity.user.getId() == viewHolder.member.getUserId()){
+        if (userId == viewHolder.member.getUserId()){
             viewHolder.imgPhoneCall.setVisibility(View.INVISIBLE);
         }
         if (viewHolder.member.getRoleInGroupId() == 1){
@@ -111,6 +113,8 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
     static class ViewHolder extends RecyclerView.ViewHolder {
         Member member;
         Context context;
+        String token;
+        int userId;
         ImageView imgAvtItem;
         TextView tvNameItem;
         TextView tvGenderItem;
@@ -130,11 +134,9 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         }
         private void eventViewProfile() {
             Intent i = new Intent(context, ProfileMemberActivity.class);
-//            i.putExtra("firstname", member.getFirstName());
-//            i.putExtra("lastname", member.getLastName());
             i.putExtra("id", member.getUserId());
-            i.putExtra("token",MainActivity.user.getToken());
-            if (MainActivity.user.getId() == member.getUserId()) {
+            i.putExtra("token", token);
+            if (userId == member.getUserId()) {
                 i.putExtra("owner", true);
             } else {
                 i.putExtra("owner", false);

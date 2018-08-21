@@ -120,7 +120,7 @@ public class DateTimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat();
         if (sDate.contains("Z")) {
             sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+7"));
             Date date = sdf.parse(sDate);
             return date;
         } else {

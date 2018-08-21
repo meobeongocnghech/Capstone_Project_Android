@@ -21,6 +21,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -29,6 +30,7 @@ import org.w3c.dom.Text;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +44,9 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private Fragment fragment;
     private Context context;
     private List<Plan> listPlan;
+    private String token;
+    private int page = 2;
+    private boolean stopLoad = false;
 
     public PlanAdapter() {
     }
@@ -56,6 +61,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
     public void setFragment(Fragment fragment) {
         this.fragment = fragment;
+        token = Session.getToken(((PlanFragment) fragment).getActivity());
     }
 
     @NonNull
@@ -72,6 +78,34 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         APIService mWebService = APIUtils.getWebService();
         Plan plan = listPlan.get(i);
+
+        if (i == listPlan.size() - 1 && !stopLoad) {
+            ((PlanFragment) fragment).showProgress();
+            mWebService.getListPlan(token, page,10,"id").enqueue(new Callback<List<Plan>>() {
+                @Override
+                public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+                    List<Plan> plans = response.body();
+                    if (plans != null){
+                        plans.remove(0);
+                        for (Plan plan : plans) {
+                            listPlan.add(plan);
+                        }
+                        notifyDataSetChanged();
+                    }
+                    if (plans.size() < 10) {
+                        stopLoad = true;
+                    }
+                    ((PlanFragment) fragment).hideProgress();
+                }
+
+                @Override
+                public void onFailure(Call<List<Plan>> call, Throwable t) {
+                    ((PlanFragment) fragment).hideProgress();
+                }
+            });
+        }
+
+
         if (plan.getState() == 0){
             viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
             viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
@@ -99,12 +133,12 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             public void onClick(View view) {
                 Intent intent = new Intent(context,PlanDetailActivity.class);
                 intent.putExtra("id", plan.getId());
-                intent.putExtra("token", MainActivity.user.getToken());
-                intent.putExtra("userId", MainActivity.user.getId());
+                intent.putExtra("token", token);
+                intent.putExtra("userId", Session.getUserId(((PlanFragment) fragment).getActivity()));
                 context.startActivity(intent);
             }
         });
-        mWebService.getPlaceById(MainActivity.user.getToken(), plan.getDirection().getPlaceId()).enqueue(new Callback<Place>() {
+        mWebService.getPlaceById(token, plan.getDirection().getPlaceId()).enqueue(new Callback<Place>() {
             @Override
             public void onResponse(Call<Place> call, Response<Place> response) {
                 viewHolder.tvStartLoc.setText(response.body() == null ? "" : response.body().getName());
@@ -118,7 +152,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         List<Member> members = plan.getGroup().getMembers();
         for (Member m: members) {
             if (m.getRoleInGroupId() == 1){
-                mWebService.getUserById(MainActivity.user.getToken(),m.getUserId()).enqueue(new Callback<User>() {
+                mWebService.getUserById(token, m.getUserId()).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         viewHolder.tvPlanLead.setText(response.body().getFirstName() + " " + response.body().getLastName());
@@ -140,9 +174,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     @Override

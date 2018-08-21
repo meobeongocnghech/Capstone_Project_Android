@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -27,14 +28,14 @@ import retrofit2.Response;
 
 public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
     private List<Place> listPlace;
-    private final int PAGE_SIZE = 5;
-    private int page = 1;
     private final String orderById = "id";
+    private String token;
 
     private Fragment currentFragment;
 
-    public Fragment getCurrentFragment() {
-        return currentFragment;
+    public void setCurrentFragment(Fragment currentFragment) {
+        this.currentFragment = currentFragment;
+        token = Session.getToken(((PagePlaceFragment) currentFragment).getActivity());
     }
 
     public PlaceViewPagerAdapter(FragmentManager fm) {
@@ -81,7 +82,7 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
     private void load(int size, int page, String order) {
         APIService mWebService = APIUtils.getWebService();
 
-        mWebService.getPlaces(MainActivity.user.getToken(), page, size, order).enqueue(new Callback<List<Place>>() {
+        mWebService.getPlaces(token, page, size, order).enqueue(new Callback<List<Place>>() {
             @Override
             public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
                 List<Place> list = response.body();

@@ -62,6 +62,7 @@ import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -204,7 +205,7 @@ public class NewPlanActivity extends AppCompatActivity {
         startDate = Calendar.getInstance();
         endDate = Calendar.getInstance();
         Member m = new Member();
-        m.setUserId(MainActivity.user.getId());
+        m.setUserId(Session.getUserId(this));
         m.setRoleInGroupId(1);
         m.setVehicule("");
 

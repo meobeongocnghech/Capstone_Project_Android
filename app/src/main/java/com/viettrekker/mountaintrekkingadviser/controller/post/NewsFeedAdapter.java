@@ -55,6 +55,7 @@ import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 //import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -84,11 +85,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private Context context;
     private int width;
     private Fragment fragment;
-    APIService mWebService = APIUtils.getWebService();
+    private APIService mWebService = APIUtils.getWebService();
+    private String token;
 
     public NewsFeedAdapter(Context context, Fragment fragment) {
         this.context = context;
         this.fragment = fragment;
+        token = Session.getToken(((NewsFeedFragment) fragment).getActivity());
         this.width = LocalDisplay.getScreenWidth(context);
     }
 
@@ -119,6 +122,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int postion) {
         viewHolder.user = listPost.get(postion).getUser();
         viewHolder.postId = listPost.get(postion).getId();
+        viewHolder.token = token;
+        viewHolder.userId = userId;
         String typPost = "null";
         int imgSize;
         Post post = listPost.get(postion);
@@ -202,7 +207,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             public void onClick(View view) {
                 if (!viewHolder.likeFlag){
                     viewHolder.btnPostLike.setClickable(false);
-                    mWebService.likePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                    mWebService.likePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Post p = response.body();
@@ -226,7 +231,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
                 } else {
                     viewHolder.btnPostLike.setClickable(false);
-                    mWebService.unlikePost(MainActivity.user.getToken(),post.getId()).enqueue(new Callback<Post>() {
+                    mWebService.unlikePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Post p = response.body();
@@ -389,7 +394,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public void incrementalLoad() {
         APIService mWebService = APIUtils.getWebService();
         if (isByUserId) {
-            mWebService.getPostPageByUserId(MainActivity.user.getToken(), userId, pageCount++).enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPageByUserId(token, userId, pageCount++).enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
@@ -409,7 +414,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
             });
         } else {
-            mWebService.getPostPage(MainActivity.user.getToken(), pageCount++, 5, "id", "DESC").enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPage(token, pageCount++, 5, "id", "DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
@@ -444,6 +449,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         User user;
         Context context;
         int postId;
+        String token;
+        int userId;
         ImageView imgPostAvatar;
         TextView tvPostUserName;
         TextView tvTime;
@@ -485,7 +492,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
-                    intent.putExtra("token", MainActivity.user.getToken());
+                    intent.putExtra("token", token);
                     context.startActivity(intent);
                 }
             });
@@ -494,7 +501,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
-                    intent.putExtra("token", MainActivity.user.getToken());
+                    intent.putExtra("token", token);
                     context.startActivity(intent);
                 }
             });
@@ -503,7 +510,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 public void onClick(View view) {
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
-                    intent.putExtra("token", MainActivity.user.getToken());
+                    intent.putExtra("token", token);
                     context.startActivity(intent);
                 }
             });
@@ -514,7 +521,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     boolean action = true;
                     intent.putExtra("id", postId);
                     intent.putExtra("action", action);
-                    intent.putExtra("token", MainActivity.user.getToken());
+                    intent.putExtra("token", token);
                     context.startActivity(intent);
                 }
             });
@@ -525,8 +532,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             i.putExtra("firstname", user.getFirstName());
             i.putExtra("lastname", user.getLastName());
             i.putExtra("id", user.getId());
-            i.putExtra("token", MainActivity.user.getToken());
-            if (MainActivity.user.getId() == user.getId()) {
+            i.putExtra("token", token);
+            if (userId == user.getId()) {
                 i.putExtra("owner", true);
             } else {
                 i.putExtra("owner", false);

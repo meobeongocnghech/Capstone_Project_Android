@@ -40,6 +40,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -124,7 +125,7 @@ static final int OPEN_MEDIA_PICKER = 1;
             edtContent.setText(getIntent().getStringExtra("content"));
             tvPostButton.setText("Sửa");
         }
-        mWebService.searchPlace(MainActivity.user.getToken(),1,100,"id","").enqueue(new Callback<ArrayList<Place>>() {
+        mWebService.searchPlace(Session.getToken(PostAddActivity.this),1,100,"id","").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
                 places = response.body();
@@ -196,7 +197,7 @@ static final int OPEN_MEDIA_PICKER = 1;
                     Gson gs = new Gson();
                     p.setDirection(d);
                     p.setTypeId(typeId);
-                    mWebService.addPost(MainActivity.user.getToken(), p).enqueue(new Callback<Post>() {
+                    mWebService.addPost(Session.getToken(PostAddActivity.this), p).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Toast.makeText(PostAddActivity.this, "Đăng bài thành công!",Toast.LENGTH_LONG).show();
@@ -209,7 +210,7 @@ static final int OPEN_MEDIA_PICKER = 1;
                         }
                     });
                 }else {
-                    mWebService.updatePost(MainActivity.user.getToken(), idUpdate, edtTitlePost.getText().toString(),edtContent.getText().toString()).enqueue(new Callback<Post>() {
+                    mWebService.updatePost(Session.getToken(PostAddActivity.this), idUpdate, edtTitlePost.getText().toString(),edtContent.getText().toString()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Toast.makeText(PostAddActivity.this, "Cập nhật thành công",Toast.LENGTH_LONG).show();

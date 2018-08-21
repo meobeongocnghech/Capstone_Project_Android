@@ -24,9 +24,11 @@ import retrofit2.Response;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -40,6 +42,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private int olderId;
     private Fragment fragment;
     private Context context;
+    private String token;
+    private boolean stopLoad = false;
 
     public void setContext(Context context) {
         this.context = context;
@@ -47,6 +51,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public void setFragment(Fragment fragment) {
         this.fragment = fragment;
+        token = Session.getToken(((NotificationFragment) fragment).getActivity());
     }
 
     public void setOlderId(int olderId) {
@@ -55,6 +60,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public void setListNoti(List<Notification> listNoti) {
         this.listNoti = listNoti;
+    }
+
+    public NotificationAdapter() {
+
     }
 
 
@@ -70,6 +79,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification noti = listNoti.get(position);
         holder.setNotification(noti);
+        holder.token = token;
         if (noti.getState() == 0 || noti.getState() == 1) {
             holder.layout.setBackgroundResource(R.color.colorPrimaryLight);
         } else {
@@ -85,10 +95,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         }
 
-        if (position == getItemCount() - 1) {
+        if (position == getItemCount() - 1 && !stopLoad) {
             ((NotificationFragment) fragment).showProgress();
             APIService mWebService = APIUtils.getWebService();
-            mWebService.getOldNoti(MainActivity.user.getToken(), olderId).enqueue(new Callback<List<Notification>>() {
+            mWebService.getOldNoti(token, olderId).enqueue(new Callback<List<Notification>>() {
                 @Override
                 public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                     List<Notification> list = response.body();
@@ -101,6 +111,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         }
                     }
                     ((NotificationFragment) fragment).stopProgress();
+                    if (list.size() < 10) {
+                        stopLoad = true;
+                    }
                 }
 
                 @Override
@@ -122,6 +135,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Context context;
+        String token;
         Notification notification;
         ImageView imgNoti;
         TextView tvNotiTime;
@@ -149,7 +163,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         APIService service = APIUtils.getWebService();
-                        service.markReadNotification(MainActivity.user.getToken(),
+                        service.markReadNotification(token,
                                 notification.getId()).enqueue(new Callback<Notification>() {
                             @Override
                             public void onResponse(Call<Notification> call, Response<Notification> response) {
@@ -174,7 +188,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public void onClick(View view) {
             Intent intent = new Intent(context, PostDetailActivity.class);
             APIService service = APIUtils.getWebService();
-            service.markReadNotification(MainActivity.user.getToken(),
+            service.markReadNotification(token,
                     notification.getId()).enqueue(new Callback<Notification>() {
                 @Override
                 public void onResponse(Call<Notification> call, Response<Notification> response) {

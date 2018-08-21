@@ -22,9 +22,12 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
+import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
@@ -32,7 +35,10 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +46,9 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.transition.Slide;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -304,17 +313,29 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MyMessage> call, Response<MyMessage> response) {
                 progress.dismiss();
-                MyMessage msg = response.body();
-                if (msg.getMessage() != null) {
-                    TextInputEditText edtEmail = (TextInputEditText) findViewById(R.id.edtEmail);
-                    TextInputLayout layout = (TextInputLayout) findViewById(R.id.emailLayout);
-                    edtEmail.addTextChangedListener(new MyTextWatcher(layout, edtEmail));
-                    setFailStatus(edtEmail, layout, "Địa chỉ email đã được đăng ký");
-                } else {
+                if (response.code() == HttpsURLConnection.HTTP_OK) {
                     Toast.makeText(RegisterActivity.this, "Đăng ký thành công", Toast.LENGTH_LONG).show();
                     Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
+
+                } else {
+
+                    Type type = new TypeToken<MyMessage>(){}.getType();
+                    Gson gson = new Gson();
+                    try {
+                        MyMessage message = gson.fromJson(response.errorBody().string(), type);
+                        if (message.getMessage().trim().equalsIgnoreCase("existed email!")) {
+                            TextInputEditText edtEmail = (TextInputEditText) findViewById(R.id.edtEmail);
+                            TextInputLayout layout = (TextInputLayout) findViewById(R.id.emailLayout);
+                            edtEmail.addTextChangedListener(new MyTextWatcher(layout, edtEmail));
+                            setFailStatus(edtEmail, layout, "Địa chỉ email đã được đăng ký");
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

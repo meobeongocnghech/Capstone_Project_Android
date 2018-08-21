@@ -26,6 +26,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -93,7 +94,7 @@ public class DataHelper {
                 if (!(constraint == null || constraint.toString().trim().length() == 0)) {
 //                    suggestionList = null;
                     if (callUsers != null) callUsers.cancel();
-                    callUsers = mWebService.searchUserSuggestion(MainActivity.user.getToken(),
+                    callUsers = mWebService.searchUserSuggestion(Session.getToken(context),
                             1, 4, constraint.toString().trim());
                     callUsers.enqueue(new Callback<List<User>>() {
                         @Override
@@ -101,7 +102,7 @@ public class DataHelper {
                             users = response.body();
                             users.remove(0);
                             if (callPlaces != null) callPlaces.cancel();
-                            callPlaces = mWebService.searchPlaceSuggestion(MainActivity.user.getToken(),
+                            callPlaces = mWebService.searchPlaceSuggestion(Session.getToken(context),
                                     1, 4, constraint.toString().trim());
                             callPlaces.enqueue(new Callback<List<Place>>() {
                                 @Override
@@ -110,7 +111,7 @@ public class DataHelper {
                                     places.remove(0);
 
                                     if (callPosts != null) callPosts.cancel();
-                                    callPosts = mWebService.searchPostSuggestion(MainActivity.user.getToken(),
+                                    callPosts = mWebService.searchPostSuggestion(Session.getToken(context),
                                             1, 4, "created_at", "DESC", constraint.toString().trim());
                                     callPosts.enqueue(new Callback<List<Post>>() {
                                         @Override

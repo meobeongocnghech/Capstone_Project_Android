@@ -50,6 +50,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     private boolean isPlace;
     private boolean isPost;
 
+    private String token;
+    private int userId;
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public void setUser(boolean user) {
         isUser = user;
     }
@@ -101,6 +112,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         if (isUser) {
             UserVH vh = (UserVH) viewHolder;
+            vh.token = token;
+            vh.userId = userId;
             vh.context = context;
             vh.user = users.get(i);
 
@@ -122,6 +135,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             }
         } else if (isPlace) {
             PlaceVH vh = (PlaceVH) viewHolder;
+            vh.token = token;
             vh.context = context;
             vh.place = places.get(i);
 
@@ -138,6 +152,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             }
         } else if (isPost) {
             PostVH vh = (PostVH) viewHolder;
+            vh.token = token;
             vh.context = context;
             vh.post = posts.get(i);
 
@@ -302,6 +317,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     static class PostVH extends RecyclerView.ViewHolder implements View.OnClickListener {
         Post post;
+        String token;
         Context context;
         ImageView img;
         TextView name;
@@ -331,7 +347,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public void onClick(View view) {
             Intent i = new Intent(context, PostDetailActivity.class);
             i.putExtra("id", post.getId());
-            i.putExtra("token", MainActivity.user.getToken());
+            i.putExtra("token", token);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
@@ -339,6 +355,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     static class PlaceVH extends RecyclerView.ViewHolder implements OnClickListener {
         Place place;
+        String token;
         Context context;
         ImageView imgSearchPlace;
         TextView tvSearchPlaceName;
@@ -356,7 +373,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public void onClick(View view) {
             Intent i = new Intent(context, PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
-            i.putExtra("token", MainActivity.user.getToken());
+            i.putExtra("token", token);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }
@@ -364,6 +381,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
     static class UserVH extends RecyclerView.ViewHolder implements OnClickListener {
         User user;
+        String token;
+        int userId;
         Context context;
         ImageView imgSearchAvatar;
         TextView tvSearchUsername;
@@ -381,8 +400,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         public void onClick(View view) {
             Intent i = new Intent(context, ProfileMemberActivity.class);
             i.putExtra("id", user.getId());
-            i.putExtra("owner", user.getId() == MainActivity.user.getId());
-            i.putExtra("token", MainActivity.user.getToken());
+            i.putExtra("owner", user.getId() == userId);
+            i.putExtra("token", token);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }

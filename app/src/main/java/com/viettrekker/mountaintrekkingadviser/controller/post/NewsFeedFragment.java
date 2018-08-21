@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -29,7 +30,7 @@ public class NewsFeedFragment extends Fragment {
     private int userId;
     private boolean loading = true;
     private NewsFeedAdapter adapter;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private String token;
 
     public void setByUserId(boolean byUserId) {
         isByUserId = byUserId;
@@ -47,6 +48,7 @@ public class NewsFeedFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        token = Session.getToken(getActivity());
         RecyclerView rcvNewsFeed = view.findViewById(R.id.rcvNewsFeed);
         LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -69,7 +71,7 @@ public class NewsFeedFragment extends Fragment {
         if (isByUserId) {
             newsFeedAdapter.setByUserId(isByUserId);
             newsFeedAdapter.setUserId(userId);
-            mWebService.getPostPageByUserId(MainActivity.user.getToken(), userId, 1).enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPageByUserId(token, userId, 1).enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
@@ -86,7 +88,7 @@ public class NewsFeedFragment extends Fragment {
                 }
             });
         } else {
-            mWebService.getPostPage(MainActivity.user.getToken(),1,5,"id", "DESC").enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPage(token,1,5,"id", "DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();

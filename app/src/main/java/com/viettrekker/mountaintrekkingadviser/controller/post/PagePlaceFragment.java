@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.fitness.data.Session;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
@@ -43,6 +44,7 @@ public class PagePlaceFragment extends Fragment {
 
         viewPager.setPageTransformer(true, pageTransformer);
         PlaceViewPagerAdapter placeAdapter = new PlaceViewPagerAdapter(getChildFragmentManager());
+        placeAdapter.setCurrentFragment(this);
         //loadEffect(view, placeAdapter);
         placeAdapter.load(placeAdapter.getCount() == 0 ? 5 : placeAdapter.getCount());
         viewPager.setAdapter(placeAdapter);
@@ -53,7 +55,7 @@ public class PagePlaceFragment extends Fragment {
             Place place = placeAdapter.getPlaceItem(viewPager.getCurrentItem());
             Intent i = new Intent(getActivity(), PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
-            i.putExtra("token", MainActivity.user.getToken());
+            i.putExtra("token", com.viettrekker.mountaintrekkingadviser.util.Session.getToken(getActivity()));
             i.putExtra("name", place.getName());
             i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
             startActivity(i);

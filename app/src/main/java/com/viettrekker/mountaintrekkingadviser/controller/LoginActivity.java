@@ -17,9 +17,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import android.support.design.widget.Snackbar;
+
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -28,6 +30,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.constraint.ConstraintLayout;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -47,8 +50,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         init();
 
@@ -91,10 +92,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Snackbar.make(view, "Sai email hoặc mật khẩu", Snackbar.LENGTH_LONG).show();
                             } else {
                                 User user = response.body();
-                                MainActivity.user = user;
+                                Session.setSession(LoginActivity.this, user);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             }
                         }
@@ -117,16 +117,10 @@ public class LoginActivity extends AppCompatActivity {
                         if (isOpen) {
                             runOnUiThread(() -> {
                                 btnForgotPassword.setVisibility(View.GONE);
-                                findViewById(R.id.tvQuestion).setVisibility(View.GONE);
-                                btnRegister.setVisibility(View.GONE);
-//                    ((ConstraintLayout.LayoutParams) edtLoginEmail.getLayoutParams()).verticalBias = 0.5f;
                             });
                         } else {
                             runOnUiThread(() -> {
                                 btnForgotPassword.setVisibility(View.VISIBLE);
-                                findViewById(R.id.tvQuestion).setVisibility(View.VISIBLE);
-                                btnRegister.setVisibility(View.VISIBLE);
-//                    ((ConstraintLayout.LayoutParams) edtLoginEmail.getLayoutParams()).verticalBias = 0.4f;
                             });
                         }
                     }
