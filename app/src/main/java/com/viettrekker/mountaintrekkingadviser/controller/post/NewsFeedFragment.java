@@ -71,7 +71,7 @@ public class NewsFeedFragment extends Fragment {
         if (isByUserId) {
             newsFeedAdapter.setByUserId(isByUserId);
             newsFeedAdapter.setUserId(userId);
-            mWebService.getPostPageByUserId(token, userId, 1).enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPageByUserId(token, userId, 1,"DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();

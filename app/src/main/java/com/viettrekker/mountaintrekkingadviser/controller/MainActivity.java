@@ -222,6 +222,7 @@ public class MainActivity extends AppCompatActivity
         });
 
         initRefreshLayout();
+        bindData();
     }
 
     private void initRefreshLayout() {
@@ -273,7 +274,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        bindData();
 
         SlidingSearchResultsFragment fragment = new SlidingSearchResultsFragment();
         search = (ImageButton) findViewById(R.id.search);

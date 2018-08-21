@@ -203,7 +203,6 @@ public class PostDetailActivity extends AppCompatActivity{
                 btnPostOption = (ImageButton) findViewById(R.id.btnPostOptionDetail);
                 tvPostTitle = (TextView) findViewById(R.id.tvPostTitleDetail);
                 tvPostContent = (TextView) findViewById(R.id.tvPostContentDetail);
-                //tvCount = (TextView) findViewById(R.id.tvCount);
                 btnPostLike = (MaterialButton) findViewById(R.id.btnPostLikeDetail);
                 btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
 

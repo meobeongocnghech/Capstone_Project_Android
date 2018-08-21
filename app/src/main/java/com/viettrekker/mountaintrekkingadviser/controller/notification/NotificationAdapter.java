@@ -201,13 +201,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 }
             });
             if (notification.getTypeId() == 4) {
-                intent.putExtra("token",MainActivity.user.getToken());
+                intent.putExtra("token", Session.getToken(context));
                 intent.putExtra("id", notification.getComment().getTargetId());
                 intent.putExtra("cmtPosition", notification.getTargetId());
                 context.startActivity(intent);
             } else {
                 intent.putExtra("id", notification.getTargetId());
-                intent.putExtra("token",MainActivity.user.getToken());
+                intent.putExtra("token", Session.getToken(context));
                 context.startActivity(intent);
             }
         }

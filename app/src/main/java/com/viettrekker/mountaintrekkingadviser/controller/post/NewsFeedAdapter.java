@@ -381,7 +381,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public void incrementalLoad() {
         APIService mWebService = APIUtils.getWebService();
         if (isByUserId) {
-            mWebService.getPostPageByUserId(token, userId, pageCount++).enqueue(new Callback<List<Post>>() {
+            mWebService.getPostPageByUserId(token, userId, pageCount++,"DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
