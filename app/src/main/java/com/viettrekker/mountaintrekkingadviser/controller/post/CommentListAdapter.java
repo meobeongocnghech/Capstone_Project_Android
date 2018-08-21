@@ -47,6 +47,9 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private Context context;
     private APIService mWebService = APIUtils.getWebService();
     int targetCmtid = -1;
+    int idCmtChild = 0;
+
+    int idCmtEdit = -1;
 
     public List<Comment> getList() {
         return list;
@@ -74,6 +77,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         Comment comment = list.get(position);
         User user = comment.getUser();
         DateTimeUtils datetime = new DateTimeUtils();
+        CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId());
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(position).getUser().getLastName());
         viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
@@ -92,13 +96,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
         }
         if (viewHolder.rcvCmtItem != null){
-            CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId());
             cmtChild.setList(comment.getChildren());
             cmtChild.notifyDataSetChanged();
             viewHolder.rcvCmtItem.setAdapter(cmtChild);
         }
         viewHolder.rcvCmtItem.setVisibility(View.GONE);
-        viewHolder.cmtCount.setText(comment.getChildren().size() > 0 ? comment.getChildren().size()+"" : "");
+        viewHolder.cmtCount.setText(comment.getChildren().size() == 0 ? "" : comment.getChildren().size()+"");
         viewHolder.imgAvtCmt.setOnClickListener((v) -> eventViewProfile(user));
         viewHolder.tvUserCmt.setOnClickListener((v) -> eventViewProfile(user));
 
@@ -177,13 +180,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.showSoftInput(((PostDetailActivity)context).edtComment, InputMethodManager.SHOW_IMPLICIT);
                                 ((PostDetailActivity)context).edtComment.setSelection(((PostDetailActivity)context).edtComment.getText().length());
-//                                ((PostDetailActivity)context).edtComment.setOnKeyListener(new View.OnKeyListener() {
-//                                    @Override
-//                                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                                        keyEvent.get
-//                                    }
-//                                });
-
+                                ((PostDetailActivity)context).btnSendCmtDetail.setText("Sửa");
+                                idCmtEdit = comment.getId();
                             }else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
@@ -249,6 +247,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
                             viewHolder.btnLikeCmt.setText("Đã thích");
+                            comment.setLikesCount(comment.getLikesCount() + 1);
                             viewHolder.likeCount.setText((comment.getLikesCount()) +"");
                             viewHolder.likeFlag = true;
                             ((PostDetailActivity)context).edtComment.clearFocus();
@@ -266,7 +265,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
                             viewHolder.btnLikeCmt.setText("Thích");
-                            viewHolder.likeCount.setText(comment.getLikesCount() <=1 ? "" : (comment.getLikesCount() - 1) +"");
+                            comment.setLikesCount(comment.getLikesCount() - 1);
+                            viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
                             viewHolder.likeFlag = false;
                             ((PostDetailActivity)context).edtComment.clearFocus();
                         }

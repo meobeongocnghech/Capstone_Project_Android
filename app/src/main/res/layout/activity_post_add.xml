@@ -25,13 +25,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:src="@drawable/avatar_default" />
 
-            <android.support.constraint.Barrier
-                android:id="@+id/avatarBarrier"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="imgPostAvatar"
-                tools:layout_editor_absoluteY="60dp" />
 
             <TextView
                 android:id="@+id/tvPostUserName"
@@ -89,7 +82,8 @@
                     android:orientation="horizontal"
                     android:layout_marginLeft="7dp"
                     android:layout_marginRight="10dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:scrollbars="horizontal">
                 </android.support.v7.widget.RecyclerView>
 
             </HorizontalScrollView>
@@ -121,7 +115,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_marginEnd="0dp"
                             android:layout_toStartOf="@+id/cbImageSelect"
-                            android:text="Bạn đã chọn 4 ảnh"
+                            android:text="Chọn ảnh"
                             android:textAlignment="textStart"
                             android:textAllCaps="false"
                             android:textColor="@color/colorBlack"

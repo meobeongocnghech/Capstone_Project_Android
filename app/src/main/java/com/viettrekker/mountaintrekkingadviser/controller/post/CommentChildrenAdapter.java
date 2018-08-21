@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     private List<Comment> list;
     private Context context;
     private int userId;
+    int cmtId = 0;
+    int cmtChild = 0;
     public void setList(List<Comment> list) {
         this.list = list;
     }
@@ -68,6 +71,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     public void onBindViewHolder(@NonNull CommentChildrenAdapter.ViewHolder viewHolder, int i) {
         Comment comment = list.get(i);
         User user = comment.getUser();
+        CommentListAdapter commentListAdapter = new CommentListAdapter(context);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
@@ -88,7 +92,9 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
                             viewHolder.btnLikeCmt.setText("Đã thích");
+                            comment.setLikesCount(comment.getLikesCount()+1);
                             viewHolder.likeCount.setText((comment.getLikesCount()) +"");
+
                             viewHolder.likeFlag = true;
                             ((PostDetailActivity)context).edtComment.clearFocus();
                         }
@@ -105,7 +111,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
                             viewHolder.btnLikeCmt.setText("Thích");
-                            viewHolder.likeCount.setText(comment.getLikesCount() <=1 ? "" : (comment.getLikesCount() - 1) +"");
+                            comment.setLikesCount(  comment.getLikesCount()-1);
+                            viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
                             viewHolder.likeFlag = false;
                             ((PostDetailActivity)context).edtComment.clearFocus();
                         }
@@ -152,6 +159,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
             public void onClick(View view) {
                 PopupMenu popupMenu = new PopupMenu(context, viewHolder.btnActionCmt);
                 popupMenu.getMenuInflater().inflate(R.menu.action_popup_menu, popupMenu.getMenu());
+                Menu m = popupMenu.getMenu();
+                m.findItem(R.id.actUpdate).setVisible(false);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -197,13 +206,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                             alertDialog.show();
                         } else
                         if (MainActivity.user.getId() == user.getId()){
-                            if (menuItem.getTitle().equals("Sửa")){
-                                ((PostDetailActivity)context).edtComment.setText(comment.getContent());
-                                ((PostDetailActivity)context).edtComment.requestFocus();
-                                InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.showSoftInput(((PostDetailActivity) context).edtComment, InputMethodManager.SHOW_IMPLICIT);
-                                ((PostDetailActivity)context).edtComment.setSelection(((PostDetailActivity)context).edtComment.getText().length());
-                            } else{
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn có muốn xóa bình luận?")
@@ -234,9 +236,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                         });
                                 AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
-                            }
-                        } else {
-                            if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa") ){
+                            } else
+                            if (menuItem.getTitle().equals("Xóa") ){
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bình luận của mình.")
@@ -249,7 +250,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                 AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             }
-                        }
+
                         return true;
                     }
                 });

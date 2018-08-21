@@ -33,6 +33,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
@@ -40,6 +41,7 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +85,7 @@ public class PostDetailActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
         mWebService = APIUtils.getWebService();
+        InputMethodManager imm = (InputMethodManager) PostDetailActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt(KEY_CURRENT_POSITION, 0);
             // Return here to prevent adding additional GridFragments when changing orientation.
@@ -107,11 +110,11 @@ public class PostDetailActivity extends AppCompatActivity{
         tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
         likeFlag = false;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         btnPostComent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 edtComment.requestFocus();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
 
             }
@@ -123,6 +126,28 @@ public class PostDetailActivity extends AppCompatActivity{
         btnSendCmtDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (btnSendCmtDetail.getText().toString().equalsIgnoreCase("Sửa")){
+                        mWebService.updateComment(MainActivity.user.getToken(), id, cmtListAdapter.idCmtEdit,
+                                edtComment.getText().toString()).enqueue(new Callback<Post>() {
+                            @Override
+                            public void onResponse(Call<Post> call, Response<Post> response) {
+                                btnSendCmtDetail.setText("Gửi");
+                                edtComment.setText("");
+                                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                if (response.body() != null){
+                                    cmtListAdapter.setList(response.body().getComments());
+                                    cmtListAdapter.notifyDataSetChanged();
+                                } else
+                                    Toast.makeText(PostDetailActivity.this,"Có lỗi xảy ra, vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<Post> call, Throwable t) {
+
+                            }
+                        });
+                    } else
                 if (!edtComment.getText().toString().isEmpty()){
                     if (edtComment.getHint().toString().contains("Bình luận bài viết")){
                         mWebService.commentPost(MainActivity.user.getToken(), id, edtComment.getText().toString()).enqueue(new Callback<Post>() {
@@ -130,7 +155,6 @@ public class PostDetailActivity extends AppCompatActivity{
                             public void onResponse(Call<Post> call, Response<Post> response) {
                                 edtComment.setText("");
                                 edtComment.clearFocus();
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(),0);
                                 List<Comment> list = response.body().getComments();
                                 cmtListAdapter.getList().add(list.get(list.size() - 1));
@@ -149,7 +173,6 @@ public class PostDetailActivity extends AppCompatActivity{
                             public void onResponse(Call<Post> call, Response<Post> response) {
                                 edtComment.setText("");
                                 edtComment.clearFocus();
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(view.getWindowToken(),0);
                                 List<Comment> list = response.body().getComments();
                                 cmtListAdapter.setList(response.body().getComments());
@@ -184,6 +207,7 @@ public class PostDetailActivity extends AppCompatActivity{
 
                 Post post = response.body();
                 User user = post.getUser();
+                tvCmtCount.setText(post.getCommentsCount() <= 0 ? "" : post.getCommentsCount() + " bình luận");
 
                 btnPostLike.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -200,7 +224,6 @@ public class PostDetailActivity extends AppCompatActivity{
                                     tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
                                     likeFlag = true;
                                     btnPostLike.setClickable(true);
-                                    tvCmtCount.setText(post.getCommentsCount() == 0 ? "" : post.getCommentsCount() + " bình luận");
                                 }
 
                                 @Override
@@ -288,8 +311,6 @@ public class PostDetailActivity extends AppCompatActivity{
                                         startActivity(intent);
                                     } else {
                                         //Remove post pending
-                                        int[] postId = new int[1];
-                                        postId[0] = post.getId();
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PostDetailActivity.this,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                         alertDialogBuilder.setTitle("Cảnh báo");
                                         alertDialogBuilder.setMessage("Bạn có muốn xóa bài viết này?")
@@ -297,7 +318,11 @@ public class PostDetailActivity extends AppCompatActivity{
                                                 .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                                        mWebService.removePost(MainActivity.user.getToken(),postId).enqueue(new Callback<Post>() {
+                                                        PostIdRemove pi = new PostIdRemove();
+                                                        List<Integer> li = new ArrayList<>();
+                                                        li.add(post.getId());
+                                                        pi.setId(li);
+                                                        mWebService.removePost(MainActivity.user.getToken(),pi).enqueue(new Callback<Post>() {
                                                             @Override
                                                             public void onResponse(Call<Post> call, Response<Post> response) {
                                                                 Toast.makeText(PostDetailActivity.this, "Đã xóa",Toast.LENGTH_SHORT).show();
@@ -389,7 +414,6 @@ public class PostDetailActivity extends AppCompatActivity{
                 }
                 if (cmtFocus){
                     edtComment.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
                 }
                 imgPostAvatar.setOnClickListener((v) -> eventViewProfile(user));
@@ -476,4 +500,6 @@ public class PostDetailActivity extends AppCompatActivity{
                     }
                 });
     }
+
+
 }

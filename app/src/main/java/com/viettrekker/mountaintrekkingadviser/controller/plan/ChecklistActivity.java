@@ -135,6 +135,7 @@ public class ChecklistActivity extends AppCompatActivity {
                     });
                 }
             });
+
         }
 
         rcvChecklistItem.setNestedScrollingEnabled(false);

@@ -52,6 +52,9 @@ public class Post {
     @SerializedName("comments")
     @Expose
     private List<Comment> comments;
+    @SerializedName("direction")
+    @Expose
+    private String direction;
     
 
     public int getId() {
@@ -174,6 +177,13 @@ public class Post {
         this.comments = comments;
     }
 
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 
     @Override
     public String toString() {

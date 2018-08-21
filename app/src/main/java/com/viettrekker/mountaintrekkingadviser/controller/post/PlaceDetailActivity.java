@@ -36,6 +36,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
     private RecyclerView rvGuide;
     private String title;
     private List<MyMedia> medias;
+    Place place;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
         rvGuide = (RecyclerView) findViewById(R.id.rvListGuide);
         rvGuide.setLayoutManager(new LinearLayoutManager(this));
-        ReviewAdapter adapter = new ReviewAdapter();
+        NewsFeedAdapter adapter = new NewsFeedAdapter(getApplicationContext(), null);
         rvGuide.setAdapter(adapter);
 
         int id = getIntent().getIntExtra("id", 0 );
@@ -69,7 +70,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         mWebService.getPlaceById(token, id).enqueue(new Callback<Place>() {
             @Override
             public void onResponse(Call<Place> call, Response<Place> response) {
-                Place place = response.body();
+                place = response.body();
                 medias = place.getGallery().getMedia();
                 title = place.getName();
 
@@ -96,6 +97,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
             }
         });
+//        mWebService.searchPostSuggestion()
     }
 
     @Override

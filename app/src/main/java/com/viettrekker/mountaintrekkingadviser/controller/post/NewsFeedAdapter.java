@@ -1,6 +1,7 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,17 +16,22 @@ import android.support.design.button.MaterialButton;
 import android.support.design.card.MaterialCardView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.Layout;
 import android.transition.Transition;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +47,9 @@ import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberA
 import com.viettrekker.mountaintrekkingadviser.controller.search.SmallPreviewImageAdapter;
 import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
+import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 //import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
@@ -116,7 +124,24 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
         typPost = postType[post.getTypeId() - 1];
+        if (post.getTypeId() == 1){
+            viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
+            viewHolder.tvPostCategory.setText(" Tại...");
+            mWebService.getPlaceById(MainActivity.user.getToken(), post.getDirectionId()).enqueue(new Callback<Place>() {
+                @Override
+                public void onResponse(Call<Place> call, Response<Place> response) {
+//                    viewHolder.tvPostCategory.setText(response.body().getName());
+                }
 
+                @Override
+                public void onFailure(Call<Place> call, Throwable t) {
+
+                }
+            });
+        } else {
+            viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
+            viewHolder.tvPostCategory.setText(typPost);
+        }
         if (post.getUser().getGallery() != null) {
             GlideApp.with(context)
                     .load(post.getUser().getGallery().getMedia().get(0).getPath())
@@ -126,7 +151,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         }
 
         viewHolder.tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
-        viewHolder.tvPostCategory.setText(typPost);
+
         viewHolder.tvPostTitle.setText(post.getName());
         viewHolder.tvPostContent.setText(post.getContent());
         viewHolder.tvCmtCount.setText(post.getCommentsCount()==0 ? "" : post.getCommentsCount()+" bình luận");
@@ -136,7 +161,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
         viewHolder.btnPostLike.setText("Thích");
         if (post.getLikesCount() == 0) {
-            viewHolder.tvlikeCount.setVisibility(View.GONE);
+            viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
         } else {
             viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
             viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
@@ -209,7 +234,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
                             viewHolder.btnPostLike.setText("Thích");
                             if (p.getLikesCount() <= 1) {
-                                viewHolder.tvlikeCount.setVisibility(View.GONE);
+                                viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
                             } else {
                                 viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
                                 viewHolder.tvlikeCount.setText((p.getLikesCount())+" thích");
@@ -403,6 +428,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
             });
         }
+
+
     }
 
     @Override
@@ -420,27 +447,15 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView tvPostUserName;
         TextView tvTime;
         TextView tvPostCategory;
-        ImageButton btnPostOption;
         TextView tvPostTitle;
         TextView tvPostContent;
         MaterialButton btnReadMore;
         RecyclerView rcvImagePreview;
-        //        ConstraintLayout imagesLayout;
-//        MaterialCardView preview1;
-//        ImageView imgPreview1;
-//        MaterialCardView preview2;
-//        ImageView imgPreview2;
-//        MaterialCardView preview3;
-//        ImageView imgPreview3;
-//        MaterialCardView preview4;
-//        ImageView imgPreview4;
-//        MaterialCardView preview5;
-//        ImageView imgPreview5;
-//        TextView tvCount;
         MaterialButton btnPostLike;
         MaterialButton btnPostComent;
         TextView tvlikeCount;
         TextView tvCmtCount;
+        TextView separator;
         boolean likeFlag;
         ImageView singlePreview;
         public ViewHolder(@NonNull View itemView) {
@@ -449,7 +464,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvPostUserName = (TextView) itemView.findViewById(R.id.tvPostUserName);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvPostCategory = (TextView) itemView.findViewById(R.id.tvPostCategory);
-            btnPostOption = (ImageButton) itemView.findViewById(R.id.btnPostOption);
             tvPostTitle = (TextView) itemView.findViewById(R.id.tvPostTitle);
             tvPostContent = (TextView) itemView.findViewById(R.id.tvPostContent);
             btnReadMore = (MaterialButton) itemView.findViewById(R.id.btnReadMore);
@@ -458,6 +472,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             btnPostComent = (MaterialButton) itemView.findViewById(R.id.btnPostComment);
             tvlikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
             tvCmtCount = (TextView) itemView.findViewById(R.id.tvCmtCount);
+            separator = (TextView) itemView.findViewById(R.id.separator);
             likeFlag = false;
             singlePreview = (ImageView) itemView.findViewById(R.id.imgSinglePreview);
 //            frame = (FrameLayout) itemView.findViewById(R.id.framePostImage);

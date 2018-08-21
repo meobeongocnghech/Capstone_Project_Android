@@ -2,6 +2,7 @@ package com.viettrekker.mountaintrekkingadviser.util.network;
 
 import com.google.gson.JsonObject;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
@@ -9,12 +10,17 @@ import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
@@ -23,8 +29,10 @@ import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -148,10 +156,9 @@ public interface APIService {
                              @Field("id") int id,
                              @Field("commentId") int commentId);
 
-    @FormUrlEncoded
     @HTTP(method = "DELETE", path = "post", hasBody = true)
     Call<Post> removePost(@Header("AUTH_TOKEN_ID") String token,
-                             @Field("id") int[] id);
+                          @Body PostIdRemove id);
 
     @GET("member")
     Call<User> getUserById(@Header("AUTH_TOKEN_ID") String token,
@@ -165,11 +172,8 @@ public interface APIService {
                                        @Query("search") String search);
 
     @POST("post")
-    @FormUrlEncoded
     Call<Post> addPost(@Header("AUTH_TOKEN_ID") String token,
-                          @Field("typeId") int typeId,
-                          @Field("content") String content,
-                            @Field("name") String name);
+                       @Body Post post);
 
     @PUT("post")
     @FormUrlEncoded
@@ -239,5 +243,25 @@ public interface APIService {
                                           @Query("orderBy") String orderBy,
                                           @Query("order") String order,
                                           @Query("search") String search);
+
+    @GET("post/paging")
+    Call<List<Post>> getPostByType(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("page") int page,
+                                 @Query("pageSize") int size,
+                                 @Query("orderBy") String orderBy,
+                                 @Query("order") String order);
+
+    @PUT("post/comment")
+    @FormUrlEncoded
+    Call<Post> updateComment(@Header("AUTH_TOKEN_ID") String token,
+                           @Field("id") int id,
+                             @Field("commentId") int commentId,
+                           @Field("content") String content);
+
+    @Multipart
+    @POST("upload")
+    Call<ResponseBody> uploadMultipleFilesDynamic(
+            @Part("description") RequestBody description,
+            @Part List<MultipartBody.Part> files);
 
 }
