@@ -44,6 +44,7 @@
                     android:text="User"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/imgPostAvatarDetail"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,23 +66,23 @@
                     android:layout_marginBottom="6dp"
                     android:text="20 m"
                     android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/avatarBarrier"
                     app:layout_constraintStart_toStartOf="@id/tvPostUserNameDetail"
                     app:layout_constraintTop_toBottomOf="@id/tvPostUserNameDetail" />
 
                 <TextView
                     android:id="@+id/tvPostCategoryDetail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="4dp"
                     android:fontFamily="sans-serif-medium"
                     android:maxLines="2"
                     android:text="Chuyên mục khác"
                     android:textColor="@color/colorTextFieldInput"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/separator"
-                    app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail"
-                    app:layout_constraintEnd_toStartOf="@id/btnPostOptionDetail"
-                    android:layout_marginRight="16dp"/>
+                    app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail" />
 
                 <ImageButton
                     android:id="@+id/btnPostOptionDetail"
@@ -143,7 +144,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:text=""
+                    android:text="3 bình luận"
                     app:layout_constraintEnd_toEndOf="@+id/rcvPostImage"
                     app:layout_constraintTop_toTopOf="@+id/tvLikeCount" />
                 <android.support.design.button.MaterialButton
@@ -202,8 +203,15 @@
                     android:id="@+id/rcvCmtListDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/view1"/>
+                    android:layout_marginTop="3dp"
+                    app:layout_constraintTop_toBottomOf="@id/view1"
+                    app:layout_constraintBottom_toTopOf="@id/view3"/>
 
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    app:layout_constraintTop_toBottomOf="@id/rcvCmtListDetail"/>
             </android.support.constraint.ConstraintLayout>
         </android.support.v4.widget.NestedScrollView>
         <android.support.constraint.ConstraintLayout
