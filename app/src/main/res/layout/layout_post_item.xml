@@ -27,14 +27,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.constraint.Barrier
-            android:id="@+id/avatarBarrier"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="imgPostAvatar"
-            tools:layout_editor_absoluteY="68dp" />
-
         <TextView
             android:id="@+id/tvPostUserName"
             android:layout_width="wrap_content"
@@ -73,8 +65,8 @@
 
         <TextView
             android:id="@+id/tvPostCategory"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:fontFamily="sans-serif-medium"
             android:maxLines="2"
@@ -82,6 +74,18 @@
             android:textColor="@color/colorTextFieldInput"
             android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/separator"
+            app:layout_constraintTop_toTopOf="@id/tvPostUserName"
+            app:layout_constraintEnd_toStartOf="@id/btnPostOption"
+            android:layout_marginRight="16dp"/>
+
+        <ImageButton
+            android:id="@+id/btnPostOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_vstyle_down"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvPostUserName" />
 
         <TextView
@@ -291,7 +295,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="3 thích"
+            android:text=""
             app:layout_constraintBottom_toTopOf="@id/btnPostLike"
             app:layout_constraintStart_toStartOf="@+id/tvPostContent"
             app:layout_constraintTop_toBottomOf="@id/rcvImagePreview" />
@@ -301,7 +305,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginBottom="3dp"
-            android:text="3 bình luận"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="@+id/tvLikeCount"
             app:layout_constraintEnd_toEndOf="@+id/tvPostContent"
             app:layout_constraintTop_toTopOf="@+id/tvLikeCount" />

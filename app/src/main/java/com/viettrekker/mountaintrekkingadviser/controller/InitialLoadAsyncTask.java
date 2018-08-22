@@ -3,6 +3,7 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -68,9 +69,16 @@ public class InitialLoadAsyncTask extends AsyncTask<Void, Void, Void> {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.code() == HttpsURLConnection.HTTP_OK) {
-                    Intent intent = new Intent(context, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    context.startActivity(intent);
+                    if (response.body().getState() == 1) {
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("ban", true);
+                        context.startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        context.startActivity(intent);
+                    }
                 } else {
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -80,8 +88,8 @@ public class InitialLoadAsyncTask extends AsyncTask<Void, Void, Void> {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(context, "Lỗi kết nối", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context, LoginActivity.class);
+                intent.putExtra("error", true);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
             }

@@ -16,8 +16,6 @@
         app:floatingSearch_searchBarMarginLeft="5dp"
         app:floatingSearch_searchBarMarginRight="5dp"
         app:floatingSearch_searchHint="Tìm kiếm"
-        app:floatingSearch_searchInputTextSize="12sp"
-        app:floatingSearch_searchSuggestionTextSize="16sp"
         app:floatingSearch_showSearchKey="true"
         app:floatingSearch_suggestionsListAnimDuration="250" />
 </RelativeLayout>

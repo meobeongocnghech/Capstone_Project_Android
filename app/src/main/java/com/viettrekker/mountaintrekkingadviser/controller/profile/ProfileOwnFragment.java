@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.Layout;
@@ -38,11 +40,15 @@ import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,6 +61,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
     private MaterialButton btnChangeProfile;
     private MaterialButton btnCancelChange;
     private ProgressBar updateProgressbar;
+    private ConstraintLayout layout;
 
     private String birth;
     private String phoneNum;
@@ -72,6 +79,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
         btnPhone = (MaterialButton) view.findViewById(R.id.phone);
         btnGender = (MaterialButton) view.findViewById(R.id.gender);
         btnChangeProfile = (MaterialButton) view.findViewById(R.id.btnChangeProfile);
+        layout = (ConstraintLayout) view.findViewById(R.id.layout);
         disableUpdate();
         return view;
     }
@@ -99,33 +107,73 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 animationLoading();
                 APIService mWebService = APIUtils.getWebService();
                 new Handler().postDelayed(() -> {
+                    MultipartBody.Builder builder = new MultipartBody.Builder();
+                    builder.setType(MultipartBody.FORM);
                     try {
-                        mWebService.updateUserProfile(Session.getToken(getActivity()),
-                                ((ProfileMemberActivity) getActivity()).getId(),
-                                ((ProfileMemberActivity) getActivity()).getFirstName(),
-                                ((ProfileMemberActivity) getActivity()).getLastName(),
-                                btnPhone.getText().toString().equalsIgnoreCase("chưa có") ? "" : btnPhone.getText().toString(),
-                                DateTimeUtils.formatISO(btnBirthdate.getText().toString()),
-                                btnGender.getText().toString().equalsIgnoreCase("nam") ? 1 : 0).enqueue(new Callback<User>() {
+                        builder.addFormDataPart("birthdate", DateTimeUtils.formatISO(btnBirthdate.getText().toString()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        builder.addFormDataPart("birthdate", "1990-12-23T17:00:00.000Z");
+                    }
+                    builder.addFormDataPart("id", ((ProfileMemberActivity) getActivity()).getId() + "");
+                    builder.addFormDataPart("firstname", ((ProfileMemberActivity) getActivity()).getFirstName());
+                    builder.addFormDataPart("lastname", ((ProfileMemberActivity) getActivity()).getLastName());
+                    builder.addFormDataPart("phone", btnPhone.getText().toString().equalsIgnoreCase("chưa có") ? "" : btnPhone.getText().toString());
+                    builder.addFormDataPart("gender", btnGender.getText().toString().equalsIgnoreCase("nam") ? "0" : "1");
+                    builder.addFormDataPart("sosContact", "null");
+                    builder.addFormDataPart("facebookAuth", "null");
+                    String newAvatar = ((ProfileMemberActivity) getActivity()).getNewAvatar();
+                    boolean hasAvatar;
+                    if (!newAvatar.isEmpty()) {
+                        File file = new File(newAvatar);
+                        RequestBody medias = RequestBody.create(MediaType.parse("image"), file);
+                        builder.addFormDataPart("medias", file.getName(), medias);
+                        builder.addFormDataPart("avatar", "true");
+                        hasAvatar = true;
+                    } else {
+                        hasAvatar = false;
+                    }
+
+                    if (hasAvatar) {
+                        mWebService.updateUserProfileWithAvatar(Session.getToken(getActivity()), builder.build()).enqueue(new Callback<User>() {
                             @Override
                             public void onResponse(Call<User> call, Response<User> response) {
                                 stopAnimation();
                                 User user = response.body();
                                 if (user != null) {
-                                    Toast.makeText(getContext(), "Thay đổi thành công", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(layout, "Thay đổi thành công", Toast.LENGTH_SHORT).show();
+                                    user.setToken(Session.getToken(getActivity()));
+                                    Session.setSession(getActivity(), user);
                                 } else {
-                                    Toast.makeText(getContext(), "Thay đổi thất bại", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(layout, "Thay đổi thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<User> call, Throwable t) {
                                 stopAnimation();
-                                Toast.makeText(getContext(), "Đã có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(layout, "Đã có lỗi xảy ra", Toast.LENGTH_SHORT).show();
                             }
                         });
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    } else {
+                        mWebService.updateUserProfile(Session.getToken(getActivity()), builder.build()).enqueue(new Callback<User>() {
+                            @Override
+                            public void onResponse(Call<User> call, Response<User> response) {
+                                stopAnimation();
+                                User user = response.body();
+                                if (user != null) {
+                                    Snackbar.make(layout, "Thay đổi thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Snackbar.make(layout, "Thay đổi thất bại", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<User> call, Throwable t) {
+                                stopAnimation();
+                                Snackbar.make(layout, "Đã có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }, 1000);
             } else {

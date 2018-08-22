@@ -176,6 +176,10 @@ public interface APIService {
     Call<Post> addPost(@Header("AUTH_TOKEN_ID") String token,
                        @Body Post post);
 
+    @POST("post")
+    Call<Post> addPostWithImages(@Header("AUTH_TOKEN_ID") String token,
+                       @Body RequestBody in);
+
     @PUT("post")
     @FormUrlEncoded
     Call<Post> updatePost(@Header("AUTH_TOKEN_ID") String token,
@@ -183,14 +187,25 @@ public interface APIService {
                        @Field("name") String name,
                        @Field("content") String content);
     @POST("auth/profile")
-    @FormUrlEncoded
+    Call<User> updateUserProfileWithAvatar(@Header("AUTH_TOKEN_ID") String token,
+                                 @Body RequestBody in);
+
+    @POST("auth/profile")
     Call<User> updateUserProfile(@Header("AUTH_TOKEN_ID") String token,
-                                 @Field("id") int id,
-                                 @Field("firstname") String firstname,
-                                 @Field("lastname") String lastname,
-                                 @Field("phone") String phone,
-                                 @Field("birthdate") String date,
-                                 @Field("gender") int gender);
+                                 @Body RequestBody in);
+
+    @POST("auth/profile")
+    @Multipart
+    Call<User> updateUserProfileWithCover(@Header("AUTH_TOKEN_ID") String token,
+                                 @Part("id") RequestBody id,
+                                 @Part("firstname") RequestBody firstname,
+                                 @Part("lastname") RequestBody lastname,
+                                 @Part("phone") RequestBody phone,
+                                 @Part("birthdate") RequestBody date,
+                                 @Part("gender") RequestBody gender,
+                                 @Part("sosContact") RequestBody sos,
+                                 @Part("facebookAuth") RequestBody fbAuth,
+                                 @Part("medias") RequestBody medias);
 
     @GET("image/size")
     Call<ImageSize> getImageSize(@Query("link") String link);

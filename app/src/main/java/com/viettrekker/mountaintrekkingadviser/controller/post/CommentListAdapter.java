@@ -48,13 +48,17 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
     private Context context;
     private APIService mWebService = APIUtils.getWebService();
     int targetCmtid = -1;
-    int idCmtChild = 0;
     private String token;
     private int userId;
+    private boolean isByUserId;
 
     int idCmtEdit = -1;
     public List<Comment> getList() {
         return list;
+    }
+
+    public void setByUserId(boolean byUserId) {
+        isByUserId = byUserId;
     }
 
     public void setList(List<Comment> list) {

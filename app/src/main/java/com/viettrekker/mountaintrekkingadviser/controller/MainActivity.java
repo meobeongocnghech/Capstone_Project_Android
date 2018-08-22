@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user = Session.getUser(MainActivity.this);
         init();
         initLocationListener();
     }
@@ -222,7 +221,17 @@ public class MainActivity extends AppCompatActivity
         });
 
         initRefreshLayout();
-        bindData();
+
+        adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
+        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
+        int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
+        tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
+
+        viewPager.setOffscreenPageLimit(4);
     }
 
     private void initRefreshLayout() {
@@ -275,6 +284,8 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        bindData();
+
         SlidingSearchResultsFragment fragment = new SlidingSearchResultsFragment();
         search = (ImageButton) findViewById(R.id.search);
         frame = (FrameLayout) findViewById(R.id.search_frame);
@@ -285,41 +296,72 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void bindData() {
-        View header = navigationView.getHeaderView(0);
-        TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
-        TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
-        ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+        user = Session.getUser(this);
 
-        if (!user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+        APIService service = APIUtils.getWebService();
+        service.getUserById(Session.getToken(this), user.getId()).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == HttpURLConnection.HTTP_OK) {
+                    user.setFirstName(response.body().getFirstName());
+                    user.setLastName(response.body().getLastName());
+                    user.setGallery(response.body().getGallery());
+                }
 
-            GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
-                    .placeholder(getDrawable(R.drawable.avatar_default))
-                    .fallback(getDrawable(R.drawable.avatar_default))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(imgAvatar);
+                View header = navigationView.getHeaderView(0);
+                TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
+                TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
+                ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
 
-            GlideApp.with(this)
-                    .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, this))
-                    .placeholder(getDrawable(R.drawable.avatar_default))
-                    .fallback(getDrawable(R.drawable.avatar_default))
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(imgNavAvatar);
-        }
+                if (user.getGallery() != null && !user.getGallery().getMedia().get(0).getPath().isEmpty()) {
 
-        tvNavName.setText(user.getLastName() + " " + user.getFirstName());
-        tvNavEmail.setText(user.getEmail());
+                    GlideApp.with(MainActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .placeholder(getDrawable(R.drawable.avatar_default))
+                            .fallback(getDrawable(R.drawable.avatar_default))
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imgAvatar);
 
-        adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+                    GlideApp.with(MainActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .placeholder(getDrawable(R.drawable.avatar_default))
+                            .fallback(getDrawable(R.drawable.avatar_default))
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imgNavAvatar);
+                }
 
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+                tvNavName.setText(user.getLastName() + " " + user.getFirstName());
+                tvNavEmail.setText(user.getEmail());
+            }
 
-        int selectColor = ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary);
-        tabs.getTabAt(0).getIcon().setColorFilter(selectColor, PorterDuff.Mode.SRC_IN);
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                View header = navigationView.getHeaderView(0);
+                TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
+                TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
+                ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
 
-        //        viewPager.setOffscreenPageLimit(4)
+                if (user.getGallery() != null && user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+
+                    GlideApp.with(MainActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .placeholder(getDrawable(R.drawable.avatar_default))
+                            .fallback(getDrawable(R.drawable.avatar_default))
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imgAvatar);
+
+                    GlideApp.with(MainActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .placeholder(getDrawable(R.drawable.avatar_default))
+                            .fallback(getDrawable(R.drawable.avatar_default))
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imgNavAvatar);
+                }
+
+                tvNavName.setText(user.getLastName() + " " + user.getFirstName());
+                tvNavEmail.setText(user.getEmail());
+            }
+        });
     }
 
     @Override
@@ -341,10 +383,7 @@ public class MainActivity extends AppCompatActivity
             }
             drawer.closeDrawer(GravityCompat.START);
             startActivity(i);
-            return true;
-        }
-
-        if (item.equals(item2)) {
+        } else if (item.equals(item2)) {
             Session.clearSession(this);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

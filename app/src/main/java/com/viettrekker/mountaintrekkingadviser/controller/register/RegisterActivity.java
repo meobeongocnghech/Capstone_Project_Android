@@ -192,7 +192,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (genderLayout.isErrorEnabled()) genderLayout.setErrorEnabled(false);
             });
         } else {
-            gender = rbMale.isChecked() ? 1 : 0;
+            gender = rbMale.isChecked() ? 0 : 1;
         }
 
         TextInputEditText edtDoB = (TextInputEditText) findViewById(R.id.edtDoB);

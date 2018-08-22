@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
 //import com.arasthel.spannedgridlayoutmanager.sample.GridItemAdapter;
+import com.bumptech.glide.request.RequestOptions;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -68,6 +70,7 @@ public class PostDetailActivity extends AppCompatActivity{
     TextView tvLikeCount;
     TextView separator;
     int id;
+    boolean isByUserId;
     Button btnSendCmtDetail;
     RecyclerView rcvPostImage;
     RecyclerView rcvCmtItem;
@@ -92,6 +95,8 @@ public class PostDetailActivity extends AppCompatActivity{
             // Return here to prevent adding additional GridFragments when changing orientation.
             return;
         }
+
+        isByUserId = getIntent().getBooleanExtra("isByUserId", false);
 
         int id = getIntent().getIntExtra("id",0);
         rcvPostImage = (RecyclerView) findViewById(R.id.rcvPostImage);
@@ -426,6 +431,15 @@ public class PostDetailActivity extends AppCompatActivity{
                 imgPostAvatar.setOnClickListener((v) -> eventViewProfile(user));
                 tvPostUserName.setOnClickListener((v) -> eventViewProfile(user));
 
+                if (user.getGallery() != null && !user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+                    GlideApp.with(PostDetailActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4))
+                            .placeholder(R.drawable.avatar_default)
+                            .fallback(R.drawable.avatar_default)
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(imgPostAvatar);
+                }
+
                 PostImageAdapter imageAdapter = new PostImageAdapter();
                 imageAdapter.setMedias(post.getGallery().getMedia());
                 imageAdapter.setContext(PostDetailActivity.this);
@@ -450,17 +464,21 @@ public class PostDetailActivity extends AppCompatActivity{
     }
 
     private void eventViewProfile(User user) {
-        Intent i = new Intent(this, ProfileMemberActivity.class);
-        i.putExtra("firstname", user.getFirstName());
-        i.putExtra("lastname", user.getLastName());
-        if (Session.getUserId(PostDetailActivity.this) == user.getId()) {
-            i.putExtra("owner", true);
+        if (isByUserId) {
+            onBackPressed();
         } else {
-            i.putExtra("owner", false);
+            Intent i = new Intent(this, ProfileMemberActivity.class);
+            i.putExtra("firstname", user.getFirstName());
+            i.putExtra("lastname", user.getLastName());
+            if (Session.getUserId(PostDetailActivity.this) == user.getId()) {
+                i.putExtra("owner", true);
+            } else {
+                i.putExtra("owner", false);
+            }
+            i.putExtra("id", user.getId());
+            i.putExtra("token", Session.getToken(PostDetailActivity.this));
+            startActivity(i);
         }
-        i.putExtra("id", user.getId());
-        i.putExtra("token", Session.getToken(PostDetailActivity.this));
-        startActivity(i);
     }
 
     private void scrollToPosition() {

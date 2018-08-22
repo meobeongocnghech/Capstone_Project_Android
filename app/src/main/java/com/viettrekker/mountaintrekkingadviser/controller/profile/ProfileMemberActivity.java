@@ -44,6 +44,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActiv
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -85,6 +86,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private int id;
     private String email;
     private String avatar;
+    private String newAvatar;
 
     private boolean isChange;
     private boolean viewProfile;
@@ -93,6 +95,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_profile);
+
+        newAvatar = "";
 
         id = getIntent().getIntExtra("id", 0);
         String token = getIntent().getStringExtra("token");
@@ -113,11 +117,15 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     lastName = user.getLastName();
                     phone = user.getPhone();
                     birthdate = DateTimeUtils.parseStringDate(user.getBirthDate());
-                    gender = user.getGender() == 1 ? "Nam" : "Nữ";
+                    gender = user.getGender() == 0 ? "Nam" : "Nữ";
                     owner = getIntent().getBooleanExtra("owner", false);
-                    email = user.getEmail();
+                    if (owner) {
+                        email = Session.getEmail(ProfileMemberActivity.this);
+                    } else {
+                        email = "";
+                    }
                     viewProfile = getIntent().getBooleanExtra("viewProfile", false);
-                    avatar = user.getGallery() != null ? user.getGallery().getMedia().get(0).getPath() : "";
+                    avatar = user.getGallery() != null ? APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) : "";
 
                     init();
                     loadData();
@@ -129,6 +137,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     if (owner) {
                         invite.setVisibility(View.GONE);
                     } else {
+                        invite.setVisibility(View.VISIBLE);
                         invite.setOnClickListener((v) -> {
                             Toast.makeText(ProfileMemberActivity.this, "TODO: Invite to a plan", Toast.LENGTH_SHORT).show();
                         });
@@ -140,6 +149,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), "Xảy ra lỗi", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
     }
@@ -170,6 +180,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void loadData() {
@@ -245,6 +257,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                         .apply(RequestOptions.circleCropTransform())
                         .override(LocalDisplay.dp2px(80, this))
                         .into(profileAvatarImage);
+                newAvatar = selectionResult.get(0);
             }
         }
     }
@@ -339,6 +352,10 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getNewAvatar() {
+        return newAvatar;
     }
 
     public int getId() {

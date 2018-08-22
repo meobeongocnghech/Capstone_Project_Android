@@ -13,18 +13,23 @@ public class User {
     @SerializedName("id")
     @Expose
     private int id;
+
     @SerializedName("email")
     @Expose
     private String email;
+
     @SerializedName("phone")
     @Expose
     private String phone;
+
     @SerializedName("firstname")
     @Expose
     private String firstName;
+
     @SerializedName("lastname")
     @Expose
     private String lastName;
+
     @SerializedName("birthdate")
     @Expose
     private Date birthDate;
@@ -33,6 +38,14 @@ public class User {
     @Expose
     private int gender;
 
+    @SerializedName("state")
+    @Expose
+    private int state;
+
+    @SerializedName("rollId")
+    @Expose
+    private int roll;
+
     @SerializedName("gallery")
     @Expose
     private MyGallery gallery;
@@ -40,6 +53,10 @@ public class User {
     @SerializedName("tokenId")
     @Expose
     private String token;
+
+    @SerializedName("avatar")
+    @Expose
+    private MyMedia avatar;
 
     public int getId() {
         return id;
@@ -111,6 +128,30 @@ public class User {
 
     public void setGallery(MyGallery gallery) {
         this.gallery = gallery;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getRoll() {
+        return roll;
+    }
+
+    public void setRoll(int roll) {
+        this.roll = roll;
+    }
+
+    public void setAvatar(MyMedia avatar) {
+        this.avatar = avatar;
+    }
+
+    public MyMedia getAvatar() {
+        return avatar;
     }
 
     @Override

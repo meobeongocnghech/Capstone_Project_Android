@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
@@ -124,6 +125,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.postId = listPost.get(postion).getId();
         viewHolder.token = token;
         viewHolder.userId = userId;
+        viewHolder.post = listPost.get(postion);
+        viewHolder.isByUserId = isByUserId;
         String typPost = "null";
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
@@ -135,15 +138,18 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
             viewHolder.tvPostCategory.setText(typPost);
         }
-        if (post.getUser().getGallery() != null) {
+        if (post.getUser().getGallery() != null && !post.getUser().getGallery().getMedia().get(0).getPath().isEmpty()) {
             GlideApp.with(context)
-                    .load(post.getUser().getGallery().getMedia().get(0).getPath())
+                    .load(APIUtils.BASE_URL_API + post.getUser().getGallery().getMedia().get(0).getPath().substring(4))
                     .apply(RequestOptions.circleCropTransform())
                     .fallback(R.drawable.avatar_default)
                     .into(viewHolder.imgPostAvatar);
         }
 
         viewHolder.tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
+        if (post.getUser().getState() == 1) {
+            viewHolder.tvPostUserName.setPaintFlags(viewHolder.tvPostUserName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
 
         viewHolder.tvPostTitle.setText(post.getName());
         viewHolder.tvPostContent.setText(post.getContent());
@@ -388,7 +394,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     int lastPosition = listPost.size();
                     if (list != null) {
                         for (Post p : list) {
-                            listPost.add(p);
+                            if (p.getState() != 1) {
+                                listPost.add(p);
+                            }
                         }
                         notifyItemRangeChanged(lastPosition, list.size());
                     }
@@ -408,7 +416,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                         list.remove(0);
                         int lastPosition = listPost.size();
                         for (Post p : list) {
-                            listPost.add(p);
+                            if (p.getState() != 1) {
+                                listPost.add(p);
+                            }
                         }
                         notifyItemRangeChanged(lastPosition, list.size());
                     }
@@ -437,6 +447,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         int postId;
         String token;
         int userId;
+        Post post;
+        boolean isByUserId;
         ImageView imgPostAvatar;
         TextView tvPostUserName;
         TextView tvTime;
@@ -452,6 +464,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView separator;
         boolean likeFlag;
         ImageView singlePreview;
+        ImageButton btnPostOption;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
@@ -467,6 +480,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvlikeCount = (TextView) itemView.findViewById(R.id.tvLikeCount);
             tvCmtCount = (TextView) itemView.findViewById(R.id.tvCmtCount);
             separator = (TextView) itemView.findViewById(R.id.separator);
+            btnPostOption = (ImageButton) itemView.findViewById(R.id.btnPostOption);
             likeFlag = false;
             singlePreview = (ImageView) itemView.findViewById(R.id.imgSinglePreview);
 //            frame = (FrameLayout) itemView.findViewById(R.id.framePostImage);
@@ -479,6 +493,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
                     intent.putExtra("token", token);
+                    intent.putExtra("isByUserId", isByUserId);
                     context.startActivity(intent);
                 }
             });
@@ -488,6 +503,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
                     intent.putExtra("token", token);
+                    intent.putExtra("isByUserId", isByUserId);
                     context.startActivity(intent);
                 }
             });
@@ -497,6 +513,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     Intent intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", postId);
                     intent.putExtra("token", token);
+                    intent.putExtra("isByUserId", isByUserId);
                     context.startActivity(intent);
                 }
             });
@@ -508,23 +525,140 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     intent.putExtra("id", postId);
                     intent.putExtra("action", action);
                     intent.putExtra("token", token);
+                    intent.putExtra("isByUserId", isByUserId);
                     context.startActivity(intent);
                 }
+            });
+
+            btnPostOption.setOnClickListener((v) -> {
+                APIService mWebService = APIUtils.getWebService();
+                PopupMenu popupMenu = new PopupMenu(context, btnPostOption);
+                popupMenu.getMenuInflater().inflate(R.menu.action_popup_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (menuItem.getTitle().equals("Báo cáo")){
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                            alertDialogBuilder.setTitle("Báo cáo bài viết");
+                            EditText edtRP = new EditText(context);
+                            edtRP.setInputType(InputType.TYPE_CLASS_TEXT);
+                            alertDialogBuilder.setView(edtRP);
+                            alertDialogBuilder.setMessage("Báo cáo của bạn đã được ghi nhận")
+                                    .setCancelable(false)
+                                    .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int id) {
+                                            if (!edtRP.getText().toString().matches("")){
+                                                mWebService.reportPost(Session.getToken(context), postId,edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                                    @Override
+                                                    public void onResponse(Call<Post> call, Response<Post> response) {
+                                                        dialog.cancel();
+                                                        Toast.makeText(context,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Post> call, Throwable t) {
+
+                                                        Toast.makeText(context,"Báo cáo không thành công, thử lại sau.",Toast.LENGTH_LONG).show();
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                                dialog.cancel();
+                                            } else {
+                                                Toast.makeText(context,"Vui lòng điền lý do.",Toast.LENGTH_LONG).show();
+//                                                        edtRP.requestFocus();
+                                            }
+                                        }
+                                    }).setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                }
+                            });
+                            AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        } else
+                        if (userId == user.getId()){
+                            if (menuItem.getTitle().equals("Sửa")){
+                                Intent intent = new Intent(context, PostAddActivity.class);
+                                intent.putExtra("id", postId);
+                                intent.putExtra("title", post.getName());
+                                intent.putExtra("content", post.getContent());
+                                context.startActivity(intent);
+                            } else {
+                                //Remove post pending
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                alertDialogBuilder.setTitle("Cảnh báo");
+                                alertDialogBuilder.setMessage("Bạn có muốn xóa bài viết này?")
+                                        .setCancelable(false)
+                                        .setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                PostIdRemove pi = new PostIdRemove();
+                                                List<Integer> li = new ArrayList<>();
+                                                li.add(post.getId());
+                                                pi.setId(li);
+                                                mWebService.removePost(Session.getToken(context),pi).enqueue(new Callback<Post>() {
+                                                    @Override
+                                                    public void onResponse(Call<Post> call, Response<Post> response) {
+                                                        Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                        context.startActivity(new Intent(context,MainActivity.class));
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Post> call, Throwable t) {
+                                                        Toast.makeText(context, "Có lỗi xảy ra, thử lại sau.",Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                            }
+                                        })
+                                        .setNegativeButton("Quay lại",new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                            }
+                        } else {
+                            if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa") ){
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                alertDialogBuilder.setTitle("Cảnh báo");
+                                alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bài viết của mình.")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Đóng",new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                // if this button is clicked, close
+                                                // current activity
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                            }
+                        }
+
+                        return true;
+                    }
+                });
+                popupMenu.show();
             });
         }
 
         private void eventViewProfile() {
-            Intent i = new Intent(context, ProfileMemberActivity.class);
-            i.putExtra("firstname", user.getFirstName());
-            i.putExtra("lastname", user.getLastName());
-            i.putExtra("id", user.getId());
-            i.putExtra("token", token);
-            if (userId == user.getId()) {
-                i.putExtra("owner", true);
-            } else {
-                i.putExtra("owner", false);
+            if (!isByUserId) {
+                Intent i = new Intent(context, ProfileMemberActivity.class);
+                i.putExtra("firstname", user.getFirstName());
+                i.putExtra("lastname", user.getLastName());
+                i.putExtra("id", user.getId());
+                i.putExtra("token", token);
+                if (userId == user.getId()) {
+                    i.putExtra("owner", true);
+                } else {
+                    i.putExtra("owner", false);
+                }
+                context.startActivity(i);
             }
-            context.startActivity(i);
         }
     }
 }

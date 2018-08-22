@@ -2,6 +2,7 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,20 @@ public class ImageAddAdapter extends RecyclerView.Adapter<ImageAddAdapter.ViewHo
         this.listImg = listImg;
     }
 
+    public List<String> getListImg() {
+        return listImg;
+    }
+
+    public void addItem(List<String> imgs) {
+        for (String s : imgs) {
+            listImg.add(s);
+        }
+    }
+
+    public ImageAddAdapter() {
+        listImg = new ArrayList<>();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -47,6 +62,17 @@ public class ImageAddAdapter extends RecyclerView.Adapter<ImageAddAdapter.ViewHo
                         .fallback(R.drawable.default_background)
                         .centerCrop()
                         .override(LocalDisplay.dp2px(80, context)).into(viewHolder.imgAdd);
+
+        viewHolder.position = i;
+
+        viewHolder.btnDeleteImage.setOnClickListener((v) -> {
+            listImg.remove(viewHolder.position);
+            notifyDataSetChanged();
+            if (listImg.size() == 0) {
+                ((PostAddActivity) context).hideRcv();
+            }
+            ((PostAddActivity) context).setTotalCountImages();
+        });
     }
 
     @Override
@@ -60,11 +86,13 @@ public class ImageAddAdapter extends RecyclerView.Adapter<ImageAddAdapter.ViewHo
     static class ViewHolder extends RecyclerView.ViewHolder {
         Context context;
         ImageView imgAdd;
-
+        MaterialButton btnDeleteImage;
+        int position;
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             this.context = context;
             imgAdd = (ImageView) itemView.findViewById(R.id.imgAdd);
+            btnDeleteImage = (MaterialButton) itemView.findViewById(R.id.btnDeleteImage);
         }
 
     }

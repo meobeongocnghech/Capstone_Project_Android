@@ -9,7 +9,8 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite">
+        android:background="@color/colorWhite"
+        android:id="@+id/layout">
 
         <android.support.design.button.MaterialButton
             android:id="@+id/birthdate"

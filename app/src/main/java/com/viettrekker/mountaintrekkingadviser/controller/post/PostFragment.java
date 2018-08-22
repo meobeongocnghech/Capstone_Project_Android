@@ -37,6 +37,7 @@ import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInforma
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import android.support.v4.app.Fragment;
@@ -46,6 +47,7 @@ public class PostFragment extends Fragment {
 
     private NestedScrollView layout;
     private SwitchCompat switchView;
+    private ProgressBar progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +63,7 @@ public class PostFragment extends Fragment {
 
         switchView = (SwitchCompat) view.findViewById(R.id.swtMode);
         Chip chip = (Chip) view.findViewById(R.id.postHint);
+        progress = (ProgressBar) view.findViewById(R.id.progressPost);
 
         loadNewsfeedData();
         switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -104,6 +107,7 @@ public class PostFragment extends Fragment {
     private void loadNewsfeedData() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
+        newsFeedFragment.setUserId(Session.getUserId(getActivity()));
 
         fragmentTransaction.replace(R.id.postFragment, newsFeedFragment, "newsfeed");
         fragmentTransaction.commitAllowingStateLoss();
@@ -130,8 +134,17 @@ public class PostFragment extends Fragment {
     public void refreshData() {
         if (switchView.isChecked()) {
             loadPlaceData();
+            hideProgress();
         } else {
             loadNewsfeedData();
         }
+    }
+
+    public void showProgress() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgress() {
+        progress.setVisibility(View.GONE);
     }
 }

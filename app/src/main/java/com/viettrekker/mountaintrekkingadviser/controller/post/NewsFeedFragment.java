@@ -76,6 +76,11 @@ public class NewsFeedFragment extends Fragment {
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
                     if (list != null && !list.isEmpty()) {
+                        for (Post post : list) {
+                            if (post.getState() == 1) {
+                                list.remove(post);
+                            }
+                        }
                         newsFeedAdapter.setListPost(list);
                         newsFeedAdapter.notifyDataSetChanged();
                     }
@@ -87,6 +92,7 @@ public class NewsFeedFragment extends Fragment {
                 }
             });
         } else {
+            newsFeedAdapter.setUserId(userId);
             mWebService.getPostPage(token,1,5,"id", "DESC").enqueue(new Callback<List<Post>>() {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {

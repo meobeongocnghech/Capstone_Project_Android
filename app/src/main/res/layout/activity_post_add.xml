@@ -1,14 +1,27 @@
-<android.support.design.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorDefaultBackground"
-    android:layout_marginBottom="10dp">
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/addPostToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/Toolbar"
+        app:title="@string/title_add_post"
+        app:titleTextAppearance="@style/ToolbarTitleTheme"
+        app:titleTextColor="@android:color/white">
+
+    </android.support.v7.widget.Toolbar>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -19,90 +32,123 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
-                android:padding="3dp"
                 android:adjustViewBounds="true"
+                android:padding="3dp"
                 android:scaleType="centerCrop"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:src="@drawable/avatar_default" />
-
+                android:src="@drawable/avatar_default"
+                app:layout_constraintLeft_toLeftOf="parent" />
 
             <TextView
                 android:id="@+id/tvPostUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
                 android:text="Cuong Dang"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/imgPostAvatar"
+                app:layout_constraintEnd_toStartOf="@id/btnPost"
                 app:layout_constraintStart_toEndOf="@+id/imgPostAvatar"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/imgPostAvatar" />
 
-            <EditText
-                android:id="@+id/edtTitlePost"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/titleLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
-                android:maxLines="2"
-                android:scrollbars="vertical"
-                android:hint="Hãy nhập tiêu đề bài viết nhé..."
+                android:textColorHint="@color/colorTextFieldLabel"
+                android:transitionGroup="true"
+                app:errorTextAppearance="@style/ErrorStyle"
+                app:helperTextEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextAppearance="@style/TextInputLayoutStyle"
                 app:layout_constraintStart_toStartOf="@id/imgPostAvatar"
-                app:layout_constraintTop_toBottomOf="@id/imgPostAvatar"/>
+                app:layout_constraintTop_toBottomOf="@id/imgPostAvatar"
+                android:layout_marginTop="8dp">
 
-            <EditText
-                android:id="@+id/edtContent"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtTitlePost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:hint="Tiêu đề"
+                    android:inputType="text"
+                    android:maxLines="2"
+                    android:singleLine="true"
+                    android:textColor="@color/colorTextFieldInput"
+                    android:textCursorDrawable="@drawable/input_cursor"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/contentLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:hint="Hãy chia sẻ cảm nhận của bạn ^.^!!"
-                android:textSize="20dp"
-                android:maxLines="7"
-                android:scrollbars="vertical"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
-                android:gravity="top"
-                app:layout_constraintTop_toBottomOf="@id/edtTitlePost"/>
-            <HorizontalScrollView
-                android:id="@+id/scvImageSlide"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:fillViewport="true"
-                android:measureAllChildren="false"
-                android:scrollbars="none"
-                app:layout_constraintEnd_toEndOf="@+id/edtContent"
-                app:layout_constraintStart_toStartOf="@+id/edtContent"
-                app:layout_constraintTop_toBottomOf="@id/edtContent">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rcvImageSelect"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center"
-                    android:scrollbars="horizontal">
-                </android.support.v7.widget.RecyclerView>
+                android:textColorHint="@color/colorTextFieldLabel"
+                android:transitionGroup="true"
+                app:errorTextAppearance="@style/ErrorStyle"
+                app:helperTextEnabled="true"
+                app:hintAnimationEnabled="true"
+                app:hintEnabled="true"
+                app:hintTextAppearance="@style/TextInputLayoutStyle"
+                app:layout_constraintTop_toBottomOf="@id/titleLayout"
+                android:layout_marginTop="8dp">
 
-            </HorizontalScrollView>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edtContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="sans-serif"
+                    android:hint="Nội dung"
+                    android:gravity="top"
+                    android:inputType="text"
+                    android:maxLines="7"
+                    android:singleLine="true"
+                    android:textColor="@color/colorTextFieldInput"
+                    android:textCursorDrawable="@drawable/input_cursor"
+                    android:textSize="16sp"
+                    android:textStyle="normal" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcvImageSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="@id/contentLayout"
+                app:layout_constraintTop_toBottomOf="@id/contentLayout"
+                android:layout_marginTop="16dp"
+                android:visibility="gone">
+
+            </android.support.v7.widget.RecyclerView>
 
             <ScrollView
                 android:id="@+id/scvAction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/edtContent"
-                app:layout_constraintStart_toStartOf="@+id/edtContent"
-                app:layout_constraintTop_toBottomOf="@id/scvImageSlide">
+                app:layout_constraintEnd_toEndOf="@+id/contentLayout"
+                app:layout_constraintStart_toStartOf="@+id/contentLayout"
+                app:layout_constraintTop_toBottomOf="@id/rcvImageSelect"
+                android:layout_marginTop="8dp">
+
                 <LinearLayout
                     android:id="@+id/lnLayoutAction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginLeft="7dp"
                     android:layout_marginRight="10dp"
-                    >
+                    android:orientation="vertical">
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -110,7 +156,7 @@
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btnAddPhoto"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_alignParentStart="true"
                             android:layout_marginEnd="0dp"
@@ -123,8 +169,6 @@
                             app:icon="@drawable/ic_collections_black_24dp"
                             app:iconSize="35dp"
                             app:iconTint="@color/colorPrimary" />
-
-
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -134,7 +178,7 @@
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btnLocation"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_marginEnd="0dp"
@@ -153,11 +197,12 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="36dp">
 
                         <android.support.design.button.MaterialButton
                             android:id="@+id/btnPlan"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_marginEnd="0dp"
@@ -177,37 +222,26 @@
 
                 </LinearLayout>
             </ScrollView>
-            <TextView
-                android:fontFamily="@font/latomedium"
-                android:id="@+id/tvBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Hủy"
-                android:textColor="@color/colorGray"
-                android:textSize="14dp"
-                android:textStyle="bold"
-                android:layout_marginRight="15dp"
-                app:layout_constraintEnd_toStartOf="@id/tvPostButton"
-                app:layout_constraintTop_toTopOf="@id/tvPostButton"/>
 
-            <TextView
-                android:id="@+id/tvPostButton"
+            <android.support.design.button.MaterialButton
+                android:id="@+id/btnPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/roun_rect_orange"
                 android:fontFamily="@font/latomedium"
+                android:letterSpacing="0.01"
                 android:text="Đăng bài"
+                android:textAllCaps="false"
                 android:textColor="@color/colorBackroundWhite"
-                android:textSize="14dp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/edtContent"
+                app:backgroundTint="@color/colorOrange"
+                app:cornerRadius="25dp"
+                app:layout_constraintBottom_toBottomOf="@id/tvPostUserName"
+                app:layout_constraintEnd_toEndOf="@+id/contentLayout"
                 app:layout_constraintTop_toTopOf="@+id/tvPostUserName" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-
-</android.support.design.card.MaterialCardView>
+</LinearLayout>

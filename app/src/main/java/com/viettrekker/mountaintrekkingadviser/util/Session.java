@@ -70,4 +70,9 @@ public class Session {
         editor.clear();
         editor.commit();
     }
+
+    public static String getEmail(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("email", "");
+    }
 }

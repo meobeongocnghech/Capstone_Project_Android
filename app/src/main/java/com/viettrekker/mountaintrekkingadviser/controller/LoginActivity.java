@@ -92,10 +92,14 @@ public class LoginActivity extends AppCompatActivity {
                                 Snackbar.make(view, "Sai email hoặc mật khẩu", Snackbar.LENGTH_LONG).show();
                             } else {
                                 User user = response.body();
-                                Session.setSession(LoginActivity.this, user);
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
+                                if (user.getState() == 1) {
+                                    Snackbar.make(view, "Tài khoản của bạn đã bị khóa", Snackbar.LENGTH_LONG).show();
+                                } else {
+                                    Session.setSession(LoginActivity.this, user);
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                }
                             }
                         }
 
@@ -125,6 +129,14 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        if (getIntent().getBooleanExtra("error", false)) {
+            Snackbar.make(findViewById(R.id.loginLayout), "Đã có lỗi xảy ra", Snackbar.LENGTH_LONG).show();
+        }
+
+        if (getIntent().getBooleanExtra("ban", false)) {
+            Snackbar.make(findViewById(R.id.loginLayout), "Tài khoản của bạn đã bị khóa", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
