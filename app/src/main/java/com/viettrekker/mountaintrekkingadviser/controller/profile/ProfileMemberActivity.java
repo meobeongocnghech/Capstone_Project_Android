@@ -2,9 +2,11 @@ package com.viettrekker.mountaintrekkingadviser.controller.profile;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,8 +42,15 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainScreenPagerAdapter;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.NewPlanActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanDetailActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
+import com.viettrekker.mountaintrekkingadviser.model.Member;
+import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.model.Plan;
+import com.viettrekker.mountaintrekkingadviser.model.PlanOwn;
+import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
@@ -50,8 +60,12 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
+import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,6 +104,9 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     private boolean isChange;
     private boolean viewProfile;
+    APIService mWebService = APIUtils.getWebService();
+    String token;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,13 +114,13 @@ public class ProfileMemberActivity extends AppCompatActivity {
         setContentView(R.layout.activity_member_profile);
 
         newAvatar = "";
-
+		token = Session.getToken(this);
         id = getIntent().getIntExtra("id", 0);
-        String token = getIntent().getStringExtra("token");
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileMemberActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
         final ProgressDialog progressDialog = new ProgressDialog(this, R.style.DialogStyle);
         progressDialog.setCancelable(false);
         progressDialog.show();
-        APIService mWebService = APIUtils.getWebService();
+
         mWebService.getUserById(token, id).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -139,7 +156,41 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     } else {
                         invite.setVisibility(View.VISIBLE);
                         invite.setOnClickListener((v) -> {
-                            Toast.makeText(ProfileMemberActivity.this, "TODO: Invite to a plan", Toast.LENGTH_SHORT).show();
+                            new SimpleSearchDialogCompat(ProfileMemberActivity.this, "Tìm kiếm kế hoạch của bạn",
+                                    "Nhập tên kế hoạch có dấu...", null, createSampleData(user.getId()),
+                                    new SearchResultListener<PlanOwn>() {
+                                        @Override
+                                        public void onSelected(BaseSearchDialogCompat dialog, PlanOwn item, int position) {
+                                            alertDialogBuilder.setTitle("Mời thành viên tham gia kế hoạch của bạn");
+                                            alertDialogBuilder.setMessage("Bạn có chắc chắn muốn mời "+ user.getFirstName() +" tham gia " + item.getmTitle())
+                                                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    mWebService.invitePlan(token,item.getId(),user.getId(),0,"",0).enqueue(new Callback<Plan>() {
+                                                                        @Override
+                                                                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                                                            if (response.code() == 200){
+                                                                                Toast.makeText(ProfileMemberActivity.this,"Mời thành công",Toast.LENGTH_SHORT).show();
+
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onFailure(Call<Plan> call, Throwable t) {
+
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+
+                                                    ).setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.dismiss();
+                                                }
+                                            }).show();
+                                        }
+                                    }).show();
                         });
                     }
                 }
@@ -366,5 +417,40 @@ public class ProfileMemberActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    private ArrayList<PlanOwn> createSampleData(int id) {
+        ArrayList<PlanOwn> items = new ArrayList<>();
+        mWebService.getListPlan(token,1,20,"id").enqueue(new Callback<List<Plan>>() {
+            @Override
+            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+                if (response.body().size() > 1){
+                    boolean isJoin = false;
+                    List<Plan> p = response.body();
+                    p.remove(0);
+                    for (Plan pl: p) {
+                        List<Member> m = pl.getGroup().getMembers();
+                        for (Member me: m) {
+                            if (id == me.getUserId()){
+                                isJoin= true;
+                            } else
+                                isJoin = false;
+                        }
+                        if (pl.getGroup().getUserId() == Session.getUserId(ProfileMemberActivity.this) && !isJoin){
+                            PlanOwn po = new PlanOwn(pl.getGroup().getName(),pl.getId());
+                            items.add(po);
+                        }
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Plan>> call, Throwable t) {
+
+            }
+        });
+        return items;
     }
 }

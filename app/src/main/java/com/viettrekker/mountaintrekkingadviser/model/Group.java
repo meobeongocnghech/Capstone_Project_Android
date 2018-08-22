@@ -42,4 +42,12 @@ public class Group {
     public void setMembers(List<Member> members) {
         this.members = members;
     }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

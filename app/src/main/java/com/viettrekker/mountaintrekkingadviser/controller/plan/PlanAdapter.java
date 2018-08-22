@@ -195,6 +195,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         TextView tvPlanLead;
         TextView tvDuration;
         TextView tvMembers;
+        TextView tvRequestJoin;
         CardView cardView;
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -206,6 +207,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             tvStartLoc = (TextView) itemView.findViewById(R.id.tvStartLoc);
             tvPlanLead = (TextView) itemView.findViewById(R.id.tvPlanLead);
             tvStartPlan = (TextView) itemView.findViewById(R.id.tvStartPlan);
+            tvRequestJoin = (TextView) itemView.findViewById(R.id.tvRequestJoin);
             tvMembers = (TextView) itemView.findViewById(R.id.tvMembers);
             tvDuration = (TextView) itemView.findViewById(R.id.tvDuration);
             cardView = (CardView) itemView.findViewById(R.id.card_view);

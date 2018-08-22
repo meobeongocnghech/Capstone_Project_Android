@@ -1,7 +1,10 @@
 package com.viettrekker.mountaintrekkingadviser.controller.plan;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
@@ -35,6 +38,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
@@ -46,6 +50,7 @@ import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -220,6 +225,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         token = getIntent().getStringExtra("token");
         userId = getIntent().getIntExtra("userId", 0);
 
+
         places = new ArrayList<>();
         mWebService.searchPlace(token, 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
@@ -233,6 +239,8 @@ public class PlanDetailActivity extends AppCompatActivity {
 
             }
         });
+
+
 
         addViewMaps.setOnClickListener((v) -> {
             Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?saddr=" + srcLocation.getLat() + "," + srcLocation.getLng() + "&daddr=" + desLocation.getLat() + "," + desLocation.getLng());
@@ -499,7 +507,55 @@ public class PlanDetailActivity extends AppCompatActivity {
                         }
                     }
                 }
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PlanDetailActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                for (Member m : members) {
+                    if (Session.getUserId(PlanDetailActivity.this) == m.getUserId() && m.getRoleInGroupId() == 4){
+                        alertDialogBuilder.setTitle("Yêu cầu tham gia");
+                        alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
+                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
+                                            @Override
+                                            public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                                if (response.code()== 200)
+                                                    Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
+                                                dialogInterface.dismiss();
+                                            }
 
+                                            @Override
+                                            public void onFailure(Call<Plan> call, Throwable t) {
+                                                Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+                                    }
+                                }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
+                                    @Override
+                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                        if (response.code()== 200)
+                                            Toast.makeText(PlanDetailActivity.this, "TBạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
+                                        dialogInterface.dismiss();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Plan> call, Throwable t) {
+                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                            }
+                        }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
+                    }
+                }
                 membersListAdapter.setUsers(members);
                 membersListAdapter.notifyDataSetChanged();
                 tvMemberCount.setText(members.size() + " người");

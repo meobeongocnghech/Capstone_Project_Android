@@ -127,7 +127,7 @@ public class PostAddActivity extends AppCompatActivity {
         btnLocation.setText("Chọn địa điểm");
         placeId = -1;
         typeId = 4;
-
+        tvPostUserName.setText(Session.getUser(getApplicationContext()).getFirstName()+ " " +Session.getUser(getApplicationContext()).getLastName());
         idUpdate = getIntent().getIntExtra("id", 0);
         if (idUpdate > 0) {
             edtTitlePost.setText(getIntent().getStringExtra("title"));

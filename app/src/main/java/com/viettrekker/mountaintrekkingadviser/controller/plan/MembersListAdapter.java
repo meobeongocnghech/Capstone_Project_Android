@@ -65,6 +65,8 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         viewHolder.member = users.get(i);
         viewHolder.token = token;
         viewHolder.userId = userId;
+        token = Session.getToken(context);
+        userId = Session.getUserId(context);
         mWebService.getUserById(token, viewHolder.member.getUserId()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -77,6 +79,8 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
             }
         });
         viewHolder.tvGenderItem.setText("Thành viên");
+        viewHolder.imgPhoneCall.setVisibility(View.INVISIBLE);
+        viewHolder.imgRemoveUser.setVisibility(View.INVISIBLE);
         if (userId == viewHolder.member.getUserId() && viewHolder.member.getRoleInGroupId() == 1){
             viewHolder.imgRemoveUser.setVisibility(View.INVISIBLE);
         }
@@ -89,6 +93,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         } else if(viewHolder.member.getRoleInGroupId() == 4){
             viewHolder.tvGenderItem.setText("Đang mời...");
             viewHolder.imgPhoneCall.setVisibility(View.GONE);
+            viewHolder.imgRemoveUser.setVisibility(View.INVISIBLE);
         }
         viewHolder.imgRemoveUser.setOnClickListener(new View.OnClickListener() {
             @Override

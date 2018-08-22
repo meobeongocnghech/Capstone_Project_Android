@@ -339,7 +339,7 @@ public class NewPlanActivity extends AppCompatActivity {
                     return;
                 } else {
                     check++;
-                    g.setName(edtPlanName.getText().toString());
+                    g.setName(edtPlanName.getText().toString().trim());
                 }
 
                 if (pickedSourceLocation && pickedDestinationLocation) {
@@ -488,6 +488,7 @@ public class NewPlanActivity extends AppCompatActivity {
 
     private ArrayList<SearchPlace> createSampleData() {
         ArrayList<SearchPlace> items = new ArrayList<>();
+        if (places != null)
         for (Place p : places) {
             items.add(new SearchPlace(p.getName(), p.getId()));
         }

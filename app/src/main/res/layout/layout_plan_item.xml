@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="105dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
@@ -20,7 +20,7 @@
             <View
                 android:id="@+id/viewStateColorLeft"
                 android:layout_width="5dp"
-                android:layout_height="100dp"
+                android:layout_height="110dp"
                 android:background="@color/colorPrimary"></View>
 
             <RelativeLayout
@@ -31,9 +31,10 @@
                 <TextView
                     android:id="@+id/tvPlanName"
                     android:fontFamily="@font/latomedium"
-                    android:layout_width="wrap_content"
+                    android:layout_width="250dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:maxLines="1"
                     android:text="Đi Ba Vì trải nghiệm 1 ngày"
                     android:textColor="@color/colorGray"
                     android:textSize="14dp"
@@ -80,7 +81,8 @@
                     <TextView
                         android:id="@+id/tvStartPlan"
                         android:fontFamily="@font/latoregular"
-                        android:layout_width="wrap_content"
+                        android:layout_width="90dp"
+                        android:maxLines="1"
                         android:layout_height="wrap_content"
                         android:text="20/10/2018"
                         android:layout_marginLeft="3dp"
@@ -97,8 +99,9 @@
                     <TextView
                         android:id="@+id/tvStartLoc"
                         android:fontFamily="@font/latomedium"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:layout_marginLeft="2dp"
                         android:text="Thạch Thất, Hà Nội"
                         android:textColor="@color/colorLightGray"
@@ -148,6 +151,19 @@
                         android:fontFamily="@font/latomedium"
                         android:gravity="center"
                         android:text="3 ngày"
+                        android:textColor="@color/colorGray"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvRequestJoin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/roun_rect_orange"
+                        android:fontFamily="@font/latomedium"
+                        android:gravity="center"
+                        android:text="Xin vào"
                         android:textColor="@color/colorGray"
                         android:textSize="10sp"
                         android:textStyle="bold" />

@@ -70,6 +70,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     public void onBindViewHolder(@NonNull CommentChildrenAdapter.ViewHolder viewHolder, int i) {
         Comment comment = list.get(i);
         User user = comment.getUser();
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
@@ -163,7 +164,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         if (menuItem.getTitle().equals("Báo cáo")){
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                             alertDialogBuilder.setTitle("Báo cáo bài viết");
                             EditText edtRP = new EditText(context);
                             edtRP.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -204,7 +204,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                             alertDialog.show();
                         } else
                         if (accountUserId == user.getId()){
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn có muốn xóa bình luận?")
                                         .setCancelable(false)
@@ -236,7 +235,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                 alertDialog.show();
                             } else
                             if (menuItem.getTitle().equals("Xóa") ){
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bình luận của mình.")
                                         .setCancelable(false)

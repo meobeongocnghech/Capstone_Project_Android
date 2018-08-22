@@ -274,12 +274,27 @@ public interface APIService {
                              @Field("commentId") int commentId,
                            @Field("content") String content);
 
-    @Multipart
-    @POST("upload")
-    Call<ResponseBody> uploadMultipleFilesDynamic(
-            @Part("description") RequestBody description,
-            @Part List<MultipartBody.Part> files);
+
 
     @POST("auth/token")
     Call<User> validToken(@Header("AUTH_TOKEN_ID") String token);
+
+    @FormUrlEncoded
+    @POST("plan/invite")
+    Call<Plan> invitePlan(@Header("AUTH_TOKEN_ID") String token,
+                          @Field("id") int id,
+                          @Field("userId") int userId,
+                          @Field("carry") int carry,
+                          @Field("vehicule") String vehicule,
+                          @Field("sosDelay") int sosDelay);
+
+    @FormUrlEncoded
+    @POST("plan/invite/approve")
+    Call<Plan> approveInvitation(@Header("AUTH_TOKEN_ID") String token,
+                          @Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("plan/invite/reject")
+    Call<Plan> rejectInvitation(@Header("AUTH_TOKEN_ID") String token,
+                                 @Field("id") int id);
 }
