@@ -113,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/linear"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="15dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -124,6 +124,7 @@
                         android:layout_marginLeft="20dp"
                         android:background="@drawable/roun_rect_lightgray"
                         android:gravity="center"
+                        android:maxLines="1"
                         android:text="Cuong Dang"
                         android:textColor="@color/colorGray"
                         android:textSize="10sp"
@@ -138,6 +139,7 @@
                         android:fontFamily="@font/latomedium"
                         android:gravity="center"
                         android:text="5 thành viên"
+                        android:maxLines="1"
                         android:textColor="@color/colorGray"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -153,17 +155,19 @@
                         android:text="3 ngày"
                         android:textColor="@color/colorGray"
                         android:textSize="10sp"
+                        android:maxLines="1"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvRequestJoin"
                         android:layout_width="wrap_content"
                         android:layout_height="25dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="30dp"
                         android:background="@drawable/roun_rect_orange"
                         android:fontFamily="@font/latomedium"
                         android:gravity="center"
                         android:text="Xin vào"
+                        android:maxLines="1"
                         android:textColor="@color/colorGray"
                         android:textSize="10sp"
                         android:textStyle="bold" />

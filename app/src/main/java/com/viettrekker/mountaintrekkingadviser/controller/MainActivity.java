@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
         TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
         ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+
 
         btnAddNew.setOnClickListener(new View.OnClickListener() {
             @Override

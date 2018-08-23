@@ -3,7 +3,9 @@ package com.viettrekker.mountaintrekkingadviser.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Member {
+import java.util.Comparator;
+
+public class Member{
     @SerializedName("userId")
     @Expose
     private int userId;
@@ -22,6 +24,15 @@ public class Member {
     @SerializedName("carry")
     @Expose
     private int carry;
+    @SerializedName("phone")
+    @Expose
+    private int phone;
+    @SerializedName("firstname")
+    @Expose
+    private String firstname;
+    @SerializedName("lastname")
+    @Expose
+    private String lastname;
 
 
     public int getUserId() {
@@ -64,4 +75,38 @@ public class Member {
     public void setCarry(int carry) {
         this.carry = carry;
     }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getPhone() {
+        return phone;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+
 }

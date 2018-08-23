@@ -78,6 +78,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         APIService mWebService = APIUtils.getWebService();
         Plan plan = listPlan.get(i);
+        boolean reqFlag = false;
 
         if (i == listPlan.size() - 1 && !stopLoad) {
             ((PlanFragment) fragment).showProgress();
@@ -104,8 +105,41 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 }
             });
         }
+        viewHolder.tvRequestJoin.setVisibility(View.GONE);
+        List<Member> mem = plan.getGroup().getMembers();
+        for (Member me: mem) {
+            if (me.getUserId() == Session.getUserId(context)){
+                reqFlag = true;
+            }
+        }
+        if (!reqFlag)
+            viewHolder.tvRequestJoin.setVisibility(View.VISIBLE);
 
+        viewHolder.tvRequestJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                mWebService.requestJoin(token, plan.getId()).enqueue(new Callback<Plan>() {
+                    @Override
+                    public void onResponse(Call<Plan> call, Response<Plan> response) {
+                        if (response.code() == 200){
+                            Intent intent = new Intent(context,PlanDetailActivity.class);
+                            intent.putExtra("id", plan.getId());
+                            intent.putExtra("token", token);
+                            intent.putExtra("userId", Session.getUserId(((PlanFragment) fragment).getActivity()));
+                            context.startActivity(intent);
+                        } else {
+                            Toast.makeText(context,"Thao tác không thành công, vui lòng thử lại sau", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Plan> call, Throwable t) {
+                        Toast.makeText(context,"Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
         if (plan.getState() == 0){
             viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
             viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));

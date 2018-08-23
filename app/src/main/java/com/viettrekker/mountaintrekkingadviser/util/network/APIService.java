@@ -297,4 +297,47 @@ public interface APIService {
     @POST("plan/invite/reject")
     Call<Plan> rejectInvitation(@Header("AUTH_TOKEN_ID") String token,
                                  @Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("plan/request")
+    Call<Plan> requestJoin(@Header("AUTH_TOKEN_ID") String token,
+                                @Field("id") int id);
+
+    @GET("plan/paging")
+    Call<List<Plan>> getListPlanIsPublic(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("page") int page,
+                                 @Query("pageSize") int pageSize,
+                                 @Query("orderBy") String orderBy,
+                                 @Query("isPublic") int isPublic);
+
+    @FormUrlEncoded
+    @POST("plan/member/quit")
+    Call<Plan> quitPlan(@Header("AUTH_TOKEN_ID") String token,
+                           @Field("id") int id);
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "plan", hasBody = true)
+    Call<Plan> removePlan(@Header("AUTH_TOKEN_ID") String token,
+                        @Field("id") int id);
+
+    @FormUrlEncoded
+    @POST("plan/kick")
+    Call<Plan> kickMember(@Header("AUTH_TOKEN_ID") String token,
+                        @Field("id") int id,
+                          @Field("userId") int userId);
+
+    @FormUrlEncoded
+    @PUT("plan/member/update")
+    Call<Plan> updateTraffic(@Header("AUTH_TOKEN_ID") String token,
+                          @Field("id") int id,
+                          @Field("sosDelay") int sosDelay,
+                             @Field("vehicule") String vehicule,
+                             @Field("carry") int carry);
+
+    @FormUrlEncoded
+    @POST("plan/request/approve")
+    Call<Plan> approveRequest(@Header("AUTH_TOKEN_ID") String token,
+                          @Field("id") int id,
+                          @Field("userId") int userId);
+
 }

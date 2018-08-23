@@ -202,7 +202,7 @@ public class PostAddActivity extends AppCompatActivity {
                     builder.addFormDataPart("content", edtContent.getText().toString());
 
                     Gson gson = new Gson();
-                    builder.addFormDataPart("description", gson.toJson(d));
+                    builder.addFormDataPart("direction", gson.toJson(d));
 
                     for (String s : imageAddAdapter.getListImg()) {
                         File file = new File(s);
