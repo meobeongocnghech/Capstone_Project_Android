@@ -22,6 +22,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -29,6 +30,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -253,6 +255,15 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                 popupMenu.show();
             }
         });
+
+        if (user.getAvatar() != null && !user.getAvatar().getPath().isEmpty()) {
+            GlideApp.with(viewHolder.itemView)
+                    .load(comment.getUser().getAvatar().getPath())
+                    .fallback(R.drawable.avatar_default)
+                    .placeholder(R.drawable.avatar_default)
+                    .into(viewHolder.imgAvtCmt);
+        }
+
         viewHolder.imgAvtCmt.setOnClickListener((v) -> eventViewProfile(user));
         viewHolder.tvUserCmt.setOnClickListener((v) -> eventViewProfile(user));
     }

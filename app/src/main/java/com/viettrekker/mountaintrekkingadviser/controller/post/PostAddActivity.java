@@ -86,6 +86,7 @@ public class PostAddActivity extends AppCompatActivity {
     MaterialButton btnPost;
     ArrayList<Place> places;
     ImageAddAdapter imageAddAdapter;
+    ImageView imgPostAvatar;
     int typeId;
     APIService mWebService = APIUtils.getWebService();
     int placeId;
@@ -108,6 +109,7 @@ public class PostAddActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatar);
         btnPost = (MaterialButton) findViewById(R.id.btnPost);
         tvPostUserName = (TextView) findViewById(R.id.tvPostUserName);
         spnCategory = (Spinner) findViewById(R.id.spnCategory);
@@ -122,6 +124,15 @@ public class PostAddActivity extends AppCompatActivity {
 
         imageAddAdapter = new ImageAddAdapter();
         imageAddAdapter.setContext(this);
+
+        if (!Session.getAvatarPath(this).isEmpty()) {
+            GlideApp.with(this)
+                    .load(APIUtils.BASE_URL_API + Session.getAvatarPath(this).substring(4))
+                    .apply(RequestOptions.circleCropTransform())
+                    .fallback(R.drawable.avatar_default)
+                    .placeholder(R.drawable.avatar_default)
+                    .into(imgPostAvatar);
+        }
 
         places = new ArrayList<>();
         btnLocation.setText("Chọn địa điểm");

@@ -34,7 +34,7 @@
             android:paddingLeft="5dp"
             android:popupBackground="@android:color/white"
             android:spinnerMode="dropdown"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <View

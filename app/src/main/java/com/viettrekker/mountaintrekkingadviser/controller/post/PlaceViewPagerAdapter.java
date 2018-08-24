@@ -38,6 +38,10 @@ public class PlaceViewPagerAdapter extends FragmentPagerAdapter {
         token = Session.getToken(((PagePlaceFragment) currentFragment).getActivity());
     }
 
+    public Fragment getCurrentFragment() {
+        return currentFragment;
+    }
+
     public PlaceViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }

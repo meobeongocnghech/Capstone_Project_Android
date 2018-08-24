@@ -117,9 +117,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             vh.context = context;
             vh.user = users.get(i);
 
-            if (users.get(i).getGallery() != null) {
+            if (!users.get(i).getAvatar().getPath().isEmpty()) {
                 GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + users.get(i).getGallery().getMedia().get(0).getPath().substring(4))
+                        .load(APIUtils.BASE_URL_API + users.get(i).getAvatar().getPath().substring(4))
                         .centerCrop()
                         .fallback(R.drawable.avatar_default)
                         .placeholder(R.drawable.avatar_default)
@@ -156,9 +156,9 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             vh.context = context;
             vh.post = posts.get(i);
 
-            if (posts.get(i).getUser().getGallery() != null) {
+            if (posts.get(i).getUser().getAvatar() != null && !posts.get(i).getUser().getAvatar().getPath().isEmpty()) {
                 GlideApp.with(context)
-                        .load(APIUtils.BASE_URL_API + posts.get(i).getUser().getGallery().getMedia().get(0).getPath().substring(4))
+                        .load(APIUtils.BASE_URL_API + posts.get(i).getUser().getAvatar().getPath().substring(4))
                         .centerCrop()
                         .placeholder(R.drawable.avatar_default)
                         .fallback(R.drawable.avatar_default)

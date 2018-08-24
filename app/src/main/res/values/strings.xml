@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mountain Trekking Adviser</string>
+    <string name="app_name">Mountain Trekking Advisor</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
@@ -17,6 +17,26 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="pseudo_para">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</string>
+
+    <string name="policy">
+        <b>1. Dịch vụ của chúng tôi</b>\n\nChúng tôi mang đến cho bạn ứng dụng <b>MTA</b>, một ứng dụng hỗ trợ cộng đồng phượt và leo núi với các chức năng chia sẻ trong cộng đồng và xây dựng cũng như theo dõi kế hoạch nhằm giúp chuyến đi của bạn đạt hiệu quả cao hơn.\n\n
+        <b>2. Chính sách dữ liệu và bảo mật</b>\n\nChúng tôi thu thập thông tin về <u>ngày sinh</u>, <u>tên</u> và <u>số điện thoại</u> của bạn nhằm đem lại sự hiệu quả trong quản lý và nâng cao độ tin cậy của cộng đồng.
+        \n\n<u>Tên</u> của bạn được công khai bởi tất cả người sử dụng MTA.
+        \n<u>Ngày sinh</u> của bạn được hoàn toàn giữ bí mật.
+        \n<u>Số điện thoại</u> của bạn sẽ được chia sẻ với các thành viên trong nhóm khi bạn tham gia bất kì một kế hoạch nào đã được tạo.\n\n
+        <b>3. Quyền hạn của bạn</b>\n\n
+        <u>Quyền hạn</u>: Bạn có quyền sử dụng tất cả chức năng như một người dùng bình thường sau khi đã đăng ký tài khoản bao gồm:\n
+        - Xem các thông tin về địa điểm thuộc cơ sở dữ liệu của chúng tôi.\n
+        - Được tham gia viết bài và bình luận theo các mục thảo luận và từng địa điểm.\n
+        - Báo cáo các hành vi không chuẩn mực giữa các thành viên trong cộng đồng thông qua hình thức tố cáo bình luận và bài viết.\n
+        - Lập lịch và lên kế hoạch cho chuyến đi của bạn.\n
+        - Được phép xem tất cả các kế hoạch đang công khai và đăng ký tham gia.\n
+        - Mời bất kỳ thành viên nào không bị khóa tài khoản vào kế hoạch của bản thân.\n\n
+        <b>4. Giới hạn trách nhiệm của chúng tôi</b>\n\nChúng tôi không chịu trách nhiệm giải quyết các vấn đề trong các trường hợp sau:\n
+        - Không giải quyết các mâu thuẫn ngoài phạm vi cộng đồng mạng như việc tố cáo các hành vi vi phạm pháp luật hay tranh chấp cá nhân.\n
+        - Không chịu trách nhiệm giải quyết các tổn hại thực tế của người sử dụng trong các chuyến đi.\n
+        - Không đảm bảo những thông tin người dùng đăng lên là hoàn toàn đúng sự thật ngoài nhưng thông tin do chính chúng tôi cung cấp như thông tin, địa chỉ và nhứng thống kê trên ứng dụng về địa điểm.\n
+    </string>
 
     <string-array name="category">
         <item>Chuyên mục khác</item>
@@ -73,4 +93,7 @@
     <string name="title_checklist">Danh sách đầu việc</string>
     <string name="title_timelines">Thời gian biểu</string>
     <string name="title_add_post">Tạo bài viết</string>
+    <string name="title_post_detail">Bài viết</string>
+    <string name="title_settings">Tùy chỉnh</string>
+    <string name="hint_new_password">Mật khẩu mới</string>
 </resources>

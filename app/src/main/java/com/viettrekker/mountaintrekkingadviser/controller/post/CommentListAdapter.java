@@ -24,6 +24,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -31,6 +33,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
@@ -108,6 +111,15 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
             cmtChild.notifyDataSetChanged();
             viewHolder.rcvCmtItem.setAdapter(cmtChild);
         }
+
+        if (comment.getUser().getAvatar() != null && !comment.getUser().getAvatar().getPath().isEmpty()) {
+            GlideApp.with(viewHolder.itemView)
+                    .load(comment.getUser().getAvatar().getPath())
+                    .fallback(R.drawable.avatar_default)
+                    .placeholder(R.drawable.avatar_default)
+                    .into(viewHolder.imgAvtCmt);
+        }
+
         viewHolder.rcvCmtItem.setVisibility(View.GONE);
         viewHolder.cmtCount.setText(comment.getChildren().size() == 0 ? "" : comment.getChildren().size()+"");
         viewHolder.imgAvtCmt.setOnClickListener((v) -> eventViewProfile(user));

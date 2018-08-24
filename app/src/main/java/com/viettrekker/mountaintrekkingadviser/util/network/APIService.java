@@ -95,6 +95,13 @@ public interface APIService {
                                  @Query("orderBy") String orderBy,
                                  @Query("order") String order);
 
+    @GET("post/paging")
+    Call<List<Post>> getPostPageByPlaceId(@Header("AUTH_TOKEN_ID") String token,
+                                 @Query("page") int page,
+                                 @Query("pageSize") int size,
+                                 @Query("placeId") int id,
+                                 @Query("order") String order);
+
     @GET("member/post")
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,
                                          @Query("userId") int id,

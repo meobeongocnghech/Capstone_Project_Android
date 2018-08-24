@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationAdapter;
@@ -26,6 +27,7 @@ import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberA
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
@@ -45,6 +47,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
     private Context context;
     private String token;
     private int userId;
+    private int userRole;
     private int planId;
 
     APIService mWebService = APIUtils.getWebService();
@@ -63,6 +66,11 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
 
     public void setUsers(List<Member> users) {
         this.users = users;
+        for (Member u : users) {
+            if (u.getUserId() == userId) {
+                userRole = u.getRoleInGroupId();
+            }
+        }
     }
 
     public MembersListAdapter(Context context) {
@@ -99,28 +107,78 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         alertDialogBuilder = new AlertDialog.Builder(context);
         viewHolder.tvNameItem.setText(viewHolder.member.getFirstname() + " " + viewHolder.member.getLastname());
 
-        viewHolder.tvGenderItem.setText("Thành viên");
-        viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
-        viewHolder.imgRemoveUser.setVisibility(View.GONE);
-        viewHolder.imgApproveRequest.setVisibility(View.GONE);
-        if (userId == viewHolder.member.getUserId()) {
-            viewHolder.imgPhoneCall.setVisibility(View.GONE);
+        mWebService.getUserById(token, viewHolder.member.getUserId()).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                           viewHolder.tvNameItem.setText(response.body().getFirstName() + " " + response.body().getLastName());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+//                Toast.makeText(MembersListAdapter.this,t.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+        if (!users.get(i).getAvatar().getPath().isEmpty()) {
+            GlideApp.with(viewHolder.itemView)
+                    .load(users.get(i).getAvatar().getPath().substring(4))
+                    .fallback(R.drawable.avatar_default)
+                    .placeholder(R.drawable.avatar_default)
+                    .into(viewHolder.imgAvtItem);
         }
-            if (viewHolder.member.getRoleInGroupId() == 4) {
-            viewHolder.imgPhoneCall.setVisibility(View.INVISIBLE);
-            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-            viewHolder.tvGenderItem.setText("Đang mời...");
-        } else if (viewHolder.member.getRoleInGroupId() == 5) {
-            viewHolder.tvGenderItem.setText("Yêu cầu tham gia");
-            viewHolder.imgPhoneCall.setVisibility(View.GONE);
-            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-            viewHolder.imgApproveRequest.setVisibility(View.VISIBLE);
-        } else if (viewHolder.member.getRoleInGroupId() == 3) {
-            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-        } else if (viewHolder.member.getRoleInGroupId() == 1) {
-            viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
-            viewHolder.tvGenderItem.setText("Trưởng đoàn");
+
+        switch (viewHolder.member.getRoleInGroupId()) {
+            case 1:
+                viewHolder.tvGenderItem.setText("Trưởng đoàn");
+                if (userRole != 1) {
+                    viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
+                }
+                break;
+            case 3:
+                viewHolder.tvGenderItem.setText("Thành viên");
+                if (userRole == 1) {
+                    viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
+                    viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+                } else if (userRole == 3 && users.get(i).getUserId() != userId) {
+                    viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
+                }
+                break;
+            case 4:
+                viewHolder.tvGenderItem.setText("Đang mời...");
+                if (userRole == 1) {
+                    viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+                }
+                break;
+            case 5:
+                viewHolder.tvGenderItem.setText("Yêu cầu tham gia");
+                if (userRole == 1) {
+                    viewHolder.imgApproveRequest.setVisibility(View.VISIBLE);
+                    viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+                }
+                break;
         }
+
+//        viewHolder.tvGenderItem.setText("Thành viên");
+//        viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
+//        viewHolder.imgRemoveUser.setVisibility(View.GONE);
+//        viewHolder.imgApproveRequest.setVisibility(View.GONE);
+//        if (userId == viewHolder.member.getUserId()) {
+//            viewHolder.imgPhoneCall.setVisibility(View.GONE);
+//        } else if (viewHolder.member.getRoleInGroupId() == 4) {
+//            viewHolder.imgPhoneCall.setVisibility(View.INVISIBLE);
+//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+//            viewHolder.tvGenderItem.setText("Đang mời...");
+//        } else if (viewHolder.member.getRoleInGroupId() == 5) {
+//            viewHolder.tvGenderItem.setText("Yêu cầu tham gia");
+//            viewHolder.imgPhoneCall.setVisibility(View.GONE);
+//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+//            viewHolder.imgApproveRequest.setVisibility(View.VISIBLE);
+//        } else if (viewHolder.member.getRoleInGroupId() == 3) {
+//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
+//        } else if (viewHolder.member.getRoleInGroupId() == 1) {
+//            viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
+//            viewHolder.tvGenderItem.setText("Trưởng đoàn");
+//        }
 
         viewHolder.imgPhoneCall.setOnClickListener((v) -> {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + String.format("0%d", viewHolder.member.getPhone()) ));

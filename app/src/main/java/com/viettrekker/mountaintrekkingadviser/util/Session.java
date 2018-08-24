@@ -42,7 +42,7 @@ public class Session {
         editor.putInt("userId", user.getId());
         editor.putString("firstname", user.getFirstName());
         editor.putString("lastname", user.getLastName());
-        editor.putString("avatar", user.getGallery().getMedia().get(0).getPath());
+        editor.putString("avatar", user.getAvatar().getPath());
         editor.putString("email", user.getEmail());
         editor.commit();
     }
@@ -61,6 +61,7 @@ public class Session {
         medias.add(media);
         gallery.setMedia(medias);
         user.setGallery(gallery);
+        user.setAvatar(media);
         return user;
     }
 
@@ -74,5 +75,10 @@ public class Session {
     public static String getEmail(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPreferences.getString("email", "");
+    }
+
+    public static String getAvatarPath(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPreferences.getString("avatar", "");
     }
 }

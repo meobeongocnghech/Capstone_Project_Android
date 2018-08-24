@@ -22,6 +22,11 @@ public class ProfileMemberPostAdapter extends FragmentPagerAdapter {
     private int userId;
     NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
     ProfileOwnFragment profileOwnFragment = new ProfileOwnFragment();
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public void setByUserId(boolean byUserId) {
         isByUserId = byUserId;
@@ -42,6 +47,7 @@ public class ProfileMemberPostAdapter extends FragmentPagerAdapter {
                 if (isByUserId) {
                     newsFeedFragment.setByUserId(isByUserId);
                     newsFeedFragment.setUserId(userId);
+                    newsFeedFragment.setToken(token);
                 }
                 return newsFeedFragment;
             case 1:

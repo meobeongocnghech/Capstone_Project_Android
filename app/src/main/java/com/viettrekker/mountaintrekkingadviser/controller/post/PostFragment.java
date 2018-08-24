@@ -48,6 +48,13 @@ public class PostFragment extends Fragment {
     private NestedScrollView layout;
     private SwitchCompat switchView;
     private ProgressBar progress;
+    private NewsFeedFragment newsFeedFragment;
+    private PagePlaceFragment placeFragment;
+
+    public PostFragment() {
+        newsFeedFragment = new NewsFeedFragment();
+        placeFragment = new PagePlaceFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,10 +77,12 @@ public class PostFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
+                    hideProgress();
                     loadPlaceData();
                     ((MainActivity) getActivity()).setTitle("Địa điểm");
                     loadChipAnimation(chip, "Địa điểm");
                 } else {
+                    showProgress();
                     loadNewsfeedData();
                     ((MainActivity) getActivity()).setTitle("Bảng tin");
                     loadChipAnimation(chip, "Bảng tin");
@@ -98,7 +107,7 @@ public class PostFragment extends Fragment {
 
     private void loadPlaceData() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        PagePlaceFragment placeFragment = new PagePlaceFragment();
+        placeFragment.setToken(Session.getToken(getActivity()));
 
         fragmentTransaction.replace(R.id.postFragment, placeFragment, "place");
         fragmentTransaction.commitAllowingStateLoss();
@@ -106,8 +115,8 @@ public class PostFragment extends Fragment {
 
     private void loadNewsfeedData() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
         newsFeedFragment.setUserId(Session.getUserId(getActivity()));
+        newsFeedFragment.setToken(Session.getToken(getActivity()));
 
         fragmentTransaction.replace(R.id.postFragment, newsFeedFragment, "newsfeed");
         fragmentTransaction.commitAllowingStateLoss();
@@ -137,6 +146,7 @@ public class PostFragment extends Fragment {
             hideProgress();
         } else {
             loadNewsfeedData();
+            showProgress();
         }
     }
 

@@ -308,6 +308,7 @@ public class MainActivity extends AppCompatActivity
                     user.setFirstName(response.body().getFirstName());
                     user.setLastName(response.body().getLastName());
                     user.setGallery(response.body().getGallery());
+                    user.setAvatar(response.body().getAvatar());
                 }
 
                 View header = navigationView.getHeaderView(0);
@@ -315,17 +316,17 @@ public class MainActivity extends AppCompatActivity
                 TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
                 ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
 
-                if (user.getGallery() != null && !user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+                if (!user.getAvatar().getPath().isEmpty()) {
 
                     GlideApp.with(MainActivity.this)
-                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .load(APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(56, MainActivity.this))
                             .placeholder(getDrawable(R.drawable.avatar_default))
                             .fallback(getDrawable(R.drawable.avatar_default))
                             .apply(RequestOptions.circleCropTransform())
                             .into(imgAvatar);
 
                     GlideApp.with(MainActivity.this)
-                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
+                            .load(APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(56, MainActivity.this))
                             .placeholder(getDrawable(R.drawable.avatar_default))
                             .fallback(getDrawable(R.drawable.avatar_default))
                             .apply(RequestOptions.circleCropTransform())
@@ -343,7 +344,7 @@ public class MainActivity extends AppCompatActivity
                 TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
                 ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
 
-                if (user.getGallery() != null && user.getGallery().getMedia().get(0).getPath().isEmpty()) {
+                if (!user.getAvatar().getPath().isEmpty()) {
 
                     GlideApp.with(MainActivity.this)
                             .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + LocalDisplay.dp2px(80, MainActivity.this))
@@ -373,6 +374,7 @@ public class MainActivity extends AppCompatActivity
 
         MenuItem item1 = navigationView.getMenu().findItem(R.id.nav_profile);
         MenuItem item2 = navigationView.getMenu().findItem(R.id.nav_logout);
+        MenuItem item3 = navigationView.getMenu().findItem(R.id.nav_setting);
 
         if (item.equals(item1)) {
             Intent i = new Intent(this, ProfileMemberActivity.class);
@@ -389,6 +391,9 @@ public class MainActivity extends AppCompatActivity
             Session.clearSession(this);
             Intent intent = new Intent(this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        } else if (item.equals(item3)) {
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         }
         return false;

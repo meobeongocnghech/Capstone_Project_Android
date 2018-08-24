@@ -187,7 +187,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 btnGender.setTextColor(Color.parseColor("#00c853"));
 
                 btnChangeProfile.setText("Lưu chỉnh sửa");
-                final ColorStateList stateList = new ColorStateList(
+                ColorStateList stateList = new ColorStateList(
                         new int[][]{{}}, new int[]{Color.parseColor("#00c853")});
                 btnChangeProfile.setBackgroundTintList(stateList);
                 btnChangeProfile.setTextColor(Color.parseColor("#ffffff"));

@@ -61,6 +61,27 @@ public class PlacePageLayoutFragment extends Fragment {
     private TextView tvPlaceTotalPlan;
     private TextView tvPlaceDescription;
 
+    private String address;
+    private String distance;
+    private String total;
+    private String description;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public ImageView getImgCover() {
         return imgCover;
     }
@@ -117,8 +138,10 @@ public class PlacePageLayoutFragment extends Fragment {
 
 
     private void bindData(View view) {
-        String distance ="Chưa rõ";
-        String addressName = "Chưa rõ";
+        distance ="Chưa rõ";
+        address = "Chưa rõ";
+        description = place.getDescription();
+        total = "Chưa rõ";
         LocationManager location;
         Geocoder geoCoder = new Geocoder(getContext());
         double lat = place.getLocation().getLatitude();
@@ -129,10 +152,10 @@ public class PlacePageLayoutFragment extends Fragment {
         try {
             List<Address> list = geoCoder.getFromLocation(lat, lng, 1);
             if (list.isEmpty()) {
-                addressName = "Chưa có";
+                address = "Chưa có";
             } else {
-                String address = list.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                addressName = address;
+                String rsAddress = list.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                address = rsAddress;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,7 +172,7 @@ public class PlacePageLayoutFragment extends Fragment {
         }
         tvPlaceDistance.setText(distance);
         tvPlaceName.setText(place.getName());
-        tvPlaceAddress.setText(addressName);
+        tvPlaceAddress.setText(address);
         tvPlaceTotalPlan.setText("Chưa rõ");
         tvPlaceDescription.setText(place.getDescription());
 

@@ -40,6 +40,10 @@ public class NewsFeedFragment extends Fragment {
         this.userId = userId;
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,12 +52,11 @@ public class NewsFeedFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        token = Session.getToken(getActivity());
         RecyclerView rcvNewsFeed = view.findViewById(R.id.rcvNewsFeed);
         LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getContext());
         rcvNewsFeed.setLayoutManager(mLayoutManager);
-        adapter = new NewsFeedAdapter(getContext(), this);
+        adapter = new NewsFeedAdapter(getContext(), this, token);
         initLoad(adapter);
         rcvNewsFeed.setAdapter(adapter);
     }

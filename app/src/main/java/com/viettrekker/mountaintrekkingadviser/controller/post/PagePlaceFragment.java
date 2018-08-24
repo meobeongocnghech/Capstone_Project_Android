@@ -11,17 +11,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.fitness.data.Session;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.util.zip.Inflater;
 
 public class PagePlaceFragment extends Fragment {
+
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @Nullable
     @Override
@@ -55,9 +61,13 @@ public class PagePlaceFragment extends Fragment {
             Place place = placeAdapter.getPlaceItem(viewPager.getCurrentItem());
             Intent i = new Intent(getActivity(), PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
-            i.putExtra("token", com.viettrekker.mountaintrekkingadviser.util.Session.getToken(getActivity()));
+            i.putExtra("token", token);
             i.putExtra("name", place.getName());
             i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
+            i.putExtra("address", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getAddress());
+            i.putExtra("distance", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getDistance());
+            i.putExtra("total", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getTotal());
+            i.putExtra("description", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getDescription());
             startActivity(i);
         });
     }

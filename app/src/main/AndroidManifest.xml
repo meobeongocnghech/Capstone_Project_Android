@@ -57,7 +57,7 @@
         <activity android:name=".controller.plan.NewPlanActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity android:name=".controller.search.FullSearchActivity"/>
-
+        <activity android:name=".controller.SettingsActivity"/>
     </application>
 
     <meta-data

@@ -1,12 +1,14 @@
 package com.viettrekker.mountaintrekkingadviser.controller.profile;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
-import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.support.design.card.MaterialCardView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -120,7 +123,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
         final ProgressDialog progressDialog = new ProgressDialog(this, R.style.DialogStyle);
         progressDialog.setCancelable(false);
         progressDialog.show();
-
+        APIService mWebService = APIUtils.getWebService();
         mWebService.getUserById(token, id).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -142,7 +145,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                         email = "";
                     }
                     viewProfile = getIntent().getBooleanExtra("viewProfile", false);
-                    avatar = user.getGallery() != null ? APIUtils.BASE_URL_API + user.getGallery().getMedia().get(0).getPath().substring(4) : "";
+                    avatar = user.getAvatar().getPath().isEmpty() ? "" : APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4);
 
                     init();
                     loadData();
@@ -237,6 +240,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     private void loadData() {
         adapter = new ProfileMemberPostAdapter(getSupportFragmentManager());
+        adapter.setToken(Session.getToken(this));
         adapter.setByUserId(true);
         adapter.setUserId(id);
         profileViewpager.setAdapter(adapter);
@@ -283,6 +287,25 @@ public class ProfileMemberActivity extends AppCompatActivity {
                 .into(profileAvatarImage);
 
         addImage.setOnClickListener((v) -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileMemberActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(ProfileMemberActivity.this,
+                            new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            3);
+
+                } else {
+                    ActivityCompat.requestPermissions(ProfileMemberActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            3);
+                }
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             Intent intent = new Intent(this, Gallery.class);
             // Set the title
             intent.putExtra("title", "Chọn một ảnh");

@@ -34,6 +34,9 @@ public class Member{
     @Expose
     private String lastname;
 
+    @SerializedName("avatar")
+    @Expose
+    private MyMedia avatar;
 
     public int getUserId() {
         return userId;
@@ -108,5 +111,12 @@ public class Member{
         this.lastname = lastname;
     }
 
+    public MyMedia getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(MyMedia avatar) {
+        this.avatar = avatar;
+    }
 
 }

@@ -54,7 +54,7 @@ public class PlanFragment extends Fragment {
     public  void initLoad(){
         APIService mWebService = APIUtils.getWebService();
         showProgress();
-        mWebService.getListPlan(Session.getToken(getActivity()), 1,10,"id").enqueue(new Callback<List<Plan>>() {
+        mWebService.getListPlanIsPublic(Session.getToken(getActivity()), 1,10,"id", 1).enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
                 List<Plan> plans = response.body();

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/settingsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:theme="@style/Toolbar"
+        app:title="@string/title_settings"
+        app:titleTextColor="@android:color/white"
+        app:titleTextAppearance="@style/ToolbarTitleTheme">
+
+    </android.support.v7.widget.Toolbar>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolbar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                app:cardUseCompatPadding="false">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Điều khoản sử dụng"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="16dp"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:paddingEnd="8dp" />
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnPolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="#00FFFFFF"
+                    android:padding="0dp"
+                    android:insetBottom="0dp"
+                    android:insetTop="0dp"
+                    android:layout_gravity="end"
+                    android:elevation="0dp"
+                    app:cornerRadius="0dp"/>
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/policyScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:visibility="gone">
+                <TextView
+                    android:id="@+id/tvPolicy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="8dp"
+                    android:visibility="gone"/>
+            </android.support.v4.widget.NestedScrollView>
+
+
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="2dp"
+                app:cardUseCompatPadding="false"
+                android:layout_marginTop="4dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Đổi mật khẩu"
+                    android:textSize="16sp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:paddingLeft="16dp"
+                    android:drawableEnd="@drawable/ic_arrow_down"
+                    android:paddingEnd="8dp"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnChangePwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    app:backgroundTint="#00FFFFFF"
+                    android:padding="0dp"
+                    android:insetBottom="0dp"
+                    android:insetTop="0dp"
+                    android:layout_gravity="end"
+                    android:elevation="0dp"
+                    app:cornerRadius="0dp"/>
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/changePwdLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/pwdLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="40dp"
+                    android:textColorHint="@color/colorTextFieldLabel"
+                    android:transitionGroup="true"
+                    app:hintEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextAppearance="@style/TextInputLayoutStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtPwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorGreyHint"
+                        android:hint="@string/hint_password"
+                        android:inputType="textEmailAddress"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/colorTextFieldInput"
+                        android:textCursorDrawable="@drawable/input_cursor"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/repwdLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="40dp"
+                    android:textColorHint="@color/colorTextFieldLabel"
+                    android:transitionGroup="true"
+                    app:hintEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextAppearance="@style/TextInputLayoutStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pwdLayout"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtRepassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorGreyHint"
+                        android:hint="@string/hint_repassword"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/colorTextFieldInput"
+                        android:textCursorDrawable="@drawable/input_cursor"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/newpwdLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="40dp"
+                    android:textColorHint="@color/colorTextFieldLabel"
+                    android:transitionGroup="true"
+                    app:hintEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextAppearance="@style/TextInputLayoutStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/repwdLayout"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtNewPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorGreyHint"
+                        android:hint="@string/hint_new_password"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/colorTextFieldInput"
+                        android:textCursorDrawable="@drawable/input_cursor"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/cbShowPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hint_show_password"
+                    android:layout_marginTop="10dp"
+                    android:textSize="13sp"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/colorTextFieldLabel"
+                    app:layout_constraintTop_toBottomOf="@id/newpwdLayout"
+                    app:layout_constraintStart_toStartOf="@id/newpwdLayout" />
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnChange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/newpwdLayout"
+                    app:layout_constraintEnd_toEndOf="@id/newpwdLayout"
+                    android:text="Đổi"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

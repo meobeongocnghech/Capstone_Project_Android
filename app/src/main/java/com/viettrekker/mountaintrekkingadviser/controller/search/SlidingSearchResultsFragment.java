@@ -29,6 +29,7 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.arlib.floatingsearchview.util.Util;
+import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
@@ -315,12 +316,13 @@ public class SlidingSearchResultsFragment extends BaseExampleFragment {
                     } else {
                         if (data.length == 2) {
                             leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
-                                    R.drawable.ic_search_black_24dp, null));
+                                    R.drawable.ic_account_circle_black_24dp, null));
                         } else {
                             GlideApp.with(getContext())
                                     .load(APIUtils.BASE_URL_API + data[1] + "&w=" + LocalDisplay.dp2px(60, getContext()))
                                     .fallback(R.drawable.ic_search_black_24dp)
                                     .placeholder(R.drawable.ic_search_black_24dp)
+                                    .apply(RequestOptions.circleCropTransform())
                                     .into(leftIcon);
                         }
                     }

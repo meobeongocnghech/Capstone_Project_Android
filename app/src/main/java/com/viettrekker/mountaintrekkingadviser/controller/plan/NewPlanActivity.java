@@ -215,7 +215,7 @@ public class NewPlanActivity extends AppCompatActivity {
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
                 places = response.body();
                 if (places != null)
-                places.remove(0);
+                    places.remove(0);
             }
 
             @Override
@@ -294,7 +294,7 @@ public class NewPlanActivity extends AppCompatActivity {
             new SlideDateTimePicker.Builder(getSupportFragmentManager())
                     .setListener(listener)
                     .setInitialDate(startDate.getTime())
-                    .setMinDate(new Date())
+                    .setMinDate(Calendar.getInstance().getTime())
                     .setMaxDate(maxDate)
                     .setIs24HourTime(false)
                     .setTheme(SlideDateTimePicker.HOLO_LIGHT)
@@ -304,12 +304,12 @@ public class NewPlanActivity extends AppCompatActivity {
         btnEndDateTime.setOnClickListener((v) -> {
             if (setStart) {
                 setEnd = true;
-                Date maxDate = startDate.getTime();
+                Date maxDate = new Date();
                 maxDate.setYear(maxDate.getYear() + 1);
                 new SlideDateTimePicker.Builder(getSupportFragmentManager())
                         .setListener(listener)
-                        .setInitialDate(startDate.getTime())
-                        .setMinDate(startDate.getTime())
+                        .setInitialDate(endDate.getTime())
+                        .setMinDate(Calendar.getInstance().getTime())
                         .setMaxDate(maxDate)
                         .setIs24HourTime(false)
                         .setTheme(SlideDateTimePicker.HOLO_LIGHT)

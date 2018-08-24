@@ -82,17 +82,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     int pageCount = 2;
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
     private boolean isByUserId = false;
+    private boolean isByPlaceId = false;
     private int userId;
+    private int placeId;
     private Context context;
     private int width;
     private Fragment fragment;
     private APIService mWebService = APIUtils.getWebService();
     private String token;
 
-    public NewsFeedAdapter(Context context, Fragment fragment) {
+    public NewsFeedAdapter(Context context, Fragment fragment, String token) {
         this.context = context;
         this.fragment = fragment;
-        token = Session.getToken(((NewsFeedFragment) fragment).getActivity());
+        this.token = token;
         this.width = LocalDisplay.getScreenWidth(context);
     }
 
@@ -106,6 +108,14 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
     public void setByUserId(boolean b) {
         isByUserId = b;
+    }
+
+    public void setByPlaceId(boolean byPlaceId) {
+        isByPlaceId = byPlaceId;
+    }
+
+    public void setPlaceId(int placeId) {
+        this.placeId = placeId;
     }
 
     @NonNull
@@ -138,9 +148,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
             viewHolder.tvPostCategory.setText(typPost);
         }
-        if (post.getUser().getGallery() != null && !post.getUser().getGallery().getMedia().get(0).getPath().isEmpty()) {
+        if (post.getUser().getAvatar() != null && !post.getUser().getAvatar().getPath().isEmpty()) {
             GlideApp.with(context)
-                    .load(APIUtils.BASE_URL_API + post.getUser().getGallery().getMedia().get(0).getPath().substring(4))
+                    .load(APIUtils.BASE_URL_API + post.getUser().getAvatar().getPath().substring(4))
                     .apply(RequestOptions.circleCropTransform())
                     .fallback(R.drawable.avatar_default)
                     .into(viewHolder.imgPostAvatar);
@@ -407,6 +417,28 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
                 }
             });
+        } else if (isByPlaceId) {
+            mWebService.getPostPageByPlaceId(token, pageCount++, 5, placeId, "DESC").enqueue(new Callback<List<Post>>() {
+                @Override
+                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                    List<Post> list = response.body();
+                    if (list != null) {
+                        list.remove(0);
+                        int lastPosition = listPost.size();
+                        for (Post p : list) {
+                            if (p.getState() != 1) {
+                                listPost.add(p);
+                            }
+                        }
+                        notifyItemRangeChanged(lastPosition, list.size());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Post>> call, Throwable t) {
+                    Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                }
+            });
         } else {
             mWebService.getPostPage(token, pageCount++, 5, "id", "DESC").enqueue(new Callback<List<Post>>() {
                 @Override
@@ -487,36 +519,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
             imgPostAvatar.setOnClickListener((v) -> eventViewProfile());
             tvPostUserName.setOnClickListener((v) -> eventViewProfile());
-            btnReadMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, PostDetailActivity.class);
-                    intent.putExtra("id", postId);
-                    intent.putExtra("token", token);
-                    intent.putExtra("isByUserId", isByUserId);
-                    context.startActivity(intent);
-                }
-            });
-            tvPostContent.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, PostDetailActivity.class);
-                    intent.putExtra("id", postId);
-                    intent.putExtra("token", token);
-                    intent.putExtra("isByUserId", isByUserId);
-                    context.startActivity(intent);
-                }
-            });
-            tvPostTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, PostDetailActivity.class);
-                    intent.putExtra("id", postId);
-                    intent.putExtra("token", token);
-                    intent.putExtra("isByUserId", isByUserId);
-                    context.startActivity(intent);
-                }
-            });
+            btnReadMore.setOnClickListener((v) -> eventViewPostDetail());
+            tvPostContent.setOnClickListener((v) -> eventViewPostDetail());
+            tvPostTitle.setOnClickListener((v) -> eventViewPostDetail());
+            singlePreview.setOnClickListener((v) -> eventViewPostDetail());
+            rcvImagePreview.setOnClickListener((v) -> eventViewPostDetail());
             btnPostComent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -659,6 +666,15 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
                 context.startActivity(i);
             }
+        }
+
+        private void eventViewPostDetail() {
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("id", postId);
+            intent.putExtra("token", token);
+            intent.putExtra("isByUserId", isByUserId);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 }

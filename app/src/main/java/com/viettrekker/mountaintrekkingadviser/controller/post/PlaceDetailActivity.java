@@ -14,10 +14,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 //import com.viettrekker.mountaintrekkingadviser.GlideApp;
+import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -25,7 +28,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
+import java.net.HttpURLConnection;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,6 +41,10 @@ public class PlaceDetailActivity extends AppCompatActivity {
     private RecyclerView rvGuide;
     private String title;
     private List<MyMedia> medias;
+    private TextView tvPlaceAddress;
+    private TextView tvPlaceDistance;
+    private TextView tvPlaceTotalPlan;
+    private TextView tvPlaceDescription;
     Place place;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +67,18 @@ public class PlaceDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        tvPlaceAddress = (TextView) findViewById(R.id.tvPlaceAddress);
+        tvPlaceAddress.setText(getIntent().getStringExtra("address"));
+        tvPlaceDistance = (TextView) findViewById(R.id.tvPlaceDistance);
+        tvPlaceDistance.setText(getIntent().getStringExtra("distance"));
+        tvPlaceTotalPlan = (TextView) findViewById(R.id.tvPlaceTotalPlan);
+        tvPlaceTotalPlan.setText(getIntent().getStringExtra("total"));
+        tvPlaceDescription = (TextView) findViewById(R.id.tvPlaceDescription);
+        tvPlaceDescription.setText(getIntent().getStringExtra("description"));
+
         rvGuide = (RecyclerView) findViewById(R.id.rvListGuide);
         rvGuide.setLayoutManager(new LinearLayoutManager(this));
-        NewsFeedAdapter adapter = new NewsFeedAdapter(getApplicationContext(), null);
-        rvGuide.setAdapter(adapter);
+        NewsFeedAdapter adapter = new NewsFeedAdapter(getApplicationContext(), null, Session.getToken(this));
 
         int id = getIntent().getIntExtra("id", 0 );
         String token = getIntent().getStringExtra("token");
@@ -85,11 +102,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
                 imgCover.requestLayout();
                 toolbarLayout.getLayoutParams().height = (int) (size.x * 1.5 / 3);
                 toolbarLayout.requestLayout();
-//                GlideApp.with(PlaceDetailActivity.this)
-//                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(getBaseContext()))
-//                        .fallback(R.drawable.default_background)
-//                        .placeholder(R.drawable.default_background)
-//                        .into(imgCover);
+                GlideApp.with(PlaceDetailActivity.this)
+                        .load(APIUtils.BASE_URL_API + medias.get(0).getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(getBaseContext()))
+                        .fallback(R.drawable.default_background)
+                        .placeholder(R.drawable.default_background)
+                        .into(imgCover);
             }
 
             @Override
@@ -97,6 +114,26 @@ public class PlaceDetailActivity extends AppCompatActivity {
 
             }
         });
+
+        adapter.setByPlaceId(true);
+        adapter.setPlaceId(id);
+        mWebService.getPostPageByPlaceId(token, 1, 5, id, "DESC").enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if (response.code() == HttpURLConnection.HTTP_OK && response.body() != null && !response.body().isEmpty()) {
+                    List<Post> list = response.body();
+                    list.remove(0);
+                    adapter.setListPost(list);
+                }
+                rvGuide.setAdapter(adapter);
+            }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+
+            }
+        });
+
 //        mWebService.searchPostSuggestion()
     }
 

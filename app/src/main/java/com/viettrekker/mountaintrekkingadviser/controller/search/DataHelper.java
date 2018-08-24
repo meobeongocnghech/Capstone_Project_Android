@@ -128,8 +128,8 @@ public class DataHelper {
                                             int i = 0;
                                             if (users != null)
                                             for (User user : users) {
+                                                suggestionList.add(new MySearchSuggestion(user.getFirstName() + " " + user.getLastName(),user.getAvatar().getPath().isEmpty() ? "" : user.getAvatar().getPath().substring(4) , user.getId()));
                                                 if (i == 2) break;
-                                                suggestionList.add(new MySearchSuggestion(user.getFirstName() + " " + user.getLastName(),user.getGallery() == null ? "" : user.getGallery().getMedia().get(0).getPath().substring(4) , user.getId()));
                                                 i++;
                                             }
 

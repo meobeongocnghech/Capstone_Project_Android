@@ -20,6 +20,12 @@ public class MyMedia {
     @SerializedName("caption")
     @Expose
     private String caption;
+    @SerializedName("width")
+    @Expose
+    private int width;
+    @SerializedName("height")
+    @Expose
+    private int height;
 
     public int getId() {
         return id;
@@ -51,6 +57,22 @@ public class MyMedia {
 
     public void setCaption(String caption) {
         this.caption = caption;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     @Override

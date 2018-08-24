@@ -30,6 +30,7 @@ import org.w3c.dom.Text;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +83,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
 
         if (i == listPlan.size() - 1 && !stopLoad) {
             ((PlanFragment) fragment).showProgress();
-            mWebService.getListPlan(token, page,10,"id").enqueue(new Callback<List<Plan>>() {
+            mWebService.getListPlanIsPublic(token, page,10,"id", 1).enqueue(new Callback<List<Plan>>() {
                 @Override
                 public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
                     List<Plan> plans = response.body();
@@ -140,22 +141,28 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 });
             }
         });
-        if (plan.getState() == 0){
-            viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
-            viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
-            viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-            viewHolder.tvStatePlan.setText("Sẵn sàng");
-        } else if (plan.getState() == 1){
-            viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorOrange));
-            viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorOrange));
-            viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorOrange));
-            viewHolder.tvStatePlan.setText("Đang diễn ra");
-        } else {
-            viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorGray));
-            viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorGray));
-            viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorGray));
-            viewHolder.tvStatePlan.setText("Đã hoàn thành");
+        try {
+            if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())){
+                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
+                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
+                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                viewHolder.tvStatePlan.setText("Sẵn sàng");
+            } else if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).after(Calendar.getInstance().getTime())
+                    && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
+                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorOrange));
+                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorOrange));
+                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorOrange));
+                viewHolder.tvStatePlan.setText("Đang diễn ra");
+            } else {
+                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorGray));
+                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorGray));
+                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorGray));
+                viewHolder.tvStatePlan.setText("Đã hoàn thành");
+            }
+        } catch (ParseException e) {
+
         }
+
         viewHolder.tvPlanName.setText(plan.getGroup().getName());
         try {
             viewHolder.tvStartPlan.setText(DateTimeUtils.parseStringDate(DateTimeUtils.changeTimeToLocale(plan.getStartTime())));
@@ -169,7 +176,7 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                 intent.putExtra("id", plan.getId());
                 intent.putExtra("token", token);
                 intent.putExtra("userId", Session.getUserId(((PlanFragment) fragment).getActivity()));
-                context.startActivity(intent);
+                ((PlanFragment) fragment).getActivity().startActivityForResult(intent, 10);
             }
         });
         mWebService.getPlaceById(token, plan.getDirection().getPlaceId()).enqueue(new Callback<Place>() {

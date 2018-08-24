@@ -109,8 +109,7 @@
                 app:cardCornerRadius="5dp"
                 app:layout_constraintBottom_toBottomOf="@id/profile_cover"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:visibility="gone">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -130,7 +129,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="--"
+                            android:text="70"
                             android:textColor="@color/colorPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -157,7 +156,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="--"
+                            android:text="10"
                             android:textColor="@color/colorPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -182,7 +181,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="--"
+                            android:text="5"
                             android:textColor="@color/colorPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
