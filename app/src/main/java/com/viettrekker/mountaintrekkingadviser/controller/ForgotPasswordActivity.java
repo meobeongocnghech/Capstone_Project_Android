@@ -1,13 +1,10 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
-
-import com.viettrekker.mountaintrekkingadviser.R;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.viettrekker.mountaintrekkingadviser.R;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 

@@ -3,33 +3,21 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -37,41 +25,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationAdapter;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.search.SmallPreviewImageAdapter;
 import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
-import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
-import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
-//import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
-import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
-import java.util.logging.Handler;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -165,7 +137,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.tvPostContent.setText(post.getContent());
         viewHolder.tvCmtCount.setText(post.getCommentsCount()==0 ? "" : post.getCommentsCount()+" bình luận");
 
-        viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like));
+        viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_noti_like));
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
         viewHolder.btnPostLike.setText("Thích");
@@ -238,7 +210,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Post p = response.body();
-                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
+                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_noti_like));
                             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
                             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
                             viewHolder.btnPostLike.setText("Thích");
@@ -308,6 +280,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                     float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
                                     PostImageAdapter adapter = new PostImageAdapter();
                                     adapter.setContext(context);
+                                    adapter.setPostId(listPost.get(postion).getId());
+                                    adapter.setToken(token);
+                                    adapter.setByUserId(isByUserId);
                                     adapter.setRatio1(ratio1);
                                     adapter.setRatio2(ratio2);
                                     adapter.setMedias(post.getGallery().getMedia());
@@ -351,6 +326,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             float ratio = (float) response.body().getHeight() / response.body().getWidth();
                             PostImageAdapter adapter = new PostImageAdapter();
                             adapter.setContext(context);
+                            adapter.setPostId(listPost.get(postion).getId());
+                            adapter.setToken(token);
+                            adapter.setByUserId(isByUserId);
                             adapter.setRatio1(ratio);
                             adapter.setMedias(post.getGallery().getMedia());
                             adapter.setPreview(true);
@@ -523,7 +501,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             tvPostContent.setOnClickListener((v) -> eventViewPostDetail());
             tvPostTitle.setOnClickListener((v) -> eventViewPostDetail());
             singlePreview.setOnClickListener((v) -> eventViewPostDetail());
-            rcvImagePreview.setOnClickListener((v) -> eventViewPostDetail());
             btnPostComent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

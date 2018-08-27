@@ -88,6 +88,11 @@ public interface APIService {
     Call<List<Notification>> getOldNoti(@Header("AUTH_TOKEN_ID") String token,
                                      @Query("olderThanId") int id);
 
+    @PUT("noti")
+    @FormUrlEncoded
+    Call<List<Notification>> setCheckAll(@Header("AUTH_TOKEN_ID") String token,
+                                         @Field("check") boolean check);
+
     @GET("post/paging")
     Call<List<Post>> getPostPage(@Header("AUTH_TOKEN_ID") String token,
                                  @Query("page") int page,

@@ -2,40 +2,47 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.transition.ChangeImageTransform;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
+import android.widget.Toast;
 
 import com.arlib.floatingsearchview.FloatingSearchView;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
+import com.viettrekker.mountaintrekkingadviser.MyApplication;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.NewPlanActivity;
@@ -45,18 +52,15 @@ import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.search.BaseExampleFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.search.SlidingSearchResultsFragment;
+import com.viettrekker.mountaintrekkingadviser.model.Token;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.view.ViewPager;
-import android.widget.Toast;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 
@@ -80,10 +84,101 @@ public class MainActivity extends AppCompatActivity
     private SwipeRefreshLayout swipeContainer;
     private NavigationView navigationView;
     private android.support.design.widget.FloatingActionButton btnAddNew;
+    private MaterialButton notiCount;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    private Socket socket;
 
     private ImageButton search;
 
     private int PLAN_RESULT = 10;
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Token tokenObj = new Token();
+            tokenObj.setToken(Session.getToken(MainActivity.this));
+            try {
+                socket.emit("authentication", new JSONObject(new Gson().toJson(tokenObj)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("SocketServer", "Connect" + new Gson().toJson(tokenObj));
+        }
+    };
+
+    private Emitter.Listener onReconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Token tokenObj = new Token();
+            tokenObj.setToken(Session.getToken(MainActivity.this));
+            try {
+                socket.emit("authentication", new JSONObject(new Gson().toJson(tokenObj)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("SocketServer", "Reconnect" + new Gson().toJson(tokenObj));
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("SocketServer", "disconnect");
+        }
+    };
+
+    private Emitter.Listener onAuthenticate = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("SocketServer", "authenticated: " + args[0].toString());
+        }
+    };
+
+    private Emitter.Listener onNotiNew = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("SocketServer", "New noti");
+            adapter.getNotificationFragment().initLoad();
+        }
+    };
+
+    private Emitter.Listener onUnauthorized = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("SocketServer", "unauthorized: " + args[0].toString());
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        MyApplication app = (MyApplication) getApplication();
+        socket = app.getSocket();
+        socket.on("connect", onConnect);
+        socket.on("reconnect", onReconnect);
+        socket.on("disconnect", onDisconnect);
+        socket.on("authenticated", onAuthenticate);
+        socket.on("notiNew", onNotiNew);
+        socket.on("unauthorized", onUnauthorized);
+        socket.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        socket.disconnect();
+
+        socket.off("connect", onConnect);
+        socket.off("reconnect", onReconnect);
+        socket.off("disconnect", onDisconnect);
+        socket.off("authenticated", onAuthenticate);
+        socket.off("notiNew", onNotiNew);
+        socket.off("unauthorized", onUnauthorized);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +201,9 @@ public class MainActivity extends AppCompatActivity
         viewPager = (ViewPager) findViewById(R.id.container);
         tabs = (TabLayout) findViewById(R.id.tabs);
         tvMainTitle = (TextView) findViewById(R.id.tvMainTitle);
+        notiCount = (MaterialButton) findViewById(R.id.notiCount);
+
+        notiCount.setOnClickListener((v) -> viewPager.setCurrentItem(2));
 
         navigationView.setNavigationItemSelectedListener(this);
         imgAvatar.setOnClickListener((v) -> drawer.openDrawer(GravityCompat.START));
@@ -147,24 +245,17 @@ public class MainActivity extends AppCompatActivity
 
                 if (tab.getPosition() == 0) {
                     tvMainTitle.setText("Trang chủ");
-                    btnAddNew.getLayoutParams().height = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
-                    btnAddNew.getLayoutParams().width = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
-                    btnAddNew.requestLayout();
                 } else if (tab.getPosition() == 1) {
                     tvMainTitle.setText("Kế hoạch");
-                    btnAddNew.getLayoutParams().height = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
-                    btnAddNew.getLayoutParams().width = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
-                    btnAddNew.requestLayout();
+                    showAdd();
                 } else if (tab.getPosition() == 2) {
                     tvMainTitle.setText("Thông báo");
-                    btnAddNew.getLayoutParams().height = 0;
-                    btnAddNew.getLayoutParams().width = 0;
-                    btnAddNew.requestLayout();
+                    hideAdd();
+                    notiCount.setVisibility(View.GONE);
+                    adapter.getNotificationFragment().setAllCheck();
                 } else if (tab.getPosition() == 3) {
                     tvMainTitle.setText("Tìm kiếm");
-                    btnAddNew.getLayoutParams().height = 0;
-                    btnAddNew.getLayoutParams().width = 0;
-                    btnAddNew.requestLayout();
+                    hideAdd();
                 }
 
             }
@@ -227,6 +318,8 @@ public class MainActivity extends AppCompatActivity
         adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
+        adapter.getNotificationFragment().setNotiCount(notiCount);
+
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
@@ -282,6 +375,18 @@ public class MainActivity extends AppCompatActivity
         getWindow().setSharedElementExitTransition(new Explode());
     }
 
+    public void hideAdd() {
+        btnAddNew.getLayoutParams().height = 0;
+        btnAddNew.getLayoutParams().width = 0;
+        btnAddNew.requestLayout();
+    }
+
+    public void showAdd() {
+        btnAddNew.getLayoutParams().height = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+        btnAddNew.getLayoutParams().width = CoordinatorLayout.LayoutParams.WRAP_CONTENT;
+        btnAddNew.requestLayout();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -315,6 +420,7 @@ public class MainActivity extends AppCompatActivity
                 TextView tvNavName = (TextView) header.findViewById(R.id.tvNavName);
                 TextView tvNavEmail = (TextView) header.findViewById(R.id.tvNavEmail);
                 ImageView imgNavAvatar = (ImageView) header.findViewById(R.id.imgNavAvatar);
+                ImageView imgCover = (ImageView) header.findViewById(R.id.imgCover);
 
                 if (!user.getAvatar().getPath().isEmpty()) {
 
@@ -331,6 +437,14 @@ public class MainActivity extends AppCompatActivity
                             .fallback(getDrawable(R.drawable.avatar_default))
                             .apply(RequestOptions.circleCropTransform())
                             .into(imgNavAvatar);
+                }
+
+                if (user.getGallery().getMedia().size() > 1) {
+                    GlideApp.with(MainActivity.this)
+                            .load(APIUtils.BASE_URL_API + user.getGallery().getMedia().get(user.getGallery().getMedia().size() - 1).getPath().substring(4))
+                            .placeholder(getDrawable(R.drawable.sea))
+                            .fallback(getDrawable(R.drawable.sea))
+                            .into(imgCover);
                 }
 
                 tvNavName.setText(user.getLastName() + " " + user.getFirstName());

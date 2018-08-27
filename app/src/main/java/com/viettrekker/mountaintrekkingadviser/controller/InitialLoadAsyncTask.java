@@ -3,10 +3,8 @@ package com.viettrekker.mountaintrekkingadviser.controller;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.Session;

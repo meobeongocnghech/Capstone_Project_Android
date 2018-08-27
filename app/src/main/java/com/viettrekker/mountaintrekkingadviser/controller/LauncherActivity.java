@@ -1,20 +1,14 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
-import android.content.Intent;
-import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.viettrekker.mountaintrekkingadviser.R;
-
-import android.support.v7.app.AppCompatActivity;
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 
 public class LauncherActivity extends AppCompatActivity {
 

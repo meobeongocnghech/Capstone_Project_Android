@@ -4,16 +4,16 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.transition.ChangeImageTransform;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
-import android.transition.Slide;
-import android.view.Gravity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-//import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
@@ -24,18 +24,14 @@ import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.widget.TextView;
-
 import java.net.HttpURLConnection;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//import com.viettrekker.mountaintrekkingadviser.GlideApp;
 
 public class PlaceDetailActivity extends AppCompatActivity {
     private RecyclerView rvGuide;
@@ -81,7 +77,7 @@ public class PlaceDetailActivity extends AppCompatActivity {
         NewsFeedAdapter adapter = new NewsFeedAdapter(getApplicationContext(), null, Session.getToken(this));
 
         int id = getIntent().getIntExtra("id", 0 );
-        String token = getIntent().getStringExtra("token");
+        String token = Session.getToken(this);
 
         APIService mWebService = APIUtils.getWebService();
         mWebService.getPlaceById(token, id).enqueue(new Callback<Place>() {

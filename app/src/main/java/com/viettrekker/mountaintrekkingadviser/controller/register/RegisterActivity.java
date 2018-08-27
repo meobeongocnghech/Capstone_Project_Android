@@ -1,33 +1,28 @@
 package com.viettrekker.mountaintrekkingadviser.controller.register;
 
 import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.transition.Slide;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
-import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
@@ -38,14 +33,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventList
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.regex.Pattern;
-
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.transition.Slide;
 
 import javax.net.ssl.HttpsURLConnection;
 

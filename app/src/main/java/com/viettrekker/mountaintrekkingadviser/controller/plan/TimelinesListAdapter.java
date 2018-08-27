@@ -15,7 +15,6 @@ import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

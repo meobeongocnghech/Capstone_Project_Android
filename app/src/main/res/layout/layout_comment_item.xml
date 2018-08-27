@@ -124,11 +124,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="(5)"
-                    android:textSize="12dp"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toEndOf="@id/btnLikeCmt"
                     android:layout_marginLeft="7dp"/>
-
-
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/btnReplyComment"
@@ -154,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="(5)"
-                    android:textSize="12dp"
+                    android:textSize="14sp"
                     app:layout_constraintLeft_toRightOf="@id/btnReplyComment"
                     app:layout_goneMarginLeft="5dp" />
 

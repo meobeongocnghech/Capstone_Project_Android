@@ -1,28 +1,17 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.app.ProgressDialog;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -32,45 +21,29 @@ import android.widget.Toast;
 import com.bumptech.glide.request.RequestOptions;
 import com.erikagtierrez.multiple_media_picker.Gallery;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.plan.ChecklistActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
-import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
-import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
-import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
-import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import ir.mirrajabi.searchdialog.core.Searchable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class PostAddActivity extends AppCompatActivity {
     //

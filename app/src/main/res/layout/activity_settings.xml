@@ -126,7 +126,6 @@
                     app:errorTextAppearance="@style/ErrorStyle">
 
                     <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edtPwd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorGreyHint"
@@ -192,7 +191,6 @@
                     app:errorTextAppearance="@style/ErrorStyle">
 
                     <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edtNewPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorGreyHint"

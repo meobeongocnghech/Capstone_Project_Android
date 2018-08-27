@@ -49,7 +49,6 @@
             android:text="12/07/2015"/>
 
         <TextView
-            android:id="@+id/tvGuideTotalLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_like_primary_15dp"
@@ -62,7 +61,6 @@
             app:layout_constraintTop_toTopOf="@id/tvGuideName"/>
 
         <TextView
-            android:id="@+id/tvGuideTotalComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_comment_accent_15dp"
@@ -134,14 +132,12 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/imgPreview1"
                     android:src="@drawable/mini_picture"
                     android:scaleType="centerCrop" />
             </android.support.v7.widget.CardView>
 
 
             <ImageView
-                android:id="@+id/imgPreview2"
                 android:src="@drawable/mini_picture"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -149,7 +145,6 @@
                 android:layout_gravity="right|top"/>
 
             <ImageView
-                android:id="@+id/imgPreview3"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="left|bottom"
@@ -158,7 +153,6 @@
                 android:layout_marginTop="8dp"/>
 
             <FrameLayout
-                android:id="@+id/preview4"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_gravity="right|bottom">

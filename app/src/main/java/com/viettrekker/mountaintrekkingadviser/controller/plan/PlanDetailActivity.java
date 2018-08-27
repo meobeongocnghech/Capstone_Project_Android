@@ -1,7 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.plan;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,11 +11,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -24,8 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -40,19 +35,12 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
-import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
-import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
-import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
-import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -228,7 +216,7 @@ public class PlanDetailActivity extends AppCompatActivity {
 
         //getPlan
         id = getIntent().getIntExtra("id", 0);
-        token = getIntent().getStringExtra("token");
+        token = Session.getToken(this);
         userId = getIntent().getIntExtra("userId", 0);
 
 

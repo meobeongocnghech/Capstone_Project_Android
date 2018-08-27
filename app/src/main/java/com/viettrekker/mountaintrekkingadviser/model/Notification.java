@@ -9,6 +9,9 @@ public class Notification {
     @SerializedName("id")
     @Expose
     int id;
+    @SerializedName("countNew")
+    @Expose
+    int countNew;
     @SerializedName("oldestId")
     @Expose
     int oldestId;
@@ -42,6 +45,9 @@ public class Notification {
     @SerializedName("updated_at")
     @Expose
     private Date updated_at;
+    @SerializedName("targetOwner")
+    @Expose
+    private User targetOwner;
 
     public Notification(int typeId) {
 
@@ -142,5 +148,21 @@ public class Notification {
 
     public void setComment(Comment comment) {
         this.comment = comment;
+    }
+
+    public int getCountNew() {
+        return countNew;
+    }
+
+    public void setCountNew(int countNew) {
+        this.countNew = countNew;
+    }
+
+    public User getTargetOwner() {
+        return targetOwner;
+    }
+
+    public void setTargetOwner(User targetOwner) {
+        this.targetOwner = targetOwner;
     }
 }

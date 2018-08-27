@@ -68,6 +68,7 @@ public class Gallery extends AppCompatActivity {
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setVisibility(View.GONE);
 
         OpenGallery.selected.clear();
         OpenGallery.imagesSelected.clear();
@@ -86,10 +87,10 @@ public class Gallery extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         if(mode==1 || mode==2) {
-            adapter.addFragment(new OneFragment(), "Images");
+            adapter.addFragment(new OneFragment(), "Ảnh");
         }
         if(mode==1||mode==3)
-        adapter.addFragment(new TwoFragment(), "Videos");
+        adapter.addFragment(new TwoFragment(), "Video");
         viewPager.setAdapter(adapter);
     }
 

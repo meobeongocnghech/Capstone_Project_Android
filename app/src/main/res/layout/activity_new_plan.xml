@@ -129,7 +129,6 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <View
-                android:id="@+id/viewFirst"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="3dp"
@@ -182,7 +181,6 @@
                         android:textSize="20dp" />
 
                     <TextView
-                        android:id="@+id/tvStart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -253,7 +251,6 @@
                         android:textSize="20dp" />
 
                     <TextView
-                        android:id="@+id/tvEnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -287,7 +284,6 @@
                 android:background="#cccdce" />
 
             <RelativeLayout
-                android:id="@+id/layoutOther"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
@@ -316,7 +312,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/layoutTimeline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"

@@ -56,7 +56,6 @@
         android:layout_marginTop="?attr/actionBarSize">
 
         <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scroll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -349,7 +348,6 @@
                     </android.support.v7.widget.RecyclerView>
 
                     <RelativeLayout
-                        android:id="@+id/layoutOther"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
@@ -381,7 +379,6 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/layoutCayry"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
@@ -398,7 +395,6 @@
                             android:textSize="13.5dp" />
 
                         <TextView
-                            android:id="@+id/tvCarryState"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -412,7 +408,6 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/layoutTimeline"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"

@@ -7,7 +7,5 @@
     <item
         android:id="@+id/actRemove"
         android:title="Xóa"/>
-    <item
-        android:id="@+id/actReport"
-        android:title="Báo cáo"/>
+    <item android:title="Báo cáo"/>
 </menu>

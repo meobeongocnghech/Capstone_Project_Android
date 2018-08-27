@@ -5,8 +5,6 @@
     <color name="colorPrimaryLight">#98ffb3</color>
     <color name="colorSecondary">#EF5350</color>
     <color name="colorAccent">#00c853</color>
-    <color name="colorHyperLink">#18243c</color>
-    <color name="colorFacebook">#648AD3</color>
     <color name="colorAlpha20Black">#33000000</color>
     <color name="colorAlpha50Black">#80000000</color>
     <color name="colorAlpha80White">#CCFFFFFF</color>
@@ -14,39 +12,28 @@
     <color name="colorBlack">#000000</color>
     <color name="colorDefaultBackground">#EEEEEE</color>
     <color name="colorDefaultBackgroundDark">#bcbcbc</color>
-    <color name="colorTextFieldContainer">#1F000000</color> <!--black 12% alpha -->
+    <!--black 12% alpha -->
     <color name="colorTextFieldLabel">#99000000</color> <!--black 60% alpha -->
     <color name="colorTextFieldInput">#DE000000</color> <!--black 87% alpha -->
     <color name="colorError">#fd9726</color>
-    <color name="colorCorrect">#67c95a</color>
     <color name="colorViewHolder">#b2b2b2</color>
     <color name="colorWhite">#fff</color>
     <color name="colorDisable">#99A1AC</color>"
 
-    <color name="material_red">#FFC93437</color>
-    <color name="material_blue">#FF375BF1</color>
-    <color name="material_yellow">#FFF7D23E</color>
-    <color name="material_green">#FF34A350</color>
+    <color name="material_blue">#375BF1</color>
 
     <color name="titleTabColor">#000000</color>
     <color name="titleSelectedTabColor">#00c853</color>
 
 
     <!--Switch color-->
-    <color name="switchTrack">#ffd600</color>
     <color name="switchTrackDisable">#c9e5ff</color>
     <color name="switchTrackActive">#ff9187</color>
     <color name="switchTrackNormal">#c9e5ff</color>
-    <color name="switchThumbBgActive">#1b5e20</color>
     <color name="switchThumbActive">#ad1457</color>
     <color name="switchThumbNormal">#64b5f6</color>
 
-    <color name="dpnamecolor">#fff</color>
     <color name="weekcolor">#fff</color>
-    <color name="agendacolor">#8E9097</color>
-    <color name="timecolor">#000</color>
-    <color name="schedulecolor">#000</color>
-    <color name="statementcolor">#778AA6</color>
     <color name="colorGray">#495C67</color>
     <color name="colorOrange">#F68159</color>
     <color name="colorLightGray">#a6abae</color>

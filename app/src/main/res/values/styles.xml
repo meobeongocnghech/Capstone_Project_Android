@@ -58,16 +58,8 @@
         <item name="colorControlNormal">@android:color/white</item>
     </style>
 
-    <style name="PrimaryBackToolbar">
-        <item name="colorControlNormal">@color/colorPrimary</item>
-    </style>
-
     <style name="ToolbarTitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">sans-serif</item>
-    </style>
-
-    <style name="ToolbarSubtitleTheme" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
-        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="SwitchTheme" parent="Theme.MaterialComponents.Light">
@@ -93,10 +85,6 @@
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="EditTextStyle" parent="@style/TextInputLayoutStyle">
-        <item name="android:textSize">15sp</item>
-    </style>
-
     <style name="RadioStyle" parent="@style/AppTheme">
         <item name="android:colorControlActivated">@color/colorPrimary</item>
     </style>
@@ -104,19 +92,6 @@
     <style name="ErrorStyle" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorSecondary</item>
         <item name="android:textSize">11.5sp</item>
-    </style>
-
-    <style name="HelperStyle" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/colorTextFieldLabel</item>
-        <item name="android:textSize">11.5sp</item>
-    </style>
-    
-    <style name="TransparentError" parent="ErrorStyle">
-        <item name="android:textColor">@android:color/transparent</item>
-    </style>
-
-    <style name="TwoWayViewBase">
-        <item name="android:background">#999999</item>
     </style>
 
 </resources>

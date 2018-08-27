@@ -15,16 +15,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
@@ -258,9 +257,10 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
 
         if (user.getAvatar() != null && !user.getAvatar().getPath().isEmpty()) {
             GlideApp.with(viewHolder.itemView)
-                    .load(comment.getUser().getAvatar().getPath())
+                    .load(APIUtils.BASE_URL_API + comment.getUser().getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(60, context))
                     .fallback(R.drawable.avatar_default)
                     .placeholder(R.drawable.avatar_default)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(viewHolder.imgAvtCmt);
         }
 

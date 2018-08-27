@@ -3,7 +3,6 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,6 @@ import android.widget.ImageView;
 
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.plan.ChecklistAdapter;
-import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 
 import java.util.ArrayList;

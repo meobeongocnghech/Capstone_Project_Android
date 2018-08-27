@@ -86,7 +86,6 @@
         app:layout_constraintTop_toBottomOf="@+id/layoutChecklistItem" />
 
     <TextView
-        android:id="@+id/checklistEmptyMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/edtAddChecklist"

@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +23,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
@@ -114,9 +112,10 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
         if (comment.getUser().getAvatar() != null && !comment.getUser().getAvatar().getPath().isEmpty()) {
             GlideApp.with(viewHolder.itemView)
-                    .load(comment.getUser().getAvatar().getPath())
+                    .load(APIUtils.BASE_URL_API + comment.getUser().getAvatar().getPath().substring(4)+"&w=" + LocalDisplay.dp2px(60, context))
                     .fallback(R.drawable.avatar_default)
                     .placeholder(R.drawable.avatar_default)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(viewHolder.imgAvtCmt);
         }
 
@@ -200,7 +199,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.showSoftInput(((PostDetailActivity)context).edtComment, InputMethodManager.SHOW_IMPLICIT);
                                 ((PostDetailActivity)context).edtComment.setSelection(((PostDetailActivity)context).edtComment.getText().length());
-                                ((PostDetailActivity)context).btnSendCmtDetail.setText("Sửa");
+                                ((PostDetailActivity)context).setUpdateCmt(true);
                                 idCmtEdit = comment.getId();
                             }else {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);

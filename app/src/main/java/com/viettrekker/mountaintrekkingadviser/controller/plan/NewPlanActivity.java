@@ -1,34 +1,24 @@
 package com.viettrekker.mountaintrekkingadviser.controller.plan;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
@@ -38,17 +28,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.tsongkha.spinnerdatepicker.DatePicker;
-import com.tsongkha.spinnerdatepicker.DatePickerDialog;
-import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.model.CheckList;
 import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
@@ -57,10 +37,8 @@ import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
-import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
-import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -438,7 +416,6 @@ public class NewPlanActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Plan> call, Response<Plan> response) {
                             progressDialog.dismiss();
-                            Toast.makeText(NewPlanActivity.this, "Thành công", Toast.LENGTH_LONG).show();
                             setResult(RESULT_OK, null);
                             finish();
                         }

@@ -1,6 +1,7 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,15 +9,12 @@ import android.view.ViewGroup;
 
 import com.arasthel.spannedgridlayoutmanager.SpanLayoutParams;
 import com.arasthel.spannedgridlayoutmanager.SpanSize;
-import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
-import com.viettrekker.mountaintrekkingadviser.util.ImageUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,6 +32,9 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.View
     private float ratio2 = 1;
     private int size = 0;
     private int width = 0;
+    private int postId;
+    private String token;
+    private boolean isByUserId;
 
     public void setRatio1(float ratio1) {
         this.ratio1 = ratio1;
@@ -54,6 +55,18 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.View
     public void setContext(Context context) {
         this.context = context;
         width = LocalDisplay.getScreenWidth(context);
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setByUserId(boolean byUserId) {
+        isByUserId = byUserId;
     }
 
     public void setMedias(List<MyMedia> medias) {
@@ -84,6 +97,14 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         APIService mWebService = APIUtils.getWebService();
+        viewHolder.itemView.setOnClickListener((v) -> {
+            Intent intent = new Intent(context, PostDetailActivity.class);
+            intent.putExtra("id", postId);
+            intent.putExtra("token", token);
+            intent.putExtra("isByUserId", isByUserId);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
         if (isPreview) {
             switch (size) {
                 case 2:

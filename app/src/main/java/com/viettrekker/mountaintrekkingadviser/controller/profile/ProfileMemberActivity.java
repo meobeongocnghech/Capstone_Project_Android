@@ -3,57 +3,35 @@ package com.viettrekker.mountaintrekkingadviser.controller.profile;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.PorterDuff;
-import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.erikagtierrez.multiple_media_picker;
 import com.bumptech.glide.request.RequestOptions;
 import com.erikagtierrez.multiple_media_picker.Gallery;
+import com.theartofdev.edmodo.cropper.CropImage;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.MainScreenPagerAdapter;
-import com.viettrekker.mountaintrekkingadviser.controller.plan.NewPlanActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanDetailActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
-import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
-import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanOwn;
-import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
@@ -61,17 +39,18 @@ import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//import com.erikagtierrez.multiple_media_picker;
 
 public class ProfileMemberActivity extends AppCompatActivity {
 
@@ -91,6 +70,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private ViewPager profileViewpager;
     private MaterialButton addImage;
     private MaterialButton invite;
+    private MaterialButton btnCover;
+    private ImageView profile_cover;
 
     private ProfileMemberPostAdapter adapter;
 
@@ -104,7 +85,10 @@ public class ProfileMemberActivity extends AppCompatActivity {
     private String email;
     private String avatar;
     private String newAvatar;
+    private String cover;
+    private String newCover;
 
+    private boolean pickAvatar;
     private boolean isChange;
     private boolean viewProfile;
     APIService mWebService = APIUtils.getWebService();
@@ -146,6 +130,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
                     }
                     viewProfile = getIntent().getBooleanExtra("viewProfile", false);
                     avatar = user.getAvatar().getPath().isEmpty() ? "" : APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4);
+
+                    if (user.getGallery().getMedia().size() > 1) {
+                        cover = APIUtils.BASE_URL_API + user.getGallery().getMedia().get(user.getGallery().getMedia().size() - 1).getPath().substring(4);
+                    } else {
+                        cover = "";
+                    }
 
                     init();
                     loadData();
@@ -229,6 +219,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
         profileViewpager = (ViewPager) findViewById(R.id.profileViewpager);
         addImage = (MaterialButton) findViewById(R.id.addAvatar);
         invite = (MaterialButton) findViewById(R.id.btnInvite);
+        btnCover = (MaterialButton) findViewById(R.id.btnCover);
+        profile_cover = (ImageView) findViewById(R.id.profile_cover);
 
         setSupportActionBar(profileToolbar);
 
@@ -286,6 +278,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
                 .fallback(R.drawable.avatar_default)
                 .into(profileAvatarImage);
 
+        GlideApp.with(this)
+                .load(cover)
+                .placeholder(R.drawable.sea)
+                .fallback(R.drawable.sea)
+                .into(profile_cover);
+
         addImage.setOnClickListener((v) -> {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileMemberActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -306,6 +304,37 @@ public class ProfileMemberActivity extends AppCompatActivity {
                 // for ActivityCompat#requestPermissions for more details.
                 return;
             }
+            pickAvatar = true;
+            Intent intent = new Intent(this, Gallery.class);
+            // Set the title
+            intent.putExtra("title", "Chọn một ảnh");
+            // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
+            intent.putExtra("mode", 2);
+            intent.putExtra("maxSelection", 1); // Optional
+            startActivityForResult(intent, OPEN_MEDIA_PICKER);
+        });
+
+        btnCover.setOnClickListener((v) -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(ProfileMemberActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(ProfileMemberActivity.this,
+                            new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            3);
+
+                } else {
+                    ActivityCompat.requestPermissions(ProfileMemberActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            3);
+                }
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            pickAvatar = false;
             Intent intent = new Intent(this, Gallery.class);
             // Set the title
             intent.putExtra("title", "Chọn một ảnh");
@@ -322,16 +351,37 @@ public class ProfileMemberActivity extends AppCompatActivity {
         if (requestCode == OPEN_MEDIA_PICKER) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK && data != null) {
-                ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+                if (pickAvatar) {
+                    ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+                    CropImage.activity(Uri.fromFile(new File(selectionResult.get(0))))
+                            .setAspectRatio(1, 1)
+                            .start(this);
+                } else {
+                    ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+                    GlideApp.with(this)
+                            .load(selectionResult.get(0))
+                            .placeholder(R.drawable.sea)
+                            .fallback(R.drawable.sea)
+                            .centerCrop()
+                            .into(profile_cover);
+                    newCover = selectionResult.get(0);
+                }
+            }
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
                 GlideApp.with(this)
-                        .load(selectionResult.get(0))
+                        .load(resultUri)
                         .placeholder(R.drawable.avatar_default)
                         .fallback(R.drawable.avatar_default)
                         .centerCrop()
                         .apply(RequestOptions.circleCropTransform())
                         .override(LocalDisplay.dp2px(80, this))
                         .into(profileAvatarImage);
-                newAvatar = selectionResult.get(0);
+                newAvatar = resultUri.getPath();
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
         }
     }
@@ -340,20 +390,23 @@ public class ProfileMemberActivity extends AppCompatActivity {
         tvUserNamePrf.setPadding(LocalDisplay.dp2px(48, getApplicationContext()), 0, 0, 0);
         tvUserNamePrf.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
         addImage.setVisibility(View.VISIBLE);
+        btnCover.setVisibility(View.VISIBLE);
         isChange = true;
     }
 
     public void disableUpdate() {
         GlideApp.with(this)
                 .load(avatar)
-                .placeholder(R.drawable.avatar_default)
-                .fallback(R.drawable.avatar_default)
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileAvatarImage);
+        GlideApp.with(this)
+                .load(cover)
+                .into(profile_cover);
         tvUserNamePrf.setCompoundDrawables(null, null, null, null);
         tvUserNamePrf.setPadding(0, 0, 0, 0);
         tvUserNamePrf.setText(firstName + " " + lastName);
         addImage.setVisibility(View.GONE);
+        btnCover.setVisibility(View.GONE);
         isChange = false;
     }
 
@@ -434,6 +487,26 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     public int getId() {
         return id;
+    }
+
+    public String getNewCover() {
+        return newCover;
+    }
+
+    public void setNewAvatar(String newAvatar) {
+        this.newAvatar = newAvatar;
+    }
+
+    public void setNewCover(String newCover) {
+        this.newCover = newCover;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     @Override

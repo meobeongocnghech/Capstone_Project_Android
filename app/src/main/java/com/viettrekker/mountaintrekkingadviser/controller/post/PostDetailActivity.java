@@ -5,11 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +21,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,16 +28,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
-//import com.arasthel.spannedgridlayoutmanager.sample.GridItemAdapter;
 import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Comment;
-import com.viettrekker.mountaintrekkingadviser.model.ImageSize;
-import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.PostIdRemove;
 import com.viettrekker.mountaintrekkingadviser.model.User;
@@ -56,11 +49,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//import com.arasthel.spannedgridlayoutmanager.sample.GridItemAdapter;
 
 public class PostDetailActivity extends AppCompatActivity {
     Boolean cmtFocus;
@@ -164,7 +158,8 @@ public class PostDetailActivity extends AppCompatActivity {
         btnSendCmtDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!edtComment.getText().toString().isEmpty()) {
+                if (updateCmt) {
+                    updateCmt = false;
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     mWebService.updateComment(Session.getToken(PostDetailActivity.this), id, cmtListAdapter.idCmtEdit,
                             edtComment.getText().toString()).enqueue(new Callback<Post>() {
@@ -281,7 +276,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
-                            btnPostLike.setIcon(getDrawable(R.drawable.ic_like));
+                            btnPostLike.setIcon(getDrawable(R.drawable.ic_noti_like));
                             btnPostLike.setTextColor(getResources().getColor(R.color.colorBlack));
                             btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorBlack));
                             btnPostLike.setText("Thích");
@@ -455,7 +450,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     });
 
-                    btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_like));
+                    btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_noti_like));
                     btnPostLike.setTextColor(getApplicationContext().getResources().getColor(R.color.colorBlack));
                     btnPostLike.setIconTint(getApplicationContext().getResources().getColorStateList(R.color.colorBlack));
                     btnPostLike.setText("Thích");
@@ -590,29 +585,13 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void prepareTransitions() {
-        // A similar mapping is set at the ImagePagerFragment with a setEnterSharedElementCallback.
-        setExitSharedElementCallback(
-                new SharedElementCallback() {
-                    @Override
-                    public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                        // Locate the ViewHolder for the clicked position.
-                        RecyclerView.ViewHolder selectedViewHolder = rcvPostImage
-                                .findViewHolderForAdapterPosition(PostDetailActivity.currentPosition);
-                        if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
-                            return;
-                        }
-
-                        // Map the first shared element name to the child ImageView.
-                        sharedElements
-                                .put(names.get(0), selectedViewHolder.itemView.findViewById(R.id.postImage));
-                    }
-                });
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    public void setUpdateCmt(boolean updateCmt) {
+        this.updateCmt = updateCmt;
     }
 }

@@ -1,7 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.search;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 

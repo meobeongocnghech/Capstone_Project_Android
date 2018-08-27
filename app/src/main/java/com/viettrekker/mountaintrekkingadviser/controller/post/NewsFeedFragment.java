@@ -12,13 +12,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
-import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

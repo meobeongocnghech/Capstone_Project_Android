@@ -75,15 +75,16 @@
 
             <TextView
                 android:id="@+id/tvPostCategoryDetail"
-                android:layout_width="150dp"
-                android:layout_height="40dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:fontFamily="sans-serif-medium"
                 android:maxLines="2"
                 android:textColor="@color/colorTextFieldInput"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/separator"
-                app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail" />
+                app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail"
+                app:layout_constraintEnd_toStartOf="@id/btnPostOptionDetail"/>
 
             <ImageButton
                 android:id="@+id/btnPostOptionDetail"
@@ -216,7 +217,6 @@
                         android:layout_marginTop="3dp" />
 
                     <View
-                        android:id="@+id/view3"
                         android:layout_width="match_parent"
                         android:layout_height="64dp" />
                 </LinearLayout>

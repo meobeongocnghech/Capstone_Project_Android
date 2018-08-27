@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -15,8 +14,6 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import android.text.Layout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +22,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tsongkha.spinnerdatepicker.DatePicker;
 import com.tsongkha.spinnerdatepicker.DatePickerDialog;
 import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
@@ -123,17 +118,26 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                     builder.addFormDataPart("sosContact", "null");
                     builder.addFormDataPart("facebookAuth", "null");
                     String newAvatar = ((ProfileMemberActivity) getActivity()).getNewAvatar();
-                    boolean hasAvatar;
-                    if (!newAvatar.isEmpty()) {
+                    String newCover = ((ProfileMemberActivity) getActivity()).getNewCover();
+                    boolean hasAvatar = false;
+                    if (newAvatar !=null && !newAvatar.isEmpty()) {
                         File file = new File(newAvatar);
                         RequestBody medias = RequestBody.create(MediaType.parse("image"), file);
-                        builder.addFormDataPart("medias", file.getName(), medias);
+                        builder.addFormDataPart("medias", "medias", medias);
                         builder.addFormDataPart("avatar", "true");
                         hasAvatar = true;
-                    } else {
-                        hasAvatar = false;
+                        ((ProfileMemberActivity) getActivity()).setNewAvatar("");
+                        ((ProfileMemberActivity) getActivity()).setAvatar(newAvatar);
                     }
 
+                    if (newCover != null && !newCover.isEmpty()) {
+                        File file = new File(newCover);
+                        RequestBody medias = RequestBody.create(MediaType.parse("image"), file);
+                        builder.addFormDataPart("medias", "medias", medias);
+                        hasAvatar = true;
+                        ((ProfileMemberActivity) getActivity()).setNewCover("");
+                        ((ProfileMemberActivity) getActivity()).setCover(newCover);
+                    }
                     if (hasAvatar) {
                         mWebService.updateUserProfileWithAvatar(Session.getToken(getActivity()), builder.build()).enqueue(new Callback<User>() {
                             @Override

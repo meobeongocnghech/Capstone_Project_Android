@@ -8,7 +8,6 @@
     tools:context=".controller.post.PlaceDetailActivity">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/placeAppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"

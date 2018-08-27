@@ -1,20 +1,17 @@
 package com.viettrekker.mountaintrekkingadviser.controller.register;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v4.app.Fragment;
-
-import android.support.design.widget.TextInputEditText;
 import com.viettrekker.mountaintrekkingadviser.R;
-
-import java.util.Calendar;
 
 public class RegisterAccountInfoFragment extends Fragment {
     @Nullable

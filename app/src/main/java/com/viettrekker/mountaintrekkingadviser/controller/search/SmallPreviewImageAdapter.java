@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.arasthel.spannedgridlayoutmanager.SpanLayoutParams;
 import com.arasthel.spannedgridlayoutmanager.SpanSize;
-import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
 import com.viettrekker.mountaintrekkingadviser.controller.post.GridItemView;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;

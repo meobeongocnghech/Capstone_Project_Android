@@ -246,7 +246,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tvPlaceDistanceHolder" />
 
             <TextView
-                android:id="@+id/tvPlaceDescriptionHolder"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:drawablePadding="8dp"

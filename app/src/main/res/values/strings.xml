@@ -1,15 +1,5 @@
 <resources>
     <string name="app_name">Mountain Trekking Advisor</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="loading">Loading Image</string>
 
@@ -44,21 +34,12 @@
         <item>Hỏi đáp</item>
         <item>Tìm bạn</item>
     </string-array>
-    <string name="title_activity_place_detail">PlaceDetailActivity</string>
 
-    <string name="title_post">Bài đăng</string>
-    <string name="title_place">Địa điểm</string>
-    <string name="title_newsfeed">Bảng tin</string>
-    <string name="title_plan">Kế hoạch</string>
-    <string name="title_notification">Thông báo</string>
-    <string name="title_message">Tin nhắn</string>
     <string name="title_search">Tìm kiếm</string>
     <string name="title_register">Đăng ký</string>
-    <string name="title_forgot_password">Quên mật khẩu</string>
 
     <string name="button_next">Tiếp</string>
     <string name="button_register">Đăng ký</string>
-    <string name="button_submit">Gửi</string>
 
     <string name="helper_firstname">Nhập họ của bạn</string>
     <string name="helper_lastname">Nhập tên của bạn</string>
@@ -77,19 +58,6 @@
     <string name="hint_female">Nữ</string>
     <string name="hint_show_password">Hiện mật khẩu</string>
 
-    <string name="error_firstname">Hãy nhập họ của bạn</string>
-    <string name="error_lastname">Hãy nhập tên của bạn</string>
-    <string name="error_birthdate_empty">Hãy nhập ngày sinh</string>
-    <string name="error_birthdate_restrict">Nguời dùng phải trên 13 tuổi</string>
-    <string name="error_birthdate_format">Sai định dạng</string>
-    <string name="error_gender">Chọn giới tính</string>
-    <string name="error_email_empty">Hãy nhập email của bạn</string>
-    <string name="error_email_format">Sai định dạng</string>
-    <string name="error_password">Mật khẩu quá ngắn</string>
-    <string name="error_repassword">Nhập lại chưa chính xác</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="app_label">MTA</string>
-    <string name="search_hint">Nhập từ khóa</string>
     <string name="title_checklist">Danh sách đầu việc</string>
     <string name="title_timelines">Thời gian biểu</string>
     <string name="title_add_post">Tạo bài viết</string>

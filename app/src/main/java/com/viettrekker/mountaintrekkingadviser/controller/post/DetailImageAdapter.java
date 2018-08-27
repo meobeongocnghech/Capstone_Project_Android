@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.TestAdapter;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 

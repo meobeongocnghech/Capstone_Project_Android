@@ -1,60 +1,30 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
 import android.support.design.chip.Chip;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.SwitchCompat;
-import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
-import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.model.Place;
-import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
-import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 
 public class PostFragment extends Fragment {
 
     private NestedScrollView layout;
     private SwitchCompat switchView;
     private ProgressBar progress;
-    private NewsFeedFragment newsFeedFragment;
-    private PagePlaceFragment placeFragment;
-
-    public PostFragment() {
-        newsFeedFragment = new NewsFeedFragment();
-        placeFragment = new PagePlaceFragment();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,6 +77,7 @@ public class PostFragment extends Fragment {
 
     private void loadPlaceData() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        PagePlaceFragment placeFragment = new PagePlaceFragment();
         placeFragment.setToken(Session.getToken(getActivity()));
 
         fragmentTransaction.replace(R.id.postFragment, placeFragment, "place");
@@ -115,6 +86,7 @@ public class PostFragment extends Fragment {
 
     private void loadNewsfeedData() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        NewsFeedFragment newsFeedFragment = new NewsFeedFragment();
         newsFeedFragment.setUserId(Session.getUserId(getActivity()));
         newsFeedFragment.setToken(Session.getToken(getActivity()));
 
@@ -144,9 +116,11 @@ public class PostFragment extends Fragment {
         if (switchView.isChecked()) {
             loadPlaceData();
             hideProgress();
+            ((MainActivity) getActivity()).hideAdd();
         } else {
             loadNewsfeedData();
             showProgress();
+            ((MainActivity) getActivity()).showAdd();
         }
     }
 

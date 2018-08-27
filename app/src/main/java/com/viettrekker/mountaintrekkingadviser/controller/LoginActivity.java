@@ -1,22 +1,17 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import android.support.design.widget.Snackbar;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
@@ -27,9 +22,6 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
-
-import android.support.v7.app.AppCompatActivity;
-import android.support.constraint.ConstraintLayout;
 
 import retrofit2.Call;
 import retrofit2.Callback;

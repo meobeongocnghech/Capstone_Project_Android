@@ -14,12 +14,8 @@ import android.view.ViewGroup;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
-import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
-
-import java.util.zip.Inflater;
 
 public class PagePlaceFragment extends Fragment {
 

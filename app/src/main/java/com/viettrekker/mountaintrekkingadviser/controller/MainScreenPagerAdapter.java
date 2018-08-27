@@ -1,22 +1,18 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
-import com.viettrekker.mountaintrekkingadviser.controller.message.MessageFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+
 import com.viettrekker.mountaintrekkingadviser.controller.notification.NotificationFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.plan.PlanFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.search.SearchFragment;
-
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 public class MainScreenPagerAdapter extends FragmentPagerAdapter {
 
     private PostFragment postFragment;
     private PlanFragment planFragment;
     private NotificationFragment notificationFragment;
-    private MessageFragment messageFragment;
     private SearchFragment searchFragment;
 
     public PostFragment getPostFragment() {
@@ -43,14 +39,6 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
         this.notificationFragment = notificationFragment;
     }
 
-    public MessageFragment getMessageFragment() {
-        return messageFragment;
-    }
-
-    public void setMessageFragment(MessageFragment messageFragment) {
-        this.messageFragment = messageFragment;
-    }
-
     public SearchFragment getSearchFragment() {
         return searchFragment;
     }
@@ -64,7 +52,6 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
         postFragment = new PostFragment();
         planFragment = new PlanFragment();
         notificationFragment = new NotificationFragment();
-        messageFragment = new MessageFragment();
         searchFragment = new SearchFragment();
     }
 

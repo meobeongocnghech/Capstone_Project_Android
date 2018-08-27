@@ -1,10 +1,9 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -13,15 +12,6 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
-import android.widget.ImageView;
-
-import in.srain.cube.views.ptr.PtrFrameLayout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
