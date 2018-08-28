@@ -1,17 +1,30 @@
 package com.viettrekker.mountaintrekkingadviser.controller.post;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -21,29 +34,48 @@ import android.widget.Toast;
 import com.bumptech.glide.request.RequestOptions;
 import com.erikagtierrez.multiple_media_picker.Gallery;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.plan.ChecklistActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
+import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
+import com.viettrekker.mountaintrekkingadviser.model.Plan;
+import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
+import com.viettrekker.mountaintrekkingadviser.model.PlanOwn;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
+import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
-import java.io.File;
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
+import java.io.File;
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
+import ir.mirrajabi.searchdialog.core.Searchable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class PostAddActivity extends AppCompatActivity {
     //
@@ -66,6 +98,8 @@ public class PostAddActivity extends AppCompatActivity {
     int idUpdate;
     String point = "";
     Direction d;
+    int planId;
+    AlertDialog.Builder alertDialogBuilder;
 
     public final static int PICK_IMAGE_REQUEST = 1;
     public final static int READ_EXTERNAL_REQUEST = 2;
@@ -74,7 +108,7 @@ public class PostAddActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_add);
-
+        alertDialogBuilder = new AlertDialog.Builder(PostAddActivity.this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.addPostToolbar);
 
         setSupportActionBar(toolbar);
@@ -97,7 +131,7 @@ public class PostAddActivity extends AppCompatActivity {
 
         imageAddAdapter = new ImageAddAdapter();
         imageAddAdapter.setContext(this);
-
+        planId = 0;
         if (!Session.getAvatarPath(this).isEmpty()) {
             GlideApp.with(this)
                     .load(APIUtils.BASE_URL_API + Session.getAvatarPath(this).substring(4))
@@ -143,7 +177,8 @@ public class PostAddActivity extends AppCompatActivity {
                                 btnLocation.setText(item.getTitle());
                                 placeId = item.getId();
                                 point = item.getmTitle();
-                                Toast.makeText(PostAddActivity.this, item.getId() + "", Toast.LENGTH_LONG).show();
+                                btnPlan.setText("Kế hoạch");
+                                btnPlan.setClickable(false);
                                 dialog.dismiss();
                             }
                         }).show();
@@ -152,13 +187,17 @@ public class PostAddActivity extends AppCompatActivity {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(PostAddActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+
                 String content = edtContent.getText().toString();
                 String title = edtTitlePost.getText().toString();
-                if (placeId != -1) {
+                if (placeId > 0 && planId <= 0) {
                     typeId = 1;
                     d = new Direction();
                     d.setPlaceId(placeId);
+                }
+                if (planId > 0 && placeId < 0){
+                    typeId = 2;
+
                 }
                 if (title.isEmpty() || content.isEmpty()) {
                     alertDialogBuilder.setTitle("Cảnh báo");
@@ -187,6 +226,9 @@ public class PostAddActivity extends AppCompatActivity {
 
                     Gson gson = new Gson();
                     builder.addFormDataPart("direction", gson.toJson(d));
+                    if (planId > 0){
+                        builder.addFormDataPart("directionId", planId+"");
+                    }
 
                     for (String s : imageAddAdapter.getListImg()) {
                         File file = new File(s);
@@ -243,11 +285,41 @@ public class PostAddActivity extends AppCompatActivity {
         btnPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(PostAddActivity.this, "Pending this action...", Toast.LENGTH_SHORT).show();
+                new SimpleSearchDialogCompat(PostAddActivity.this, "Tìm kiếm kế hoạch của bạn",
+                        "Nhập tên kế hoạch có dấu...", null, createPlanData(),
+                        new SearchResultListener<PlanOwn>() {
+                            @Override
+                            public void onSelected(BaseSearchDialogCompat dialog, PlanOwn item, int position) {
+                                btnPlan.setText(item.getmTitle());
+                                btnLocation.setText("Địa điểm");
+                                btnLocation.setClickable(false);
+                                planId = item.getId();
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
 
         btnAddPhoto.setOnClickListener((v) -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(PostAddActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    ActivityCompat.requestPermissions(PostAddActivity.this,
+                            new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                            3);
+
+                } else {
+                    ActivityCompat.requestPermissions(PostAddActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            3);
+                }
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             Intent intent = new Intent(this, Gallery.class);
             // Set the title
             intent.putExtra("title", "Chọn ảnh");
@@ -308,5 +380,28 @@ public class PostAddActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    private ArrayList<PlanOwn> createPlanData() {
+        ArrayList<PlanOwn> items = new ArrayList<>();
+        mWebService.getListPlan(Session.getToken(PostAddActivity.this),1,20,"id").enqueue(new Callback<List<Plan>>() {
+            @Override
+            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+                if (response.body().size() > 1){
+                    List<Plan> p = response.body();
+                    p.remove(0);
+                    for (Plan pl: p) {
+                        PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
+                        items.add(po);
+                    }
+                    }
+            }
+
+            @Override
+            public void onFailure(Call<List<Plan>> call, Throwable t) {
+
+            }
+        });
+        return items;
     }
 }

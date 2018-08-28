@@ -103,7 +103,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
         newAvatar = "";
 		token = Session.getToken(this);
         id = getIntent().getIntExtra("id", 0);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileMemberActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileMemberActivity.this);
         final ProgressDialog progressDialog = new ProgressDialog(this, R.style.DialogStyle);
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -173,6 +173,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
                                                                         }
                                                                     });
+                                                                    dialog.dismiss();
                                                                 }
                                                             }
 
@@ -182,6 +183,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                                                     dialogInterface.dismiss();
                                                 }
                                             }).show();
+                                            dialog.dismiss();
                                         }
                                     }).show();
                         });

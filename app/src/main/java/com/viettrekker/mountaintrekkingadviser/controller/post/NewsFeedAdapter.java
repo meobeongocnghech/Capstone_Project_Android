@@ -185,15 +185,18 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.likePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            Post p = response.body();
-                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
-                            viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
-                            viewHolder.btnPostLike.setText("Bỏ thích");
-                            viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-                            viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) +" thích");
-                            viewHolder.likeFlag = true;
-                            viewHolder.btnPostLike.setClickable(true);
+                            if (response.code() == 200){
+                                Post p = response.body();
+                                viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
+                                viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                                viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
+                                viewHolder.btnPostLike.setText("Bỏ thích");
+                                viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
+                                viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) +" thích");
+                                viewHolder.likeFlag = true;
+                                viewHolder.btnPostLike.setClickable(true);
+                            }
+
                         }
 
                         @Override

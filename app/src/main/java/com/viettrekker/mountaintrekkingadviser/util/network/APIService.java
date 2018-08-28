@@ -107,6 +107,12 @@ public interface APIService {
                                  @Query("placeId") int id,
                                  @Query("order") String order);
 
+    @GET("post/paging")
+    Call<List<Post>> getPostPageByPlanId(@Header("AUTH_TOKEN_ID") String token,
+                                          @Query("page") int page,
+                                          @Query("pageSize") int size,
+                                          @Query("directionId") int id);
+
     @GET("member/post")
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,
                                          @Query("userId") int id,
@@ -346,10 +352,14 @@ public interface APIService {
                              @Field("vehicule") String vehicule,
                              @Field("carry") int carry);
 
+
+
     @FormUrlEncoded
     @POST("plan/request/approve")
     Call<Plan> approveRequest(@Header("AUTH_TOKEN_ID") String token,
                           @Field("id") int id,
                           @Field("userId") int userId);
+
+
 
 }

@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,12 +39,21 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedAdapter;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
+import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
+import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
+import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
+import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -111,6 +124,7 @@ public class PlanDetailActivity extends AppCompatActivity {
 
     private Plan plan;
     private MembersListAdapter membersListAdapter;
+    private NewsFeedAdapter newsFeedAdapter;
     AlertDialog.Builder alertDialogBuilder;
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -207,7 +221,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         rcvListMembersPlan.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
         membersListAdapter = new MembersListAdapter(PlanDetailActivity.this);
         rcvListMembersPlan.setVisibility(View.GONE);
-
+        newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this,null, token);
         startPicker = (MaterialButton) findViewById(R.id.startDateTimePicker);
         endPicker = (MaterialButton) findViewById(R.id.endDateTimePicker);
 
@@ -233,7 +247,6 @@ public class PlanDetailActivity extends AppCompatActivity {
 
             }
         });
-
 
         tvMoreAction.setOnClickListener((v) -> {
             PopupMenu popupMenu = new PopupMenu(PlanDetailActivity.this, tvMoreAction);
@@ -500,7 +513,30 @@ public class PlanDetailActivity extends AppCompatActivity {
                 });
             }
         });
+        mWebService.getPostPageByPlanId(token, 1, 50, id).enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if (response.code() == 200){
+                    List<Post> lp = response.body();
+                    if (lp.size() > 1){
+                        lp.remove(0);
+                        newsFeedAdapter.setListPost(lp);
+                        newsFeedAdapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Toast.makeText(PlanDetailActivity.this,"Có lỗi khi load bài viết.", Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Toast.makeText(PlanDetailActivity.this,"Có lỗi khi load bài viết.", Toast.LENGTH_SHORT).show();
+            }
+        });
+        rcvPlanPost.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
+        rcvPlanPost.setNestedScrollingEnabled(false);
+        rcvPlanPost.setAdapter(newsFeedAdapter);
+        rcvPlanPost.setVisibility(View.VISIBLE);
         rcvListMembersPlan.setNestedScrollingEnabled(false);
         rcvListMembersPlan.setAdapter(membersListAdapter);
         layoutViewMember.setOnClickListener(new View.OnClickListener() {
