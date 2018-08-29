@@ -126,7 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintTop_toBottomOf="@id/tvPostContentDetail">
+                app:layout_constraintTop_toBottomOf="@id/tvPostContentDetail"
+                android:nestedScrollingEnabled="false">
 
             </android.support.v7.widget.RecyclerView>
 

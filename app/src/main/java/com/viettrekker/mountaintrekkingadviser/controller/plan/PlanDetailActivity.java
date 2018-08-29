@@ -109,6 +109,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     private PlanLocation desLocation = new PlanLocation();
 
     private int id;
+    private int directionId;
 
     private String token;
     private int userId;
@@ -232,7 +233,7 @@ public class PlanDetailActivity extends AppCompatActivity {
 
         newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this,null, token);
         newsFeedAdapter.setByPlanId(true);
-        newsFeedAdapter.setDirectionId(id);
+        newsFeedAdapter.setDirectionId(directionId);
         startPicker = (MaterialButton) findViewById(R.id.startDateTimePicker);
         endPicker = (MaterialButton) findViewById(R.id.endDateTimePicker);
 
@@ -556,7 +557,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 });
             }
         });
-        mWebService.getPostPageByPlanId(token, 1, 5, id, "DESC").enqueue(new Callback<List<Post>>() {
+        mWebService.getPostPageByDirectionId(token, 1, 5, directionId, "DESC").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.code() == 200){
@@ -680,6 +681,7 @@ public class PlanDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Plan> call, Response<Plan> response) {
                 plan = response.body();
+                directionId = plan.getDirection().getId();
                 tvCarry.setText(plan.getCarry() + " xe");
                 try {
                     if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())

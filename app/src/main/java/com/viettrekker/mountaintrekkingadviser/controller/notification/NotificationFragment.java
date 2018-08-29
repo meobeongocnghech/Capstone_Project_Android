@@ -42,6 +42,8 @@ public class NotificationFragment extends Fragment {
 
     }
 
+    private String token;
+
     public void showProgress() {
         progress.setVisibility(View.VISIBLE);
     }
@@ -52,6 +54,10 @@ public class NotificationFragment extends Fragment {
 
     public void setNotiCount(MaterialButton notiCount) {
         this.notiCount = notiCount;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -84,12 +90,11 @@ public class NotificationFragment extends Fragment {
 
     public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
-        mWebService.getNoti(Session.getToken(getActivity())).enqueue(new Callback<List<Notification>>() {
+        mWebService.getNoti(token).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 List<Notification> list = response.body();
                 if (list != null) {
-                    notiAdapter.setOlderId(list.get(0).getOldestId());
                     countNew = list.get(0).getCountNew();
                     if (countNew > 0 && countNew <= 9) {
                         notiCount.setText(countNew + "");
@@ -100,10 +105,13 @@ public class NotificationFragment extends Fragment {
                     } else {
                         notiCount.setVisibility(View.GONE);
                     }
-                    list.remove(0);
-                    notiAdapter.setListNoti(list);
-                    notiAdapter.notifyDataSetChanged();
-                    stopProgress();
+                    if (notiAdapter != null) {
+                        notiAdapter.setOlderId(list.get(0).getOldestId());
+                        list.remove(0);
+                        notiAdapter.setListNoti(list);
+                        notiAdapter.notifyDataSetChanged();
+                        stopProgress();
+                    }
                 }
             }
 
@@ -117,10 +125,10 @@ public class NotificationFragment extends Fragment {
 
     public void setAllCheck() {
         APIService mWebService = APIUtils.getWebService();
-        mWebService.setCheckAll(Session.getToken(getActivity()), true).enqueue(new Callback<List<Notification>>() {
+        mWebService.setCheckAll(token, true).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
-
+                List<Notification> lists = response.body();
             }
 
             @Override

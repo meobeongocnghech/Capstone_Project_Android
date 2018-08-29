@@ -109,11 +109,11 @@ public interface APIService {
                                  @Query("order") String order);
 
     @GET("post/paging")
-    Call<List<Post>> getPostPageByPlanId(@Header("AUTH_TOKEN_ID") String token,
-                                          @Query("page") int page,
-                                          @Query("pageSize") int size,
-                                          @Query("directionId") int id,
-                                          @Query("order") String order);
+    Call<List<Post>> getPostPageByDirectionId(@Header("AUTH_TOKEN_ID") String token,
+                                              @Query("page") int page,
+                                              @Query("pageSize") int size,
+                                              @Query("directionId") int id,
+                                              @Query("order") String order);
 
     @GET("member/post")
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,

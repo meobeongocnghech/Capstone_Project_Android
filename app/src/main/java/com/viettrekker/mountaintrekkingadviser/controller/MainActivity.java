@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity
         initRefreshLayout();
 
         adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
+        adapter.setToken(Session.getToken(this));
         viewPager.setAdapter(adapter);
 
         adapter.getNotificationFragment().setNotiCount(notiCount);
@@ -354,12 +355,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 2:
                 adapter.getNotificationFragment().initLoad();
-                break;
-//            case 3:
-//                adapter.setMessageFragment(new MessageFragment());
-//                break;
-            case 3:
-                //adapter.setSearchFragment(new SearchFragment());
                 break;
         }
         swipeContainer.setRefreshing(false);

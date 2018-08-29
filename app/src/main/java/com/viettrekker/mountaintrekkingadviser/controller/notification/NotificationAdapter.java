@@ -128,14 +128,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             content = noti.getContent().replace("${{source.gender}}", noti.getUser().getGender() == 0 ? "anh ấy" : "cô ấy");
         }
         holder.tvNotiTitle.setText(Html.fromHtml(content));
-//        if (!noti.getUser().getAvatar().getPath().isEmpty()) {
-//            GlideApp.with(holder.itemView)
-//                    .load(APIUtils.BASE_URL_API + noti.getUser().getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(72, context))
-//                    .placeholder(R.drawable.avatar_default)
-//                    .fallback(R.drawable.avatar_default)
-//                    .apply(RequestOptions.circleCropTransform())
-//                    .into(holder.imgNoti);
-//        }
+        if (!noti.getUser().getAvatar().getPath().isEmpty()) {
+            GlideApp.with(holder.itemView)
+                    .load(APIUtils.BASE_URL_API + noti.getUser().getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(72, context))
+                    .placeholder(R.drawable.avatar_default)
+                    .fallback(R.drawable.avatar_default)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(holder.imgNoti);
+        }
 
         DateTimeUtils datetime = new DateTimeUtils();
         try {
@@ -237,7 +237,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         @Override
         public void onClick(View view) {
-            Intent intent = new Intent(context, PostDetailActivity.class);
+            Intent intent;
             APIService service = APIUtils.getWebService();
             service.markReadNotification(token,
                     notification.getId()).enqueue(new Callback<Notification>() {
@@ -253,21 +253,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             });
             switch (notification.getTypeId()) {
                 case 1:
+                    intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", notification.getTargetId());
                     intent.putExtra("token", Session.getToken(context));
                     context.startActivity(intent);
                     break;
                 case 2:
+                    intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", notification.getTargetId());
                     intent.putExtra("token", Session.getToken(context));
                     context.startActivity(intent);
                     break;
                 case 3:
+                    intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("id", notification.getTargetId());
                     intent.putExtra("token", Session.getToken(context));
                     context.startActivity(intent);
                     break;
                 case 4:
+                    intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("token", Session.getToken(context));
                     intent.putExtra("id", notification.getComment().getTargetId());
                     intent.putExtra("cmtPosition", notification.getTargetId());

@@ -46,7 +46,7 @@ public class FullSearchActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         String type = getIntent().getStringExtra("type");
-        String token = getIntent().getStringExtra("token");
+        String token = Session.getToken(this);
         String query = getIntent().getStringExtra("query");
 
         description = (TextView) findViewById(R.id.tvSearchDescription);
