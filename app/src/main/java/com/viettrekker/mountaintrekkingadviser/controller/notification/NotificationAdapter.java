@@ -118,7 +118,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
         holder.token = token;
         if (noti.getState() == 0 || noti.getState() == 1) {
-            holder.layout.setBackgroundResource(R.color.colorPrimaryLight);
+            holder.layout.setBackgroundResource(R.color.colorPrimaryLight40);
         } else {
             holder.layout.setBackgroundResource(R.color.colorWhite);
         }

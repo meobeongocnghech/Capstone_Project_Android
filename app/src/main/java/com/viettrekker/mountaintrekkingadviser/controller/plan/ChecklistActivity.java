@@ -36,6 +36,8 @@ public class ChecklistActivity extends AppCompatActivity {
     private Plan plan;
     private String token;
     private List<ChecklistItem> items;
+    private int planState;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class ChecklistActivity extends AppCompatActivity {
         NewPlanActivity newPlanActivity = new NewPlanActivity();
         mWebService = APIUtils.getWebService();
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
+        planState = getIntent().getIntExtra("planState", 0);
         id = getIntent().getIntExtra("id", -1);
         rcvChecklistItem = (RecyclerView) findViewById(R.id.rcvChecklistItem);
         btnEditCheckList = (MaterialButton) findViewById(R.id.btnEditCheckList);
@@ -96,7 +99,7 @@ public class ChecklistActivity extends AppCompatActivity {
                     checklistAdapter.notifyDataSetChanged();
                 }
             });
-        } else {
+        } else if (planState == 0) {
             btnAddChecklist.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -112,10 +115,12 @@ public class ChecklistActivity extends AppCompatActivity {
             btnEditCheckList.setOnClickListener((v) -> {
                 if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
                     btnEditCheckList.setText("Xong");
+                    checklistAdapter.enableEdit();
                     btnAddChecklist.setVisibility(View.VISIBLE);
                     edtAddChecklist.setVisibility(View.VISIBLE);
                 } else {
                     btnEditCheckList.setText("Sửa");
+                    checklistAdapter.disableEdit();
                     btnAddChecklist.setVisibility(View.GONE);
                     edtAddChecklist.setVisibility(View.GONE);
 

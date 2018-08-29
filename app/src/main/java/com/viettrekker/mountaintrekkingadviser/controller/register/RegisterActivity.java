@@ -233,6 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
         TextInputEditText edtPwd = (TextInputEditText) findViewById(R.id.edtPassword);
         pwd = edtPwd.getText().toString();
         layout = (TextInputLayout) findViewById(R.id.passwordLayout);
+        String pwdPattern = "^[a-zA-Z0-9]{8,}$";
         if (pwd.isEmpty()) {
             edtPwd.addTextChangedListener(new MyTextWatcher(layout, edtPwd));
             setFailStatus(edtPwd, layout, "Hãy nhập mật khẩu");
@@ -240,6 +241,10 @@ public class RegisterActivity extends AppCompatActivity {
         } else if (pwd.length() < 8) {
             edtPwd.addTextChangedListener(new MyTextWatcher(layout, edtPwd));
             setFailStatus(edtPwd, layout, "Mật khẩu quá ngắn");
+            isValidated = false;
+        } else if (!pwd.matches(pwdPattern)) {
+            edtPwd.addTextChangedListener(new MyTextWatcher(layout, edtPwd));
+            setFailStatus(edtPwd, layout, "Mật khẩu chỉ chứa kí tự số và chữ cái");
             isValidated = false;
         } else {
             setCorrectStatus(edtPwd);
@@ -309,7 +314,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 } else {
 
-                    Type type = new TypeToken<MyMessage>(){}.getType();
+                    Type type = new TypeToken<MyMessage>() {
+                    }.getType();
                     Gson gson = new Gson();
                     try {
                         MyMessage message = gson.fromJson(response.errorBody().string(), type);

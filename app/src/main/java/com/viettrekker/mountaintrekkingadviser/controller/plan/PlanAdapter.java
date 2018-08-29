@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,8 +40,8 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     private Context context;
     private List<Plan> listPlan;
     private String token;
-    private int page = 2;
-    private boolean stopLoad = false;
+    private int pageMyPlan = 1;
+    private int pagePublicPlan = 1;
 
     public PlanAdapter() {
     }
@@ -74,31 +75,6 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         Plan plan = listPlan.get(i);
         boolean reqFlag = false;
 
-        if (i == listPlan.size() - 1 && !stopLoad) {
-            ((PlanFragment) fragment).showProgress();
-            mWebService.getListPlanIsPublic(token, page,10,"id", 1).enqueue(new Callback<List<Plan>>() {
-                @Override
-                public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
-                    List<Plan> plans = response.body();
-                    if (plans != null){
-                        plans.remove(0);
-                        for (Plan plan : plans) {
-                            listPlan.add(plan);
-                        }
-                        notifyDataSetChanged();
-                    }
-                    if (plans.size() < 10) {
-                        stopLoad = true;
-                    }
-                    ((PlanFragment) fragment).hideProgress();
-                }
-
-                @Override
-                public void onFailure(Call<List<Plan>> call, Throwable t) {
-                    ((PlanFragment) fragment).hideProgress();
-                }
-            });
-        }
         viewHolder.tvRequestJoin.setVisibility(View.GONE);
         List<Member> mem = plan.getGroup().getMembers();
         for (Member me: mem) {
@@ -135,22 +111,22 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
             }
         });
         try {
-            if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())){
-                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
-                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
-                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                viewHolder.tvStatePlan.setText("Sẵn sàng");
-            } else if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).after(Calendar.getInstance().getTime())
-                    && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
+            if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())){
+                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorGray));
+                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorGray));
+                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorGray));
+                viewHolder.tvStatePlan.setText("Đã hoàn thành");
+            } else if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())
+                    && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
                 viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorOrange));
                 viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorOrange));
                 viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorOrange));
                 viewHolder.tvStatePlan.setText("Đang diễn ra");
             } else {
-                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorGray));
-                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorGray));
-                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorGray));
-                viewHolder.tvStatePlan.setText("Đã hoàn thành");
+                viewHolder.viewStateColorLeft.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
+                viewHolder.viewStateColorCircle.setBackground(context.getResources().getDrawable(R.color.colorPrimary));
+                viewHolder.tvStatePlan.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                viewHolder.tvStatePlan.setText("Sẵn sàng");
             }
         } catch (ParseException e) {
 
@@ -216,6 +192,70 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
            listPlan = new ArrayList<>();
        }
        return listPlan.size();
+    }
+
+    public void loadMoreMyPlan() {
+        pageMyPlan++;
+        APIService mWebService = APIUtils.getWebService();
+        mWebService.getListPlan(token, pageMyPlan,4,"id").enqueue(new Callback<List<Plan>>() {
+            @Override
+            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+                List<Plan> plans = response.body();
+                if (plans != null){
+                    if (plans.size() < 4) {
+                        ((PlanFragment) fragment).stopLoading(0);
+                    } else {
+                        ((PlanFragment) fragment).showLoading(0);
+                    }
+                    plans.remove(0);
+                    int lastSize = listPlan.size();
+                    for (Plan plan : plans) {
+                        listPlan.add(plan);
+                    }
+                    notifyItemRangeChanged(lastSize, plans.size());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Plan>> call, Throwable t) {
+                Toast.makeText(context, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void loadMorePublicPlan() {
+        pagePublicPlan++;
+        APIService mWebService = APIUtils.getWebService();
+        mWebService.getListPlanIsPublic(token, pagePublicPlan,4,"id", true).enqueue(new Callback<List<Plan>>() {
+            @Override
+            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+                List<Plan> plans = response.body();
+                if (plans != null){
+                    plans.remove(0);
+                    int lastSize = listPlan.size();
+                    int userId = Session.getUserId(((PlanFragment) fragment).getActivity());
+                    for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext(); ) {
+                        Plan plan = iterator.next();
+                        if (plan.getGroup().getUserId() == userId) {
+                            iterator.remove();
+                        } else {
+                            plans.add(plan);
+                        }
+                    }
+                    if (plans.size() < 4) {
+                        ((PlanFragment) fragment).stopLoading(1);
+                    } else {
+                        ((PlanFragment) fragment).showLoading(1);
+                    }
+                    notifyItemRangeChanged(lastSize, plans.size());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Plan>> call, Throwable t) {
+                Toast.makeText(context, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

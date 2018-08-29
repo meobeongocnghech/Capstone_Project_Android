@@ -399,10 +399,14 @@ public class ProfileMemberActivity extends AppCompatActivity {
     public void disableUpdate() {
         GlideApp.with(this)
                 .load(avatar)
+                .fallback(R.drawable.avatar_default)
+                .placeholder(R.drawable.avatar_default)
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileAvatarImage);
         GlideApp.with(this)
                 .load(cover)
+                .placeholder(R.drawable.sea)
+                .fallback(R.drawable.sea)
                 .into(profile_cover);
         tvUserNamePrf.setCompoundDrawables(null, null, null, null);
         tvUserNamePrf.setPadding(0, 0, 0, 0);

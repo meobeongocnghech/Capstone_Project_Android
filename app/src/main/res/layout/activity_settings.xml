@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
+    android:id="@+id/layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -126,43 +127,11 @@
                     app:errorTextAppearance="@style/ErrorStyle">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtPwd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorGreyHint"
                         android:hint="@string/hint_password"
-                        android:inputType="textEmailAddress"
-                        android:singleLine="true"
-                        android:textSize="16sp"
-                        android:textStyle="normal"
-                        android:fontFamily="sans-serif"
-                        android:textColor="@color/colorTextFieldInput"
-                        android:textCursorDrawable="@drawable/input_cursor"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:id="@+id/repwdLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="40dp"
-                    android:textColorHint="@color/colorTextFieldLabel"
-                    android:transitionGroup="true"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="true"
-                    app:hintTextAppearance="@style/TextInputLayoutStyle"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pwdLayout"
-                    app:errorTextAppearance="@style/ErrorStyle">
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/edtRepassword"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/colorGreyHint"
-                        android:hint="@string/hint_repassword"
                         android:inputType="textPassword"
                         android:singleLine="true"
                         android:textSize="16sp"
@@ -187,14 +156,50 @@
                     app:hintTextAppearance="@style/TextInputLayoutStyle"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/repwdLayout"
-                    app:errorTextAppearance="@style/ErrorStyle">
+                    app:layout_constraintTop_toBottomOf="@+id/pwdLayout"
+                    app:errorTextAppearance="@style/ErrorStyle"
+                    app:helperTextEnabled="true"
+                    app:helperText="@string/helper_password">
 
                     <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtNewPwd"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/colorGreyHint"
                         android:hint="@string/hint_new_password"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        android:textSize="16sp"
+                        android:textStyle="normal"
+                        android:fontFamily="sans-serif"
+                        android:textColor="@color/colorTextFieldInput"
+                        android:textCursorDrawable="@drawable/input_cursor"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:id="@+id/renewpwdLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="40dp"
+                    android:textColorHint="@color/colorTextFieldLabel"
+                    android:transitionGroup="true"
+                    app:hintEnabled="true"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextAppearance="@style/TextInputLayoutStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/newpwdLayout"
+                    app:errorTextAppearance="@style/ErrorStyle">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/edtReNewPwd"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorGreyHint"
+                        android:hint="@string/hint_repassword"
                         android:inputType="textPassword"
                         android:singleLine="true"
                         android:textSize="16sp"
@@ -214,15 +219,15 @@
                     android:textStyle="normal"
                     android:fontFamily="sans-serif"
                     android:textColor="@color/colorTextFieldLabel"
-                    app:layout_constraintTop_toBottomOf="@id/newpwdLayout"
-                    app:layout_constraintStart_toStartOf="@id/newpwdLayout" />
+                    app:layout_constraintTop_toBottomOf="@id/renewpwdLayout"
+                    app:layout_constraintStart_toStartOf="@id/renewpwdLayout" />
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/btnChange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/newpwdLayout"
-                    app:layout_constraintEnd_toEndOf="@id/newpwdLayout"
+                    app:layout_constraintTop_toBottomOf="@id/renewpwdLayout"
+                    app:layout_constraintEnd_toEndOf="@id/renewpwdLayout"
                     android:text="Đổi"/>
 
             </android.support.constraint.ConstraintLayout>

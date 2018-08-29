@@ -37,7 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.ForgotPasswordActivity" />
+        <activity android:name=".controller.ForgotPasswordActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
             android:name=".controller.register.RegisterActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -55,7 +56,8 @@
         <activity android:name=".controller.plan.NewPlanActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity android:name=".controller.search.FullSearchActivity"/>
-        <activity android:name=".controller.SettingsActivity"/>
+        <activity android:name=".controller.SettingsActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
     </application>

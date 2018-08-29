@@ -120,8 +120,8 @@ public class PlaceDetailActivity extends AppCompatActivity {
                     List<Post> list = response.body();
                     list.remove(0);
                     adapter.setListPost(list);
+                    adapter.notifyDataSetChanged();
                 }
-                rvGuide.setAdapter(adapter);
             }
 
             @Override
@@ -130,6 +130,21 @@ public class PlaceDetailActivity extends AppCompatActivity {
             }
         });
 
+        rvGuide.setAdapter(adapter);
+
+        rvGuide.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastVisibleItemPosition();
+
+                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
+                if (totalItemCount > 0 && endHasBeenReached) {
+                    adapter.incrementalLoad();
+                }
+            }
+        });
 //        mWebService.searchPostSuggestion()
     }
 

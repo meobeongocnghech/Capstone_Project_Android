@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardUseCompatPadding="false"
-    android:background="@color/colorDefaultBackground"
-    app:cardElevation="2dp">
+    android:background="?attr/selectableItemBackground"
+    app:cardElevation="0dp">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constrainlayout"

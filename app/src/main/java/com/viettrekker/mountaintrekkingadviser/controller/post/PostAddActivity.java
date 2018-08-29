@@ -14,6 +14,7 @@ import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.v13.view.inputmethod.EditorInfoCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -145,7 +147,7 @@ public class PostAddActivity extends AppCompatActivity {
         btnLocation.setText("Chọn địa điểm");
         placeId = -1;
         typeId = 4;
-        tvPostUserName.setText(Session.getUser(getApplicationContext()).getFirstName()+ " " +Session.getUser(getApplicationContext()).getLastName());
+        tvPostUserName.setText(Session.getUser(getApplicationContext()).getFirstName() + " " + Session.getUser(getApplicationContext()).getLastName());
         idUpdate = getIntent().getIntExtra("id", 0);
         if (idUpdate > 0) {
             edtTitlePost.setText(getIntent().getStringExtra("title"));
@@ -195,7 +197,7 @@ public class PostAddActivity extends AppCompatActivity {
                     d = new Direction();
                     d.setPlaceId(placeId);
                 }
-                if (planId > 0 && placeId < 0){
+                if (planId > 0 && placeId < 0) {
                     typeId = 2;
 
                 }
@@ -226,8 +228,8 @@ public class PostAddActivity extends AppCompatActivity {
 
                     Gson gson = new Gson();
                     builder.addFormDataPart("direction", gson.toJson(d));
-                    if (planId > 0){
-                        builder.addFormDataPart("directionId", planId+"");
+                    if (planId > 0) {
+                        builder.addFormDataPart("directionId", planId + "");
                     }
 
                     for (String s : imageAddAdapter.getListImg()) {
@@ -384,17 +386,17 @@ public class PostAddActivity extends AppCompatActivity {
 
     private ArrayList<PlanOwn> createPlanData() {
         ArrayList<PlanOwn> items = new ArrayList<>();
-        mWebService.getListPlan(Session.getToken(PostAddActivity.this),1,20,"id").enqueue(new Callback<List<Plan>>() {
+        mWebService.getListPlan(Session.getToken(PostAddActivity.this), 1, 20, "id").enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
-                if (response.body().size() > 1){
+                if (response.body().size() > 1) {
                     List<Plan> p = response.body();
                     p.remove(0);
-                    for (Plan pl: p) {
+                    for (Plan pl : p) {
                         PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
                         items.add(po);
                     }
-                    }
+                }
             }
 
             @Override

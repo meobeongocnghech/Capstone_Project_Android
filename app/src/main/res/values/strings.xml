@@ -64,4 +64,6 @@
     <string name="title_post_detail">Bài viết</string>
     <string name="title_settings">Tùy chỉnh</string>
     <string name="hint_new_password">Mật khẩu mới</string>
+
+    <string name="default_token">1|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImxpbmhudEBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQwOCRoSkU3VUtQTXlXcHdKYmpqSE5kR3Z1NzBFUk1DLlZDZDlTZnhZOHFMMUlxa1M2ZFNtd0dneSIsImlhdCI6MTUzMDkzOTU5OSwiZXhwIjoxNTc0MTM5NTk5fQ.Ih0keKGJ2XK7TE9icXcY7qy87B-39VDOC5YT70Ey_E8</string>
 </resources>

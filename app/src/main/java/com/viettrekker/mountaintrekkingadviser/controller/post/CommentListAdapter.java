@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -87,6 +88,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         User user = comment.getUser();
         DateTimeUtils datetime = new DateTimeUtils();
         CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId(), token, userId);
+        viewHolder.tvCmtContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(position).getUser().getLastName());
         viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));

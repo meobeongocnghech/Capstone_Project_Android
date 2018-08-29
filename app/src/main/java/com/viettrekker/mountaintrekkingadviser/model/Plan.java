@@ -41,6 +41,12 @@ public class Plan {
     @SerializedName("isPublic")
     @Expose
     private int isPublic;
+    @SerializedName("rowCount")
+    @Expose
+    private int rowCount;
+    @SerializedName("carry")
+    @Expose
+    private int carry;
 
     public int getId() {
         return id;
@@ -128,5 +134,21 @@ public class Plan {
 
     public void setIsPublic(int isPublic) {
         this.isPublic = isPublic;
+    }
+
+    public int getRowCount() {
+        return rowCount;
+    }
+
+    public void setRowCount(int rowCount) {
+        this.rowCount = rowCount;
+    }
+
+    public int getCarry() {
+        return carry;
+    }
+
+    public void setCarry(int carry) {
+        this.carry = carry;
     }
 }

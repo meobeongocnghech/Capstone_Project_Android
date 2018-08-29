@@ -245,9 +245,12 @@ public class MainActivity extends AppCompatActivity
 
                 if (tab.getPosition() == 0) {
                     tvMainTitle.setText("Trang chủ");
+                    showAdd();
+                    btnAddNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_add, null));
                 } else if (tab.getPosition() == 1) {
                     tvMainTitle.setText("Kế hoạch");
                     showAdd();
+                    btnAddNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_white_24dp, null));
                 } else if (tab.getPosition() == 2) {
                     tvMainTitle.setText("Thông báo");
                     hideAdd();

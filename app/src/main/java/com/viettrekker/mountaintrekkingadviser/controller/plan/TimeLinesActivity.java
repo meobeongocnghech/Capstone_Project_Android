@@ -47,6 +47,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
     private TextView tvTLDate;
     private int id;
     private String state= "";
+    private int planState;
 
     private Plan plan;
     private String token;
@@ -74,6 +75,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
         tvTLDate = (TextView) findViewById(R.id.tvTLDate);
 
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
+        planState = getIntent().getIntExtra("planSate", 0);
         id = getIntent().getIntExtra("id",-1);
         edtTimelineTitle.setVisibility(View.GONE);
         edtTimelineContent.setVisibility(View.GONE);
@@ -98,6 +100,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 btnTLDate.setVisibility(View.VISIBLE);
                 btnTLTime.setVisibility(View.VISIBLE);
                 btnEditTimeline.setText("Xong");
+                timelinesListAdapter.enableDelete();
             } else {
                 edtTimelineTitle.setVisibility(View.GONE);
                 edtTimelineContent.setVisibility(View.GONE);
@@ -105,6 +108,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 btnTLDate.setVisibility(View.GONE);
                 btnTLTime.setVisibility(View.GONE);
                 btnEditTimeline.setText("Sửa");
+                timelinesListAdapter.disableDelete();
                 tvTLDate.setVisibility(View.INVISIBLE);
                 tvTLDate.setText("");
                 tvTLTime.setVisibility(View.INVISIBLE);
@@ -156,6 +160,8 @@ public class TimeLinesActivity  extends AppCompatActivity{
             btnEditTimeline.setVisibility(View.GONE);
             timelinesListAdapter.setList(newPlanActivity.timeLines);
             timelinesListAdapter.sortTimelines();
+        } else if (planState != 0) {
+            btnEditTimeline.setVisibility(View.GONE);
         }
         btnTLDate.setOnClickListener((v) -> datePick());
         btnTLTime.setOnClickListener((v) -> timePick());

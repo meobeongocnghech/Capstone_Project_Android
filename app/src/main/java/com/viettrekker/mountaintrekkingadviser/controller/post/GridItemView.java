@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 
@@ -32,6 +33,8 @@ public class GridItemView extends FrameLayout {
                 .load(path)
                 .fallback(R.drawable.default_background)
                 .placeholder(R.drawable.default_background)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
                 .centerCrop()
                 .into(img);
         requestLayout();

@@ -74,14 +74,24 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                if (postFragment == null) {
+                    postFragment = new PostFragment();
+                }
                 return postFragment;
             case 1:
+                if (planFragment == null) {
+                    planFragment = new PlanFragment();
+                }
                 return planFragment;
             case 2:
+                if (notificationFragment == null) {
+                    notificationFragment = new NotificationFragment();
+                }
                 return notificationFragment;
-//            case 3:
-//                return messageFragment;
             case 3:
+                if (searchFragment == null) {
+                    searchFragment = new SearchFragment();
+                }
                 return searchFragment;
         }
         return null;

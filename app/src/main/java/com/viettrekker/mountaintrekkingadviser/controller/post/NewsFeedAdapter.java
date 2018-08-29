@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arasthel.spannedgridlayoutmanager.SpannedGridLayoutManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
@@ -55,17 +57,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
     private boolean isByUserId = false;
     private boolean isByPlaceId = false;
+    private boolean isByPlanId = false;
     private int userId;
     private int placeId;
+    private int directionId;
     private Context context;
     private int width;
     private Fragment fragment;
     private APIService mWebService = APIUtils.getWebService();
     private String token;
+    private boolean continueLoad = true;
 
     public NewsFeedAdapter(Context context, Fragment fragment, String token) {
         this.context = context;
-        this.fragment = fragment;
         this.token = token;
         this.width = LocalDisplay.getScreenWidth(context);
     }
@@ -90,6 +94,14 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         this.placeId = placeId;
     }
 
+    public void setByPlanId(boolean byPlanId) {
+        isByPlanId = byPlanId;
+    }
+
+    public void setDirectionId(int directionId) {
+        this.directionId = directionId;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -109,11 +121,15 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.userId = userId;
         viewHolder.post = listPost.get(postion);
         viewHolder.isByUserId = isByUserId;
+        viewHolder.isByPlanId = isByPlanId;
         String typPost = "null";
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
         typPost = postType[post.getTypeId() - 1];
-        if (post.getTypeId() == 1 && (post.getDirection()) != null){
+        if (isByPlanId) {
+            viewHolder.separator.setVisibility(View.GONE);
+            viewHolder.tvPostCategory.setVisibility(View.GONE);
+        }else if (post.getTypeId() == 1 && (post.getDirection()) != null){
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
             viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
         } else {
@@ -134,10 +150,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         }
 
         viewHolder.tvPostTitle.setText(post.getName());
+        viewHolder.tvPostContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvPostContent.setText(post.getContent());
         viewHolder.tvCmtCount.setText(post.getCommentsCount()==0 ? "" : post.getCommentsCount()+" bình luận");
 
-        viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_noti_like));
+        viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like));
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
         viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
         viewHolder.btnPostLike.setText("Thích");
@@ -213,7 +230,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             Post p = response.body();
-                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_noti_like));
+                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
                             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
                             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
                             viewHolder.btnPostLike.setText("Thích");
@@ -256,6 +273,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                     .load(APIUtils.BASE_URL_API + post.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + width)
                                     .fallback(R.drawable.default_background)
                                     .placeholder(R.drawable.default_background)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
                                     .centerCrop()
                                     .into(viewHolder.singlePreview);
                             if (ratio >= 1.5) {
@@ -376,75 +395,111 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     }
 
     public void incrementalLoad() {
-        APIService mWebService = APIUtils.getWebService();
-        if (isByUserId) {
-            mWebService.getPostPageByUserId(token, userId, pageCount++,"DESC").enqueue(new Callback<List<Post>>() {
-                @Override
-                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                    List<Post> list = response.body();
-                    int lastPosition = listPost.size();
-                    if (list != null) {
-                        for (Post p : list) {
-                            if (p.getState() != 1) {
-                                listPost.add(p);
-                            }
-                        }
-                        notifyItemRangeChanged(lastPosition, list.size());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Post>> call, Throwable t) {
-                    Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
-                }
-            });
-        } else if (isByPlaceId) {
-            mWebService.getPostPageByPlaceId(token, pageCount++, 5, placeId, "DESC").enqueue(new Callback<List<Post>>() {
-                @Override
-                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                    List<Post> list = response.body();
-                    if (list != null) {
-                        list.remove(0);
+        if (continueLoad) {
+            APIService mWebService = APIUtils.getWebService();
+            if (isByUserId) {
+                mWebService.getPostPageByUserId(token, userId, pageCount++,"DESC").enqueue(new Callback<List<Post>>() {
+                    @Override
+                    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                        List<Post> list = response.body();
                         int lastPosition = listPost.size();
-                        for (Post p : list) {
-                            if (p.getState() != 1) {
-                                listPost.add(p);
+                        if (list != null && !list.isEmpty()) {
+                            for (Post p : list) {
+                                if (p.getState() != 1) {
+                                    listPost.add(p);
+                                }
+                            }
+                            notifyItemRangeChanged(lastPosition, list.size());
+                        } else {
+                            continueLoad = false;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Post>> call, Throwable t) {
+                        Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else if (isByPlaceId) {
+                mWebService.getPostPageByPlaceId(token, pageCount++, 5, placeId, "DESC").enqueue(new Callback<List<Post>>() {
+                    @Override
+                    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                        List<Post> list = response.body();
+                        if (list != null) {
+                            list.remove(0);
+                            if (list.isEmpty()) {
+                                continueLoad = false;
+                            } else {
+                                int lastPosition = listPost.size();
+                                for (Post p : list) {
+                                    if (p.getState() != 1) {
+                                        listPost.add(p);
+                                    }
+                                }
+                                notifyItemRangeChanged(lastPosition, list.size());
                             }
                         }
-                        notifyItemRangeChanged(lastPosition, list.size());
                     }
-                }
 
-                @Override
-                public void onFailure(Call<List<Post>> call, Throwable t) {
-                    Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
-                }
-            });
-        } else {
-            mWebService.getPostPage(token, pageCount++, 5, "id", "DESC").enqueue(new Callback<List<Post>>() {
-                @Override
-                public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                    List<Post> list = response.body();
-                    if (list != null) {
-                        list.remove(0);
-                        int lastPosition = listPost.size();
-                        for (Post p : list) {
-                            if (p.getState() != 1) {
-                                listPost.add(p);
+                    @Override
+                    public void onFailure(Call<List<Post>> call, Throwable t) {
+                        Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else if(isByPlanId) {
+                mWebService.getPostPageByPlanId(token, pageCount++, 5, directionId, "DESC").enqueue(new Callback<List<Post>>() {
+                    @Override
+                    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                        List<Post> list = response.body();
+                        if (list != null) {
+                            list.remove(0);
+                            if (list.isEmpty()) {
+                                continueLoad = false;
+                            } else {
+                                int lastPosition = listPost.size();
+                                for (Post p : list) {
+                                    if (p.getState() != 1) {
+                                        listPost.add(p);
+                                    }
+                                }
+                                notifyItemRangeChanged(lastPosition, list.size());
                             }
                         }
-                        notifyItemRangeChanged(lastPosition, list.size());
                     }
-                }
 
-                @Override
-                public void onFailure(Call<List<Post>> call, Throwable t) {
-                    Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
-                }
-            });
+                    @Override
+                    public void onFailure(Call<List<Post>> call, Throwable t) {
+
+                    }
+                });
+            } else {
+                mWebService.getPostPage(token, pageCount++, 5, "id", "DESC").enqueue(new Callback<List<Post>>() {
+                    @Override
+                    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                        List<Post> list = response.body();
+                        if (list != null) {
+                            list.remove(0);
+                            if (list.isEmpty()) {
+                                continueLoad = false;
+                            } else {
+                                int lastPosition = listPost.size();
+                                for (Post p : list) {
+                                    if (p.getState() != 1) {
+                                        listPost.add(p);
+                                    }
+                                }
+                                notifyItemRangeChanged(lastPosition, list.size());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Post>> call, Throwable t) {
+                        Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
-
-
     }
 
     @Override
@@ -462,6 +517,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         int userId;
         Post post;
         boolean isByUserId;
+        boolean isByPlanId;
         ImageView imgPostAvatar;
         TextView tvPostUserName;
         TextView tvTime;
@@ -653,6 +709,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             intent.putExtra("id", postId);
             intent.putExtra("token", token);
             intent.putExtra("isByUserId", isByUserId);
+            intent.putExtra("isByPlanId", isByPlanId);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         }

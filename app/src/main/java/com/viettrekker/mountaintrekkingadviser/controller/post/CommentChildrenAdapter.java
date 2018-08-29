@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,6 +74,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         User user = comment.getUser();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
+        viewHolder.tvCmtContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
         viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));

@@ -59,20 +59,6 @@ public class PostFragment extends Fragment {
                 }
             }
         });
-
-        layout.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                if (layout != null) {
-                    if (layout.getChildAt(0).getBottom() <= (layout.getHeight() + layout.getScrollY())) {
-                        NewsFeedFragment fragment = ((NewsFeedFragment) getFragmentManager().findFragmentByTag("newsfeed"));
-                        if (fragment != null && fragment.isVisible()) {
-                            fragment.incrementalLoad();
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private void loadPlaceData() {

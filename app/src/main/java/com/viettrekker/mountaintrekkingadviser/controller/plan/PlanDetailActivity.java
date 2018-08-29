@@ -5,26 +5,29 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,21 +42,14 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedAdapter;
-import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
-import com.viettrekker.mountaintrekkingadviser.model.ChecklistItem;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
-import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
-import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
-import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -100,6 +96,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     private MaterialButton endPicker;
     private TextView tvMoreAction;
     private FloatingActionButton addViewMaps;
+    private TextView tvCarry;
 
     private boolean changeActivity = true;
 
@@ -128,6 +125,11 @@ public class PlanDetailActivity extends AppCompatActivity {
     AlertDialog.Builder alertDialogBuilder;
 
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    int state;
+
+    private final int READY = 0;
+    private final int ONGOING = 1;
+    private final int FINISH = 2;
 
     private SlideDateTimeListener listener = new SlideDateTimeListener() {
 
@@ -188,6 +190,11 @@ public class PlanDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_plan_detail);
+        //getPlan
+        id = getIntent().getIntExtra("id", 0);
+        token = Session.getToken(this);
+        userId = getIntent().getIntExtra("userId", 0);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.viewPlanToolbar);
         alertDialogBuilder = new AlertDialog.Builder(PlanDetailActivity.this);
         setSupportActionBar(toolbar);
@@ -212,6 +219,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         tvMemberCount = (TextView) findViewById(R.id.tvMemberCount);
         addViewMaps = (FloatingActionButton) findViewById(R.id.addViewMaps);
         tvMoreAction = (TextView) findViewById(R.id.tvMoreAction);
+        tvCarry = (TextView) findViewById(R.id.tvCarry);
 
         rcvPlanPost = (RecyclerView) findViewById(R.id.rcvPlanPost);
 
@@ -221,17 +229,15 @@ public class PlanDetailActivity extends AppCompatActivity {
         rcvListMembersPlan.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
         membersListAdapter = new MembersListAdapter(PlanDetailActivity.this);
         rcvListMembersPlan.setVisibility(View.GONE);
+
         newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this,null, token);
+        newsFeedAdapter.setByPlanId(true);
+        newsFeedAdapter.setDirectionId(id);
         startPicker = (MaterialButton) findViewById(R.id.startDateTimePicker);
         endPicker = (MaterialButton) findViewById(R.id.endDateTimePicker);
 
         startDate = Calendar.getInstance();
         endDate = Calendar.getInstance();
-
-        //getPlan
-        id = getIntent().getIntExtra("id", 0);
-        token = Session.getToken(this);
-        userId = getIntent().getIntExtra("userId", 0);
 
 
         places = new ArrayList<>();
@@ -404,6 +410,42 @@ public class PlanDetailActivity extends AppCompatActivity {
                 endPicker.setVisibility(View.VISIBLE);
                 tvStartPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
                 tvEndPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
+                tvPlanName.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_white_24dp, null), null);
+                ColorStateList stateList = new ColorStateList(
+                        new int[][]{{}}, new int[]{Color.parseColor("#ffffff")});
+                tvPlanName.setOnClickListener((textView)-> {
+                    String lastName = tvPlanName.getText().toString();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Tên kế hoạch");
+                    final EditText input = new EditText(this);
+                    // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
+                    builder.setCancelable(false)
+                            .setPositiveButton("Hoàn tất", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    String name = input.getText().toString().trim();
+                                    if (!name.isEmpty()) {
+                                        tvPlanName.setText(name);
+                                        dialog.cancel();
+                                    } else {
+                                        Toast.makeText(PlanDetailActivity.this, "Tên không được trống", Toast.LENGTH_LONG).show();
+                                        tvPlanName.setText(lastName);
+                                    }
+                                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                                }
+                            })
+                            .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                                }
+                            });
+
+                    AlertDialog alertDialog = builder.create();
+
+                    alertDialog.show();
+                });
                 btnEditablePlan.setText("Xong");
 
                 tvStartPlace.setOnClickListener((view) -> {
@@ -468,17 +510,20 @@ public class PlanDetailActivity extends AppCompatActivity {
                             }).show();
                 });
             } else {
+                tvPlanName.setOnClickListener(null);
                 tvStartPlace.setOnClickListener(null);
                 tvEndPlace.setOnClickListener(null);
                 tvStartPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 tvEndPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                tvPlanName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 startPicker.setVisibility(View.GONE);
                 endPicker.setVisibility(View.GONE);
                 btnEditablePlan.setText("Sửa");
 
+                plan.getGroup().setName(tvPlanName.getText().toString());
                 Date d1 = startDate.getTime();
                 Date d2 = endDate.getTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
                 plan.setStartTime(sdf.format(d1));
                 plan.setFinishTime(sdf.format(d2));
 
@@ -498,22 +543,20 @@ public class PlanDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
                         progressDialog.dismiss();
-                        Toast.makeText(PlanDetailActivity.this, "Thành công", Toast.LENGTH_LONG).show();
-                        setResult(RESULT_OK, null);
-                        finish();
+                        Snackbar.make(findViewById(R.id.coordinatorPlanDetail), "Thay đổi thành công", Snackbar.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Call<Plan> call, Throwable t) {
                         progressDialog.dismiss();
                         Toast.makeText(PlanDetailActivity.this, "Đã có lỗi xảy ra", Toast.LENGTH_LONG).show();
-                        setResult(RESULT_CANCELED, null);
+                        setResult(RESULT_OK, null);
                         finish();
                     }
                 });
             }
         });
-        mWebService.getPostPageByPlanId(token, 1, 50, id).enqueue(new Callback<List<Post>>() {
+        mWebService.getPostPageByPlanId(token, 1, 5, id, "DESC").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.code() == 200){
@@ -524,19 +567,32 @@ public class PlanDetailActivity extends AppCompatActivity {
                         newsFeedAdapter.notifyDataSetChanged();
                     }
                 } else {
-                    Toast.makeText(PlanDetailActivity.this,"Có lỗi khi load bài viết.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PlanDetailActivity.this,"Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(PlanDetailActivity.this,"Có lỗi khi load bài viết.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlanDetailActivity.this,"Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
             }
         });
         rcvPlanPost.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
         rcvPlanPost.setNestedScrollingEnabled(false);
         rcvPlanPost.setAdapter(newsFeedAdapter);
         rcvPlanPost.setVisibility(View.VISIBLE);
+        rcvPlanPost.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastVisibleItemPosition();
+
+                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
+                if (totalItemCount > 0 && endHasBeenReached) {
+                    newsFeedAdapter.incrementalLoad();
+                }
+            }
+        });
         rcvListMembersPlan.setNestedScrollingEnabled(false);
         rcvListMembersPlan.setAdapter(membersListAdapter);
         layoutViewMember.setOnClickListener(new View.OnClickListener() {
@@ -555,6 +611,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(PlanDetailActivity.this, TimeLinesActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("token", token);
+                intent.putExtra("planState", state);
                 changeActivity = true;
                 startActivity(intent);
             }
@@ -565,6 +622,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 Intent intent = new Intent(PlanDetailActivity.this, ChecklistActivity.class);
                 intent.putExtra("id", id);
                 intent.putExtra("token", token);
+                intent.putExtra("planState", state);
                 changeActivity = true;
                 startActivity(intent);
             }
@@ -583,6 +641,12 @@ public class PlanDetailActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_OK, null);
+        finish();
     }
 
     @Override
@@ -616,17 +680,23 @@ public class PlanDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Plan> call, Response<Plan> response) {
                 plan = response.body();
+                tvCarry.setText(plan.getCarry() + " xe");
                 try {
-                    if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).after(Calendar.getInstance().getTime())
-                            && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
+                    if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())
+                            && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
                         tvStatePlan.setText("Đang diễn ra");
                         tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorOrange));
-                    } else if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
+                        btnEditablePlan.setVisibility(View.GONE);
+                        state = ONGOING;
+                    } else if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
                         tvStatePlan.setText("Đã hoàn thành");
                         tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorGray));
+                        btnEditablePlan.setVisibility(View.GONE);
+                        state = FINISH;
                     } else {
                         tvStatePlan.setText("Sẵn sàng");
                         tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorPrimary));
+                        state = READY;
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -747,6 +817,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         if (changeActivity) {
             changeActivity = false;
             loadPlan();

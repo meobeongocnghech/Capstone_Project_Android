@@ -20,6 +20,7 @@ public class ChecklistAdapter extends  RecyclerView.Adapter<ChecklistAdapter.Vie
     private Fragment fragment;
     private Context context;
     List<ChecklistItem> list;
+    private boolean disableEdit = false;
 
     public void setContext(Context context) {
         this.context = context;
@@ -49,11 +50,27 @@ public class ChecklistAdapter extends  RecyclerView.Adapter<ChecklistAdapter.Vie
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.item = list.get(i);
         viewHolder.tvCheckListItem.setText(list.get(i).getContent());
+        if(disableEdit) {
+            viewHolder.btnDeleteItem.setVisibility(View.GONE);
+        } else {
+            viewHolder.btnDeleteItem.setVisibility(View.VISIBLE);
+        }
         viewHolder.btnDeleteItem.setOnClickListener((v) -> {
             list.remove(viewHolder.item);
             notifyDataSetChanged();
         });
     }
+
+    public void disableEdit() {
+        disableEdit = true;
+        notifyDataSetChanged();
+    }
+
+    public void enableEdit() {
+        disableEdit = false;
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemCount() {

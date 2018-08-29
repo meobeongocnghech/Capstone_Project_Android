@@ -26,6 +26,7 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
     private Context context;
     private List<TimeLines> list;
     private Date lastDate;
+    private boolean disableDelete = false;
 
     public void setContext(Context context) {
         this.context = context;
@@ -73,6 +74,12 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
             e.printStackTrace();
         }
 
+        if (disableDelete) {
+            viewHolder.imgDeleteTimeline.setVisibility(View.GONE);
+        } else {
+            viewHolder.imgDeleteTimeline.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.imgDeleteTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +88,16 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
             }
         });
 
+    }
+
+    public void disableDelete() {
+        disableDelete = true;
+        notifyDataSetChanged();
+    }
+
+    public void enableDelete() {
+        disableDelete = false;
+        notifyDataSetChanged();
     }
 
     @Override

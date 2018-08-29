@@ -30,6 +30,7 @@ import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
@@ -111,7 +112,8 @@ public interface APIService {
     Call<List<Post>> getPostPageByPlanId(@Header("AUTH_TOKEN_ID") String token,
                                           @Query("page") int page,
                                           @Query("pageSize") int size,
-                                          @Query("directionId") int id);
+                                          @Query("directionId") int id,
+                                          @Query("order") String order);
 
     @GET("member/post")
     Call<List<Post>> getPostPageByUserId(@Header("AUTH_TOKEN_ID") String token,
@@ -326,7 +328,7 @@ public interface APIService {
                                  @Query("page") int page,
                                  @Query("pageSize") int pageSize,
                                  @Query("orderBy") String orderBy,
-                                 @Query("isPublic") int isPublic);
+                                 @Query("isPublic") boolean isPublic);
 
     @FormUrlEncoded
     @POST("plan/member/quit")
@@ -361,5 +363,18 @@ public interface APIService {
                           @Field("userId") int userId);
 
 
+    @PUT("auth/password")
+    @FormUrlEncoded
+    Call<User> changePassword(@Header("AUTH_TOKEN_ID") String token,
+                              @Field("newPassword") String newPwd,
+                              @Field("password") String pwd);
 
+    @POST("auth/password")
+    @FormUrlEncoded
+    Call<MyMessage> sendKeyToEmail(@Field("email") String email);
+
+    @PATCH("auth/password")
+    @FormUrlEncoded
+    Call<User> sendChangePassword(@Field("key") String key,
+                                @Field("email") String email);
 }

@@ -56,10 +56,19 @@ public class NewsFeedFragment extends Fragment {
         adapter = new NewsFeedAdapter(getContext(), this, token);
         initLoad(adapter);
         rcvNewsFeed.setAdapter(adapter);
-    }
+        rcvNewsFeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastVisibleItemPosition();
 
-    public void incrementalLoad(){
-        adapter.incrementalLoad();
+                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
+                if (totalItemCount > 0 && endHasBeenReached) {
+                    adapter.incrementalLoad();
+                }
+            }
+        });
     }
 
     public void notifyChanged(){

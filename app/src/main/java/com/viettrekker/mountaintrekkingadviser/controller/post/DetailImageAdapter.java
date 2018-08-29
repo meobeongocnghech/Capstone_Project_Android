@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
@@ -19,7 +20,7 @@ import java.util.List;
 public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.ViewHolder> {
 
     private HashMap<Integer, float[]> map;
-    private int limit;
+    private int limit = 3;
     private int idx = 0;
     private int width;
     private List<MyMedia> medias;
@@ -56,6 +57,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + width)
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img1);
 
                 viewHolder.img2.setVisibility(View.GONE);
@@ -76,6 +79,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + (int) (height / ratios[0]))
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img1);
                 idx++;
 
@@ -87,6 +92,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + (int) (height / ratios[1]))
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img2);
 
                 viewHolder.img3.setVisibility(View.GONE);
@@ -107,6 +114,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + (int) (height1 / ratios[0]))
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img1);
                 idx++;
 
@@ -118,6 +127,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + (int) (height1 / ratios[1]))
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img2);
                 idx++;
 
@@ -129,6 +140,8 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                         .load(APIUtils.BASE_URL_API + medias.get(idx).getPath().substring(4) + "&w=" + (int) (height1 / ratios[2]))
                         .placeholder(R.drawable.default_background)
                         .fallback(R.drawable.default_background)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
                         .into(viewHolder.img3);
                 idx++;
 

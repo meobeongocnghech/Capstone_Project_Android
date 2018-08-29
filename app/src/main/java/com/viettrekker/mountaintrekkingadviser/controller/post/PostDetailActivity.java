@@ -16,10 +16,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -147,7 +149,6 @@ public class PostDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 edtComment.requestFocus();
                 imm.showSoftInput(edtComment, InputMethodManager.SHOW_IMPLICIT);
-
             }
         });
         rcvCmtItem = (RecyclerView) findViewById(R.id.rcvCmtListDetail);
@@ -276,7 +277,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
                             tvLikeCount.setText(response.body().getLikesCount() == 0 ? "" : response.body().getLikesCount() + " thích");
-                            btnPostLike.setIcon(getDrawable(R.drawable.ic_noti_like));
+                            btnPostLike.setIcon(getDrawable(R.drawable.ic_like));
                             btnPostLike.setTextColor(getResources().getColor(R.color.colorBlack));
                             btnPostLike.setIconTint(getResources().getColorStateList(R.color.colorBlack));
                             btnPostLike.setText("Thích");
@@ -408,7 +409,7 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-        String token = getIntent().getStringExtra("token");
+        String token = Session.getToken(this);
         mWebService.getPostByPostId(token, id).enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
@@ -420,7 +421,11 @@ public class PostDetailActivity extends AppCompatActivity {
 
                     tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
                     String typPost = postType[post.getTypeId() - 1];
-                    if (post.getTypeId() == 1 && post.getDirection() != null) {
+                    boolean isByPlanId = getIntent().getBooleanExtra("isByPlanId", false);
+                    if (isByPlanId) {
+                        separator.setVisibility(View.GONE);
+                        tvPostCategory.setVisibility(View.GONE);
+                    } else if (post.getTypeId() == 1 && post.getDirection() != null) {
                         separator.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_location_on));
                         tvPostCategory.setText(post.getDirection().getPlace().getName());
                     } else {
@@ -428,6 +433,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         separator.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
                     }
                     tvPostTitle.setText(post.getName());
+                    tvPostContent.setAutoLinkMask(Linkify.WEB_URLS);
                     tvPostContent.setText(post.getContent());
                     cmtListAdapter.setList(post.getComments());
                     cmtListAdapter.notifyDataSetChanged();
@@ -450,7 +456,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     });
 
-                    btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_noti_like));
+                    btnPostLike.setIcon(getApplicationContext().getResources().getDrawable(R.drawable.ic_like));
                     btnPostLike.setTextColor(getApplicationContext().getResources().getColor(R.color.colorBlack));
                     btnPostLike.setIconTint(getApplicationContext().getResources().getColorStateList(R.color.colorBlack));
                     btnPostLike.setText("Thích");

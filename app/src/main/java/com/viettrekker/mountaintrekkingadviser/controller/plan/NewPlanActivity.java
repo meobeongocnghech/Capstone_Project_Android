@@ -157,8 +157,6 @@ public class NewPlanActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         APIService mWebService = APIUtils.getWebService();
         edtPlanName = (EditText) findViewById(R.id.edtPlanName);
         btnStartLoc = (MaterialButton) findViewById(R.id.btnStartLoc);
@@ -178,7 +176,7 @@ public class NewPlanActivity extends AppCompatActivity {
         timeLines = new ArrayList<>();
         checkLists = new ArrayList<>();
 
-        token = getIntent().getStringExtra("token");
+        token = Session.getToken(this);
 
         startDate = Calendar.getInstance();
         endDate = Calendar.getInstance();
@@ -355,7 +353,7 @@ public class NewPlanActivity extends AppCompatActivity {
                     check++;
                     Date d1 = startDate.getTime();
                     Date d2 = endDate.getTime();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
                     plan.setStartTime(sdf.format(d1));
                     plan.setFinishTime(sdf.format(d2));
                 }
@@ -379,27 +377,6 @@ public class NewPlanActivity extends AppCompatActivity {
                 Gson gson = new Gson();
                 String jsonTimeline = gson.toJson(timeLines);
                 plan.setTimelines(jsonTimeline);
-//                String json = gson.toJson(plan);
-//                JsonElement jelement = new JsonParser().parse(json);
-//                JsonObject jobject = jelement.getAsJsonObject();
-//                jobject.remove("id");
-//                jobject.getAsJsonObject("group").remove("id");
-//                JsonArray jsonArray =  jobject.getAsJsonObject("group").getAsJsonArray("members");
-//                JsonObject jobject1;
-//                for (int i = 0; i < jsonArray.size(); i++ ){
-//                    jobject1 = jsonArray.get(i).getAsJsonObject();
-//                    jobject1.remove("lastName");
-//                    jobject1.remove("firstName");
-//                    jobject.getAsJsonObject("group").getAsJsonArray("members").remove(i);
-//                    jobject.getAsJsonObject("group").getAsJsonArray("members").add(jobject1);
-//                }
-//                JsonObject je = jobject.getAsJsonObject("group").getAsJsonArray("members").get(0).getAsJsonObject();
-//                je.remove("lastName");
-//                je.remove("firstName");
-//                jobject.getAsJsonObject("group").getAsJsonArray("members").remove(0);
-//                jobject.getAsJsonObject("group").getAsJsonArray("members").add(je);
-//                System.out.println("test thu : " + jobject.toString());
-
 
                 if (check >= 3) {
                     List<PlanLocation> locs = new ArrayList<>();
@@ -463,6 +440,11 @@ public class NewPlanActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private ArrayList<SearchPlace> createSampleData() {
         ArrayList<SearchPlace> items = new ArrayList<>();
         if (places != null)
@@ -502,5 +484,11 @@ public class NewPlanActivity extends AppCompatActivity {
             btnStartLoc.setText("Điểm đi");
             pickedSourceLocation = false;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 }

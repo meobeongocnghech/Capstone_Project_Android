@@ -234,6 +234,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                 datepicker.build().show();
                 break;
             case 1:
+                String phone = btnPhone.getText().toString();
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Nhập số điện thoại");
                 final EditText input = new EditText(getContext());
@@ -244,15 +245,16 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                         .setPositiveButton("Hoàn tất", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String inputPhone = input.getText().toString().trim();
-//                                String pattern = "/^(01[2689]|09)[0-9]{8}$/";
-//                                inputPhone = inputPhone.replaceAll("-", "");
-//                                inputPhone = inputPhone.replaceAll(".", "");
-//                                inputPhone = inputPhone.replaceAll(" ", "");
-                                if (!inputPhone.isEmpty()) {
+                                String pattern = "/^(01[2689]|09)[0-9]{8}$/";
+                                inputPhone = inputPhone.replaceAll("-", "");
+                                inputPhone = inputPhone.replaceAll(".", "");
+                                inputPhone = inputPhone.replaceAll(" ", "");
+                                if (!inputPhone.isEmpty() && inputPhone.matches(pattern)) {
                                     btnPhone.setText(inputPhone);
                                     dialog.cancel();
                                 } else {
-                                    input.setError("Không hợp lệ", getResources().getDrawable(R.drawable.error_icon, null));
+                                    Toast.makeText(getContext(), "Không hợp lệ", Toast.LENGTH_LONG).show();
+                                    btnPhone.setText(phone);
                                 }
                             }
                         })
