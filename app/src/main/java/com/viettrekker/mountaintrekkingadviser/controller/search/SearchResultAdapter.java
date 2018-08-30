@@ -165,7 +165,15 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             }
 
             vh.name.setText(posts.get(i).getUser().getFirstName() + " " + posts.get(i).getUser().getLastName());
-            vh.category.setText(postType[posts.get(i).getTypeId() - 1]);
+
+            if (posts.get(i).getTypeId() == 1 && (posts.get(i).getDirection()) != null) {
+                vh.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
+                vh.category.setText(posts.get(i).getDirection().getPlace().getName());
+            } else {
+                vh.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
+                vh.category.setText(postType[posts.get(i).getTypeId() - 1]);
+            }
+
             vh.content.setText(posts.get(i).getContent());
             vh.title.setText(posts.get(i).getName());
             try {
@@ -321,6 +329,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         TextView name;
         TextView time;
         TextView category;
+        TextView separator;
         TextView title;
         TextView content;
         RecyclerView images;
@@ -332,6 +341,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             name = (TextView) itemView.findViewById(R.id.tvSearchPostUserName);
             time = (TextView) itemView.findViewById(R.id.tvSeachTime);
             category = (TextView) itemView.findViewById(R.id.tvSearchPostCategory);
+            separator = (TextView) itemView.findViewById(R.id.separator);
             title = (TextView) itemView.findViewById(R.id.tvSearchPostTitle);
             content = (TextView) itemView.findViewById(R.id.tvSearchPostContent);
             images = (RecyclerView) itemView.findViewById(R.id.rcvSmallImagePreview);
@@ -372,6 +382,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
             Intent i = new Intent(context, PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
             i.putExtra("token", token);
+
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }

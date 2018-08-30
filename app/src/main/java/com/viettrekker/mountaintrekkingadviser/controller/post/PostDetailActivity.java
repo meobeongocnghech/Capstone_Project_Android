@@ -531,7 +531,6 @@ public class PostDetailActivity extends AppCompatActivity {
                         imageAdapter.setMap(map);
                         imageAdapter.setWidth(LocalDisplay.getScreenWidth(PostDetailActivity.this));
                         imageAdapter.setMedias(post.getGallery().getMedia());
-                        imageAdapter.setRcv(rcvPostImage);
                         rcvPostImage.setAdapter(imageAdapter);
                         rcvPostImage.setLayoutManager(new LinearLayoutManager(PostDetailActivity.this));
                         rcvPostImage.setNestedScrollingEnabled(false);

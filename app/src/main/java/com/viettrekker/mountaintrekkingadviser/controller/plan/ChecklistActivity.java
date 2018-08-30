@@ -99,46 +99,49 @@ public class ChecklistActivity extends AppCompatActivity {
                     checklistAdapter.notifyDataSetChanged();
                 }
             });
-        } else if (planState == 0) {
-            btnAddChecklist.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ChecklistItem c = new ChecklistItem();
-                    c.setContent(edtAddChecklist.getText().toString());
-                    c.setState(0);
-                    items.add(c);
-                    checklistAdapter.setList(items);
-                    checklistAdapter.notifyDataSetChanged();
-                }
-            });
+        } else {
+            if (planState == 0) {
+                btnAddChecklist.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ChecklistItem c = new ChecklistItem();
+                        c.setContent(edtAddChecklist.getText().toString());
+                        c.setState(0);
+                        items.add(c);
+                        checklistAdapter.setList(items);
+                        checklistAdapter.notifyDataSetChanged();
+                    }
+                });
 
-            btnEditCheckList.setOnClickListener((v) -> {
-                if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
-                    btnEditCheckList.setText("Xong");
-                    checklistAdapter.enableEdit();
-                    btnAddChecklist.setVisibility(View.VISIBLE);
-                    edtAddChecklist.setVisibility(View.VISIBLE);
-                } else {
-                    btnEditCheckList.setText("Sửa");
-                    checklistAdapter.disableEdit();
-                    btnAddChecklist.setVisibility(View.GONE);
-                    edtAddChecklist.setVisibility(View.GONE);
+                btnEditCheckList.setOnClickListener((v) -> {
+                    if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
+                        btnEditCheckList.setText("Xong");
+                        checklistAdapter.enableEdit();
+                        btnAddChecklist.setVisibility(View.VISIBLE);
+                        edtAddChecklist.setVisibility(View.VISIBLE);
+                    } else {
+                        btnEditCheckList.setText("Sửa");
+                        checklistAdapter.disableEdit();
+                        btnAddChecklist.setVisibility(View.GONE);
+                        edtAddChecklist.setVisibility(View.GONE);
 
-                    plan.getChecklist().setItems(items);
-                    mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
-                        @Override
-                        public void onResponse(Call<Plan> call, Response<Plan> response) {
-                            Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
-                        }
+                        plan.getChecklist().setItems(items);
+                        mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
+                            @Override
+                            public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void onFailure(Call<Plan> call, Throwable t) {
-                            Toast.makeText(ChecklistActivity.this, "Thất bại", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
-
+                            @Override
+                            public void onFailure(Call<Plan> call, Throwable t) {
+                                Toast.makeText(ChecklistActivity.this, "Thất bại", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            } else {
+                btnEditCheckList.setVisibility(View.GONE);
+            }
         }
 
         rcvChecklistItem.setNestedScrollingEnabled(false);

@@ -47,7 +47,7 @@
             android:maxLines="2"
             android:textColor="@color/colorTextFieldInput"
             android:textSize="14sp"
-            android:layout_marginLeft="72dp"
+            android:layout_marginLeft="80dp"
             app:layout_constraintEnd_toStartOf="@id/btnNotiOption"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

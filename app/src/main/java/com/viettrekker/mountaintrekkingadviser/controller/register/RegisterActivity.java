@@ -233,7 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
         TextInputEditText edtPwd = (TextInputEditText) findViewById(R.id.edtPassword);
         pwd = edtPwd.getText().toString();
         layout = (TextInputLayout) findViewById(R.id.passwordLayout);
-        String pwdPattern = "^[a-zA-Z0-9]{8,}$";
+        String pwdPattern = "^(?=.*\\d)(?=.*[a-zA-Z]).{8,}$";
         if (pwd.isEmpty()) {
             edtPwd.addTextChangedListener(new MyTextWatcher(layout, edtPwd));
             setFailStatus(edtPwd, layout, "Hãy nhập mật khẩu");

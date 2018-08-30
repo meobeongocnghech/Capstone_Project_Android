@@ -75,7 +75,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
         tvTLDate = (TextView) findViewById(R.id.tvTLDate);
 
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
-        planState = getIntent().getIntExtra("planSate", 0);
+        planState = getIntent().getIntExtra("planState", 0);
         id = getIntent().getIntExtra("id",-1);
         edtTimelineTitle.setVisibility(View.GONE);
         edtTimelineContent.setVisibility(View.GONE);

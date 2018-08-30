@@ -24,12 +24,6 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
     private int idx = 0;
     private int width;
     private List<MyMedia> medias;
-    private RecyclerView rcv;
-    private int rcvHeight = 0;
-
-    public void setRcv(RecyclerView rcv) {
-        this.rcv = rcv;
-    }
 
     public void setMap(HashMap<Integer, float[]> map) {
         this.map = map;
@@ -72,7 +66,6 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
 
                 viewHolder.layout.getLayoutParams().height = (int) (width * ratios[0]);
                 viewHolder.layout.requestLayout();
-                rcvHeight += (int) (width * ratios[0]);
                 idx++;
                 break;
             case 2:
@@ -106,7 +99,6 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                 viewHolder.img3.setVisibility(View.GONE);
 
                 viewHolder.layout.getLayoutParams().height = height;
-                rcvHeight += height;
                 viewHolder.layout.requestLayout();
                 idx++;
                 break;
@@ -154,13 +146,7 @@ public class DetailImageAdapter extends RecyclerView.Adapter<DetailImageAdapter.
                 idx++;
 
                 viewHolder.layout.getLayoutParams().height = height1;
-                rcvHeight += height1;
                 viewHolder.layout.requestLayout();
-        }
-
-        if (i == map.size() - 1) {
-            rcv.getLayoutParams().height = rcvHeight;
-            rcv.requestLayout();
         }
     }
 

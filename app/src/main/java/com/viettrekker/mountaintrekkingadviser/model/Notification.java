@@ -39,6 +39,9 @@ public class Notification {
     @SerializedName("post")
     @Expose
     private Post post;
+    @SerializedName("plan")
+    @Expose
+    private Plan plan;
     @SerializedName("comment")
     @Expose
     private Comment comment;
@@ -164,5 +167,13 @@ public class Notification {
 
     public void setTargetOwner(User targetOwner) {
         this.targetOwner = targetOwner;
+    }
+
+    public Plan getPlan() {
+        return plan;
+    }
+
+    public void setPlan(Plan plan) {
+        this.plan = plan;
     }
 }

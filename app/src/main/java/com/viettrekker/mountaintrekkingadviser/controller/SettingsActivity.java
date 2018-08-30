@@ -1,5 +1,7 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.register.RegisterActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.model.User;
@@ -139,11 +142,21 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             if (!invalidated) {
+                final ProgressDialog progressDialog = new ProgressDialog(SettingsActivity.this, R.style.FullDialogStyle);
+                progressDialog.setTitle("Đổi mật khẩu");
+                progressDialog.setMessage("Đang thực hiện ...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
                 APIUtils.getWebService().changePassword(Session.getToken(SettingsActivity.this), newpassword, password).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
+                        progressDialog.dismiss();
                         if (response.code() == HttpURLConnection.HTTP_OK) {
-                            Session.setSession(SettingsActivity.this, response.body());
+                            //Session.setSession(SettingsActivity.this, response.body());
+                            Session.clearSession(SettingsActivity.this);
+                            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         } else {
                             Type type = new TypeToken<MyMessage>() {
                             }.getType();
@@ -164,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-
+                        progressDialog.dismiss();
                     }
                 });
             }

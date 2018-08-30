@@ -253,7 +253,7 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                                     btnPhone.setText(inputPhone);
                                     dialog.cancel();
                                 } else {
-                                    Toast.makeText(getContext(), "Không hợp lệ", Toast.LENGTH_LONG).show();
+                                    Snackbar.make(layout, "Không hợp lệ", Toast.LENGTH_SHORT).show();
                                     btnPhone.setText(phone);
                                 }
                             }

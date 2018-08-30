@@ -3,9 +3,11 @@ package com.viettrekker.mountaintrekkingadviser.controller.profile;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -280,6 +283,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
                 .fallback(R.drawable.avatar_default)
                 .into(profileAvatarImage);
 
+        Point size;
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        size = new Point();
+        wm.getDefaultDisplay().getSize(size);
+        profile_cover.getLayoutParams().height = (int) (size.x * 1.5 / 3);
+        profile_cover.requestLayout();
         GlideApp.with(this)
                 .load(cover)
                 .placeholder(R.drawable.sea)

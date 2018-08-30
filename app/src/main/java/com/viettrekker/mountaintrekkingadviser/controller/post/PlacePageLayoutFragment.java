@@ -124,7 +124,6 @@ public class PlacePageLayoutFragment extends Fragment {
         address = "Chưa rõ";
         description = place.getDescription();
         total = "Chưa rõ";
-        LocationManager location;
         Geocoder geoCoder = new Geocoder(getContext());
         double lat = place.getLocation().getLatitude();
         double lng = place.getLocation().getLongitude();
@@ -150,8 +149,8 @@ public class PlacePageLayoutFragment extends Fragment {
             myLoc.setLongitude(mLatLng.longitude);
             float dist = myLoc.distanceTo(targetLoc)/1000;
             distance = "Khoảng " + (double) Math.floor(dist * 10) / 10 + "km";
-        } else {
         }
+
         tvPlaceDistance.setText(distance);
         tvPlaceName.setText(place.getName());
         tvPlaceAddress.setText(address);

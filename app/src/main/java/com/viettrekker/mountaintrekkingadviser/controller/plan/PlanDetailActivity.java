@@ -113,6 +113,7 @@ public class PlanDetailActivity extends AppCompatActivity {
 
     private String token;
     private int userId;
+    private int userRole;
 
     private List<Place> places;
     private int placeId;
@@ -702,6 +703,16 @@ public class PlanDetailActivity extends AppCompatActivity {
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
+                }
+
+                for (Member u : plan.getGroup().getMembers()) {
+                    if (u.getUserId() == userId) {
+                        userRole = u.getRoleInGroupId();
+                    }
+                }
+
+                if (userRole != 1) {
+                    state = 3;
                 }
 
                 try {

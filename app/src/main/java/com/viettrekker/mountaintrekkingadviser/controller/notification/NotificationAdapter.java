@@ -279,25 +279,25 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     break;
                 case 9:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
                 case 10:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
                 case 11:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
                 case 12:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
@@ -309,19 +309,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     break;
                 case 14:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
                 case 15:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;
                 case 16:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
+                    intent.putExtra("id", notification.getPlan().getId());
                     intent.putExtra("userId", notification.getTargetOwner().getId());
                     context.startActivity(intent);
                     break;

@@ -376,5 +376,5 @@ public interface APIService {
     @PATCH("auth/password")
     @FormUrlEncoded
     Call<User> sendChangePassword(@Field("key") String key,
-                                @Field("email") String email);
+                                @Field("newPassword") String password);
 }

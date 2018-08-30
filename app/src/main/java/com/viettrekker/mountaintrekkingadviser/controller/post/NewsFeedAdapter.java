@@ -129,7 +129,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         if (isByPlanId) {
             viewHolder.separator.setVisibility(View.GONE);
             viewHolder.tvPostCategory.setVisibility(View.GONE);
-        }else if (post.getTypeId() == 1 && (post.getDirection()) != null){
+        } else if (post.getTypeId() == 1 && (post.getDirection()) != null){
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
             viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
         } else {
