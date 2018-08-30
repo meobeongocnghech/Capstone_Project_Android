@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxPageTransformer;
 import com.viettrekker.mountaintrekkingadviser.animator.ParallaxTransformInformation;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -60,10 +61,8 @@ public class PagePlaceFragment extends Fragment {
             i.putExtra("token", token);
             i.putExtra("name", place.getName());
             i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
-            i.putExtra("address", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getAddress());
-            i.putExtra("distance", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getDistance());
-            i.putExtra("total", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getTotal());
-            i.putExtra("description", ((PlacePageLayoutFragment)placeAdapter.getCurrentFragment()).getDescription());
+            i.putExtra("lat", ((MainActivity) getActivity()).getLatLng().latitude);
+            i.putExtra("lng", ((MainActivity) getActivity()).getLatLng().longitude);
             startActivity(i);
         });
     }

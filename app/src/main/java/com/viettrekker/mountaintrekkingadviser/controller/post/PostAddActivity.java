@@ -153,13 +153,19 @@ public class PostAddActivity extends AppCompatActivity {
             edtTitlePost.setText(getIntent().getStringExtra("title"));
             edtContent.setText(getIntent().getStringExtra("content"));
             btnPost.setText("Sửa");
+            btnAddPhoto.setVisibility(View.GONE);
+            btnPlan.setVisibility(View.GONE);
+            btnLocation.setVisibility(View.GONE);
         }
         mWebService.searchPlace(Session.getToken(PostAddActivity.this), 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
-                places = response.body();
-                if (places != null)
-                    places.remove(0);
+                if (response.code() == 200){
+                    places = response.body();
+                    if (places != null)
+                        places.remove(0);
+                }
+
             }
 
             @Override
@@ -192,14 +198,14 @@ public class PostAddActivity extends AppCompatActivity {
 
                 String content = edtContent.getText().toString();
                 String title = edtTitlePost.getText().toString();
-                if (placeId > 0 && planId <= 0) {
+                if (placeId > 0) {
                     typeId = 1;
                     d = new Direction();
                     d.setPlaceId(placeId);
-                }
-                if (planId > 0 && placeId < 0) {
+                } else if (planId > 0) {
                     typeId = 2;
-
+                } else {
+                    typeId = 4;
                 }
                 if (title.isEmpty() || content.isEmpty()) {
                     alertDialogBuilder.setTitle("Cảnh báo");
@@ -214,17 +220,11 @@ public class PostAddActivity extends AppCompatActivity {
                     alertDialog.show();
 
                 } else if (!btnPost.getText().equals("Sửa")) {
-                    Post p = new Post();
-                    p.setId(idUpdate);
-                    p.setName(edtTitlePost.getText().toString());
-                    p.setContent(edtContent.getText().toString());
-                    p.setDirection(d);
-                    p.setTypeId(typeId);
-
                     MultipartBody.Builder builder = new MultipartBody.Builder();
                     builder.setType(MultipartBody.FORM);
                     builder.addFormDataPart("name", edtTitlePost.getText().toString());
                     builder.addFormDataPart("content", edtContent.getText().toString());
+                    builder.addFormDataPart("typeId", typeId + "");
 
                     Gson gson = new Gson();
                     builder.addFormDataPart("direction", gson.toJson(d));
@@ -245,11 +245,13 @@ public class PostAddActivity extends AppCompatActivity {
                     mWebService.addPostWithImages(Session.getToken(PostAddActivity.this), builder.build()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            progressDialog.dismiss();
-                            Toast.makeText(PostAddActivity.this, "Tạo thành công", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(PostAddActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
+                                progressDialog.dismiss();
+                                Toast.makeText(PostAddActivity.this, "Tạo thành công", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(PostAddActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+
+
                         }
 
                         @Override
@@ -267,16 +269,16 @@ public class PostAddActivity extends AppCompatActivity {
                     mWebService.updatePost(Session.getToken(PostAddActivity.this), idUpdate, edtTitlePost.getText().toString(), edtContent.getText().toString()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            progressDialog.dismiss();
-                            Toast.makeText(PostAddActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
-                            onBackPressed();
-                        }
+                                progressDialog.dismiss();
+                                Toast.makeText(PostAddActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(PostAddActivity.this,MainActivity.class));
+                            }
 
                         @Override
                         public void onFailure(Call<Post> call, Throwable t) {
                             progressDialog.dismiss();
                             Toast.makeText(PostAddActivity.this, "Cập nhật thất bại", Toast.LENGTH_LONG).show();
-//                            startActivity(new Intent(PostAddActivity.this,MainActivity.class));
+                            onBackPressed();
                         }
                     });
                 }
@@ -389,14 +391,17 @@ public class PostAddActivity extends AppCompatActivity {
         mWebService.getListPlan(Session.getToken(PostAddActivity.this), 1, 20, "id").enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
-                if (response.body().size() > 1) {
-                    List<Plan> p = response.body();
-                    p.remove(0);
-                    for (Plan pl : p) {
-                        PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
-                        items.add(po);
+                if (response.code() == 200){
+                    if (response.body().size() > 1) {
+                        List<Plan> p = response.body();
+                        p.remove(0);
+                        for (Plan pl : p) {
+                            PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
+                            items.add(po);
+                        }
                     }
                 }
+
             }
 
             @Override

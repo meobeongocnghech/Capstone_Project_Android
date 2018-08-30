@@ -129,12 +129,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         if (isByPlanId) {
             viewHolder.separator.setVisibility(View.GONE);
             viewHolder.tvPostCategory.setVisibility(View.GONE);
-        } else if (post.getTypeId() == 1 && (post.getDirection()) != null){
+        } else if (post.getTypeId() == 1 && (post.getDirectionId()) > 0){
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
             viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
         } else {
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
-            viewHolder.tvPostCategory.setText(typPost);
+            viewHolder.tvPostCategory.setText("Bài viết khác");
         }
         if (post.getUser().getAvatar() != null && !post.getUser().getAvatar().getPath().isEmpty()) {
             GlideApp.with(context)
@@ -229,19 +229,22 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.unlikePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            Post p = response.body();
-                            viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
-                            viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
-                            viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
-                            viewHolder.btnPostLike.setText("Thích");
-                            if (p.getLikesCount() <= 1) {
-                                viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
-                            } else {
-                                viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-                                viewHolder.tvlikeCount.setText((p.getLikesCount())+" thích");
+                            if (response.code() == 200){
+                                Post p = response.body();
+                                viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
+                                viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
+                                viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorBlack));
+                                viewHolder.btnPostLike.setText("Thích");
+                                if (p.getLikesCount() <= 1) {
+                                    viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
+                                } else {
+                                    viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
+                                    viewHolder.tvlikeCount.setText((p.getLikesCount())+" thích");
+                                }
+                                viewHolder.likeFlag = false;
+                                viewHolder.btnPostLike.setClickable(true);
                             }
-                            viewHolder.likeFlag = false;
-                            viewHolder.btnPostLike.setClickable(true);
+
                         }
 
                         @Override
@@ -266,23 +269,28 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            ImageSize imgSize = response.body();
-                            float ratio = (float) imgSize.getHeight() / imgSize.getWidth();
-                            viewHolder.singlePreview.setVisibility(View.VISIBLE);
-                            GlideApp.with(context)
-                                    .load(APIUtils.BASE_URL_API + post.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + width)
-                                    .fallback(R.drawable.default_background)
-                                    .placeholder(R.drawable.default_background)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(true)
-                                    .centerCrop()
-                                    .into(viewHolder.singlePreview);
-                            if (ratio >= 1.5) {
-                                viewHolder.singlePreview.getLayoutParams().height = (int) (width * 1.5f);
+                            if (response.code() == 200){
+                                ImageSize imgSize = response.body();
+                                float ratio = (float) imgSize.getHeight() / imgSize.getWidth();
+                                viewHolder.singlePreview.setVisibility(View.VISIBLE);
+                                GlideApp.with(context)
+                                        .load(APIUtils.BASE_URL_API + post.getGallery().getMedia().get(0).getPath().substring(4) + "&w=" + width)
+                                        .fallback(R.drawable.default_background)
+                                        .placeholder(R.drawable.default_background)
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .skipMemoryCache(true)
+                                        .centerCrop()
+                                        .into(viewHolder.singlePreview);
+                                if (ratio >= 1.5) {
+                                    viewHolder.singlePreview.getLayoutParams().height = (int) (width * 1.5f);
+                                } else {
+                                    viewHolder.singlePreview.getLayoutParams().height = (int) (width * ratio);
+                                }
+                                viewHolder.singlePreview.requestLayout();
                             } else {
-                                viewHolder.singlePreview.getLayoutParams().height = (int) (width * ratio);
+                                viewHolder.singlePreview.setVisibility(View.GONE);
                             }
-                            viewHolder.singlePreview.requestLayout();
+
                         }
 
                         @Override
@@ -295,45 +303,51 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
-                            mWebService.getImageSize(post.getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
-                                @Override
-                                public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                                    float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
-                                    PostImageAdapter adapter = new PostImageAdapter();
-                                    adapter.setContext(context);
-                                    adapter.setPostId(listPost.get(postion).getId());
-                                    adapter.setToken(token);
-                                    adapter.setByUserId(isByUserId);
-                                    adapter.setRatio1(ratio1);
-                                    adapter.setRatio2(ratio2);
-                                    adapter.setMedias(post.getGallery().getMedia());
-                                    adapter.setPreview(true);
-                                    SpannedGridLayoutManager layoutManager;
+                            if (response.code() == 200){
+                                float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
+                                mWebService.getImageSize(post.getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
+                                    @Override
+                                    public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                                        if (response.code() == 200){
+                                            float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
+                                            PostImageAdapter adapter = new PostImageAdapter();
+                                            adapter.setContext(context);
+                                            adapter.setPostId(listPost.get(postion).getId());
+                                            adapter.setToken(token);
+                                            adapter.setByUserId(isByUserId);
+                                            adapter.setRatio1(ratio1);
+                                            adapter.setRatio2(ratio2);
+                                            adapter.setMedias(post.getGallery().getMedia());
+                                            adapter.setPreview(true);
+                                            SpannedGridLayoutManager layoutManager;
 
-                                    viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
-                                    viewHolder.rcvImagePreview.setAdapter(adapter);
-                                    float ratio = (ratio1 + ratio2) / 2;
-                                    if (ratio < 1) {
-                                        layoutManager = new SpannedGridLayoutManager(
-                                                SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
-                                    } else {
-                                        layoutManager = new SpannedGridLayoutManager(
-                                                SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                            viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
+                                            viewHolder.rcvImagePreview.setAdapter(adapter);
+                                            float ratio = (ratio1 + ratio2) / 2;
+                                            if (ratio < 1) {
+                                                layoutManager = new SpannedGridLayoutManager(
+                                                        SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                            } else {
+                                                layoutManager = new SpannedGridLayoutManager(
+                                                        SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                            }
+                                            viewHolder.rcvImagePreview.getLayoutParams().height = width;
+                                            viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                            viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
+                                            layoutManager.setItemOrderIsStable(true);
+                                            viewHolder.rcvImagePreview.requestLayout();
+                                        }
+
                                     }
-                                    viewHolder.rcvImagePreview.getLayoutParams().height = width;
-                                    viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
-                                    viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
-                                    layoutManager.setItemOrderIsStable(true);
-                                    viewHolder.rcvImagePreview.requestLayout();
-                                }
 
-                                @Override
-                                public void onFailure(Call<ImageSize> call, Throwable t) {
-                                    viewHolder.rcvImagePreview.setVisibility(View.GONE);
-                                }
-                            });
-                        }
+                                    @Override
+                                    public void onFailure(Call<ImageSize> call, Throwable t) {
+                                        viewHolder.rcvImagePreview.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                            }
+
 
                         @Override
                         public void onFailure(Call<ImageSize> call, Throwable t) {
@@ -345,43 +359,46 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            float ratio = (float) response.body().getHeight() / response.body().getWidth();
-                            PostImageAdapter adapter = new PostImageAdapter();
-                            adapter.setContext(context);
-                            adapter.setPostId(listPost.get(postion).getId());
-                            adapter.setToken(token);
-                            adapter.setByUserId(isByUserId);
-                            adapter.setRatio1(ratio);
-                            adapter.setMedias(post.getGallery().getMedia());
-                            adapter.setPreview(true);
-                            SpannedGridLayoutManager layoutManager;
+                            if (response.code() == 200){
+                                float ratio = (float) response.body().getHeight() / response.body().getWidth();
+                                PostImageAdapter adapter = new PostImageAdapter();
+                                adapter.setContext(context);
+                                adapter.setPostId(listPost.get(postion).getId());
+                                adapter.setToken(token);
+                                adapter.setByUserId(isByUserId);
+                                adapter.setRatio1(ratio);
+                                adapter.setMedias(post.getGallery().getMedia());
+                                adapter.setPreview(true);
+                                SpannedGridLayoutManager layoutManager;
 
-                            viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
-                            viewHolder.rcvImagePreview.setAdapter(adapter);
+                                viewHolder.rcvImagePreview.setVisibility(View.VISIBLE);
+                                viewHolder.rcvImagePreview.setAdapter(adapter);
 
-                            if (size == 3) {
-                                if (ratio < 1) {
-                                    layoutManager = new SpannedGridLayoutManager(
-                                            SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                if (size == 3) {
+                                    if (ratio < 1) {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                    } else {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                    }
                                 } else {
-                                    layoutManager = new SpannedGridLayoutManager(
-                                            SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                    if (ratio < 1.1 && ratio >= 1) {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                    } else {
+                                        layoutManager = new SpannedGridLayoutManager(
+                                                SpannedGridLayoutManager.Orientation.VERTICAL, 6);
+                                    }
                                 }
-                            } else {
-                                if (ratio < 1.1 && ratio >= 1) {
-                                    layoutManager = new SpannedGridLayoutManager(
-                                            SpannedGridLayoutManager.Orientation.VERTICAL, 2);
-                                } else {
-                                    layoutManager = new SpannedGridLayoutManager(
-                                            SpannedGridLayoutManager.Orientation.VERTICAL, 6);
-                                }
+
+                                viewHolder.rcvImagePreview.getLayoutParams().height = width;
+                                viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
+                                layoutManager.setItemOrderIsStable(true);
+                                viewHolder.rcvImagePreview.requestLayout();
                             }
 
-                            viewHolder.rcvImagePreview.getLayoutParams().height = width;
-                            viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
-                            viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
-                            layoutManager.setItemOrderIsStable(true);
-                            viewHolder.rcvImagePreview.requestLayout();
                         }
 
                         @Override
@@ -405,7 +422,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                         int lastPosition = listPost.size();
                         if (list != null && !list.isEmpty()) {
                             for (Post p : list) {
-                                if (p.getState() != 1) {
+                                if (p.getState() != 1 && p.getTypeId() != 2) {
                                     listPost.add(p);
                                 }
                             }
@@ -581,7 +598,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         if (menuItem.getTitle().equals("Báo cáo")){
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                             alertDialogBuilder.setTitle("Báo cáo bài viết");
                             EditText edtRP = new EditText(context);
                             edtRP.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -594,8 +611,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                                 mWebService.reportPost(Session.getToken(context), postId,edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        dialog.cancel();
-                                                        Toast.makeText(context,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                                        if (response.code() == 200){
+                                                            dialog.cancel();
+                                                            Toast.makeText(context,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                                        }
+
                                                     }
 
                                                     @Override
@@ -643,8 +663,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                                 mWebService.removePost(Session.getToken(context),pi).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
-                                                        context.startActivity(new Intent(context,MainActivity.class));
+                                                        if (response.code() == 200){
+                                                            Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                            context.startActivity(new Intent(context,MainActivity.class));
+                                                        }
+
                                                     }
 
                                                     @Override

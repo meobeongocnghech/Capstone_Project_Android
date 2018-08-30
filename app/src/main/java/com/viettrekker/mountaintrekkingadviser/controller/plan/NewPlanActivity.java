@@ -189,9 +189,12 @@ public class NewPlanActivity extends AppCompatActivity {
         mWebService.searchPlace(token, 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
-                places = response.body();
-                if (places != null)
-                    places.remove(0);
+                if (response.code() == 200){
+                    places = response.body();
+                    if (places != null)
+                        places.remove(0);
+                }
+
             }
 
             @Override
@@ -215,21 +218,24 @@ public class NewPlanActivity extends AppCompatActivity {
                                 mWebService.getPlaceById(token, placeId).enqueue(new Callback<Place>() {
                                     @Override
                                     public void onResponse(Call<Place> call, Response<Place> response) {
-                                        Place place = response.body();
-                                        desLocation.setName(place.getName());
-                                        desLocation.setLat(place.getLocation().getLatitude());
-                                        desLocation.setLng(place.getLocation().getLongitude());
+                                        if (response.code() == 200){
+                                            Place place = response.body();
+                                            desLocation.setName(place.getName());
+                                            desLocation.setLat(place.getLocation().getLatitude());
+                                            desLocation.setLng(place.getLocation().getLongitude());
 
-                                        if (pickedSourceLocation) {
-                                            Location start = new Location("");
-                                            start.setLatitude(srcLocation.getLat());
-                                            start.setLongitude(srcLocation.getLng());
-                                            Location end = new Location("");
-                                            end.setLatitude(desLocation.getLat());
-                                            end.setLongitude(desLocation.getLng());
-                                            float dist = start.distanceTo(end) / 1000;
-                                            tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                                            if (pickedSourceLocation) {
+                                                Location start = new Location("");
+                                                start.setLatitude(srcLocation.getLat());
+                                                start.setLongitude(srcLocation.getLng());
+                                                Location end = new Location("");
+                                                end.setLatitude(desLocation.getLat());
+                                                end.setLongitude(desLocation.getLng());
+                                                float dist = start.distanceTo(end) / 1000;
+                                                tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                                            }
                                         }
+
                                     }
 
                                     @Override
@@ -353,7 +359,7 @@ public class NewPlanActivity extends AppCompatActivity {
                     check++;
                     Date d1 = startDate.getTime();
                     Date d2 = endDate.getTime();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     plan.setStartTime(sdf.format(d1));
                     plan.setFinishTime(sdf.format(d2));
                 }
@@ -392,9 +398,12 @@ public class NewPlanActivity extends AppCompatActivity {
                     mWebService.createPlan(token, plan).enqueue(new Callback<Plan>() {
                         @Override
                         public void onResponse(Call<Plan> call, Response<Plan> response) {
-                            progressDialog.dismiss();
-                            setResult(RESULT_OK, null);
-                            finish();
+                            if (response.code() == 200){
+                                progressDialog.dismiss();
+                                setResult(RESULT_OK, null);
+                                finish();
+                            }
+
                         }
 
                         @Override

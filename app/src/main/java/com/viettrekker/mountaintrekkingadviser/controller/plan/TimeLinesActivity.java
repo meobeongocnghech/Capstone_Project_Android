@@ -115,12 +115,14 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 tvTLTime.setText("");
 
                 plan.setTimelines(new Gson().toJson(timeLines));
-                Log.d("ABC", new Gson().toJson(plan));
                 mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
-                        Toast.makeText(TimeLinesActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
-                    }
+                        if (response.code() == 200){
+                            Toast.makeText(TimeLinesActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
+
+                        }
+                         }
 
                     @Override
                     public void onFailure(Call<Plan> call, Throwable t) {
@@ -134,13 +136,16 @@ public class TimeLinesActivity  extends AppCompatActivity{
             mWebService.getPlanById(token,id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
-                    plan = response.body();
-                    String timeline = response.body().getTimelines();
-                    Type type = new TypeToken<ArrayList<TimeLines>>(){}.getType();
-                    Gson gson = new Gson();
-                    timeLines = gson.fromJson(timeline, type);
-                    timelinesListAdapter.setList(timeLines);
-                    timelinesListAdapter.sortTimelines();
+                    if (response.code() == 200){
+                        plan = response.body();
+                        String timeline = response.body().getTimelines();
+                        Type type = new TypeToken<ArrayList<TimeLines>>(){}.getType();
+                        Gson gson = new Gson();
+                        timeLines = gson.fromJson(timeline, type);
+                        timelinesListAdapter.setList(timeLines);
+                        timelinesListAdapter.sortTimelines();
+                    }
+
                 }
 
                 @Override

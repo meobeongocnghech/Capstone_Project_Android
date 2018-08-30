@@ -189,7 +189,10 @@ public class PostImageAdapter extends RecyclerView.Adapter<PostImageAdapter.View
             mWebService.getImageSize(media.getPath()).enqueue(new Callback<ImageSize>() {
                 @Override
                 public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                    ((GridItemView) viewHolder.itemView).setImage(APIUtils.BASE_URL_API + media.getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(context));
+                    if (response.code() == 200){
+                        ((GridItemView) viewHolder.itemView).setImage(APIUtils.BASE_URL_API + media.getPath().substring(4) + "&w=" + LocalDisplay.getScreenWidth(context));
+
+                    }
                 }
 
                 @Override

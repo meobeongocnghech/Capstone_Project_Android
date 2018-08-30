@@ -115,11 +115,8 @@ public class ProfileMemberActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 User user = response.body();
-                progressDialog.dismiss();
-                if (user == null) {
-                    Toast.makeText(getApplicationContext(), "Tài khoản không tồn tại", Toast.LENGTH_LONG).show();
-                    onBackPressed();
-                } else {
+                if (response.code() == 200){
+
                     firstName = user.getFirstName();
                     lastName = user.getLastName();
                     phone = user.getPhone();
@@ -191,6 +188,12 @@ public class ProfileMemberActivity extends AppCompatActivity {
                                     }).show();
                         });
                     }
+                }
+                progressDialog.dismiss();
+                if (user == null) {
+                    Toast.makeText(getApplicationContext(), "Tài khoản không tồn tại", Toast.LENGTH_LONG).show();
+                    onBackPressed();
+                } else {
                 }
             }
 
@@ -535,26 +538,29 @@ public class ProfileMemberActivity extends AppCompatActivity {
         mWebService.getListPlan(token,1,20,"id").enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
-                if (response.body().size() > 1){
-                    boolean isJoin = false;
-                    List<Plan> p = response.body();
-                    p.remove(0);
-                    for (Plan pl: p) {
-                        List<Member> m = pl.getGroup().getMembers();
-                        for (Member me: m) {
-                            if (id == me.getUserId()){
-                                isJoin= true;
-                            } else
-                                isJoin = false;
-                        }
-                        if (pl.getGroup().getUserId() == Session.getUserId(ProfileMemberActivity.this) && !isJoin){
-                            PlanOwn po = new PlanOwn(pl.getGroup().getName(),pl.getId());
-                            items.add(po);
+                if (response.code() == 200){
+                    if (response.body().size() > 1){
+                        boolean isJoin = false;
+                        List<Plan> p = response.body();
+                        p.remove(0);
+                        for (Plan pl: p) {
+                            List<Member> m = pl.getGroup().getMembers();
+                            for (Member me: m) {
+                                if (id == me.getUserId()){
+                                    isJoin= true;
+                                } else
+                                    isJoin = false;
+                            }
+                            if (pl.getGroup().getUserId() == Session.getUserId(ProfileMemberActivity.this) && !isJoin){
+                                PlanOwn po = new PlanOwn(pl.getGroup().getName(),pl.getId());
+                                items.add(po);
+                            }
+
                         }
 
                     }
-
                 }
+
             }
 
             @Override

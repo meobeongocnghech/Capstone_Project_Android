@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private User user;
     private FrameLayout frame;
-    private static final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
+    private final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
     private LocationManager location;
     private LatLng mLatLng;
     private TextView tvMainTitle;

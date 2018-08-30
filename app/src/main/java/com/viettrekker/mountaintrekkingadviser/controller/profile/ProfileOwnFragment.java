@@ -245,9 +245,9 @@ public class ProfileOwnFragment extends Fragment implements DatePickerDialog.OnD
                         .setPositiveButton("Hoàn tất", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String inputPhone = input.getText().toString().trim();
-                                String pattern = "/^(01[2689]|09)[0-9]{8}$/";
+                                String pattern = "^(01[2689]|09)[0-9]{8,}$";
                                 inputPhone = inputPhone.replaceAll("-", "");
-                                inputPhone = inputPhone.replaceAll(".", "");
+                                inputPhone = inputPhone.replaceAll("\\.", "");
                                 inputPhone = inputPhone.replaceAll(" ", "");
                                 if (!inputPhone.isEmpty() && inputPhone.matches(pattern)) {
                                     btnPhone.setText(inputPhone);

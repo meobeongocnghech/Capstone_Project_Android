@@ -26,7 +26,7 @@ public class Member{
     private int carry;
     @SerializedName("phone")
     @Expose
-    private int phone;
+    private String phone;
     @SerializedName("firstname")
     @Expose
     private String firstname;
@@ -87,11 +87,11 @@ public class Member{
         this.groupId = groupId;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

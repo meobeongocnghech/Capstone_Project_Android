@@ -100,24 +100,27 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     APIUtils.getWebService().searchMember(token, edtChangePwdEmail.getText().toString().trim()).enqueue(new Callback<List<User>>() {
                         @Override
                         public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                            List<User> list = response.body();
-                            list.remove(0);
-                            if (list.size() >= 1) {
-                                User user = list.get(0);
-                                edtChangePwdEmail.setVisibility(View.GONE);
-                                cardUser.setVisibility(View.VISIBLE);
-                                btnReset.setVisibility(View.VISIBLE);
-                                if (!user.getAvatar().getPath().isEmpty()) {
-                                    GlideApp.with(ForgotPasswordActivity.this)
-                                            .load(APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(56, ForgotPasswordActivity.this))
-                                            .placeholder(R.drawable.avatar_default)
-                                            .fallback(R.drawable.avatar_default)
-                                            .into(avatar);
-                                }
-                                name.setText(user.getFirstName() + " " + user.getLastName());
-                                email.setText(edtChangePwdEmail.getText().toString());
-                                tvHint.setText(Html.fromHtml("Nhấn <b>Gửi email</b> để nhận mã xác nhận"));
-                                btnForgotAction.setText("Gửi email");
+                            if (response.code() == 200){
+                                List<User> list = response.body();
+                                list.remove(0);
+                                if (list.size() >= 1) {
+                                    User user = list.get(0);
+                                    edtChangePwdEmail.setVisibility(View.GONE);
+                                    cardUser.setVisibility(View.VISIBLE);
+                                    btnReset.setVisibility(View.VISIBLE);
+                                    if (!user.getAvatar().getPath().isEmpty()) {
+                                        GlideApp.with(ForgotPasswordActivity.this)
+                                                .load(APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(56, ForgotPasswordActivity.this))
+                                                .placeholder(R.drawable.avatar_default)
+                                                .fallback(R.drawable.avatar_default)
+                                                .into(avatar);
+                                    }
+                                    name.setText(user.getFirstName() + " " + user.getLastName());
+                                    email.setText(edtChangePwdEmail.getText().toString());
+                                    tvHint.setText(Html.fromHtml("Nhấn <b>Gửi email</b> để nhận mã xác nhận"));
+                                    btnForgotAction.setText("Gửi email");
+                            }
+
                             } else {
                                 Snackbar.make(findViewById(R.id.layout), "Tài khoản email không tồn tại", Snackbar.LENGTH_LONG).show();
                             }

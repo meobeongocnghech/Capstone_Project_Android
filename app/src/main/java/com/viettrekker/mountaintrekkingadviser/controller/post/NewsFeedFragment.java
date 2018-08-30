@@ -16,6 +16,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -84,13 +85,14 @@ public class NewsFeedFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
+                    List<Post> finalList = new ArrayList<>();
                     if (list != null && !list.isEmpty()) {
                         for (Post post : list) {
-                            if (post.getState() == 1) {
-                                list.remove(post);
+                            if (post.getState() != 1 && post.getTypeId() != 2) {
+                                finalList.add(post);
                             }
                         }
-                        newsFeedAdapter.setListPost(list);
+                        newsFeedAdapter.setListPost(finalList);
                         newsFeedAdapter.notifyDataSetChanged();
                     }
                 }
@@ -106,9 +108,15 @@ public class NewsFeedFragment extends Fragment {
                 @Override
                 public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                     List<Post> list = response.body();
+                    List<Post> finalList = new ArrayList<>();
                     if (list != null && !list.isEmpty()) {
                         list.remove(0);
-                        newsFeedAdapter.setListPost(list);
+                        for (Post post : list) {
+                            if (post.getState() != 1 && post.getTypeId() != 2) {
+                                finalList.add(post);
+                            }
+                        }
+                        newsFeedAdapter.setListPost(finalList);
                         newsFeedAdapter.notifyDataSetChanged();
                     }
                 }

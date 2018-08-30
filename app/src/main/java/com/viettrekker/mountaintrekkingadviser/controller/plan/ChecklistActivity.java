@@ -69,10 +69,13 @@ public class ChecklistActivity extends AppCompatActivity {
             mWebService.getPlanById(Session.getToken(this), id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
-                    plan = response.body();
-                    items = plan.getChecklist().getItems();
-                    checklistAdapter.setList(items);
-                    checklistAdapter.notifyDataSetChanged();
+                    if (response.code() == 200){
+                        plan = response.body();
+                        items = plan.getChecklist().getItems();
+                        checklistAdapter.setList(items);
+                        checklistAdapter.notifyDataSetChanged();
+                    }
+
                 }
 
                 @Override
@@ -129,8 +132,11 @@ public class ChecklistActivity extends AppCompatActivity {
                         mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                             @Override
                             public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
-                            }
+                                if (response.code() == 200){
+                                    Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
+
+                                }
+                                }
 
                             @Override
                             public void onFailure(Call<Plan> call, Throwable t) {

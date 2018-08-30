@@ -17,12 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.User;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
@@ -104,6 +106,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         mWebService.getUserById(token, viewHolder.member.getUserId()).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                if (response.code() == 200)
                            viewHolder.tvNameItem.setText(response.body().getFirstName() + " " + response.body().getLastName());
             }
 
@@ -115,9 +118,10 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
 
         if (!users.get(i).getAvatar().getPath().isEmpty()) {
             GlideApp.with(viewHolder.itemView)
-                    .load(users.get(i).getAvatar().getPath().substring(4))
+                    .load(APIUtils.BASE_URL_API + users.get(i).getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(30, context))
                     .fallback(R.drawable.avatar_default)
                     .placeholder(R.drawable.avatar_default)
+                    .apply(RequestOptions.circleCropTransform())
                     .into(viewHolder.imgAvtItem);
         }
 

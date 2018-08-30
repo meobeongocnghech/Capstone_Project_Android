@@ -18,6 +18,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PlaceDetailActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PlacePageLayoutFragment;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PlaceViewPagerAdapter;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostDetailActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.SpaceItemDecorator;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -27,6 +29,7 @@ import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
+import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -190,31 +193,34 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     mWebService.getImageSize(posts.get(i).getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            ImageSize size = response.body();
-                            float ratio = (float)size.getHeight() / size.getWidth();
-                            SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
-                            adapter.setContext(context);
-                            adapter.setMedias(posts.get(i).getGallery().getMedia());
-                            adapter.setRatio1(ratio);
-                            SpannedGridLayoutManager layoutManager;
+                            if (response.code() == 200){
+                                ImageSize size = response.body();
+                                float ratio = (float)size.getHeight() / size.getWidth();
+                                SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
+                                adapter.setContext(context);
+                                adapter.setMedias(posts.get(i).getGallery().getMedia());
+                                adapter.setRatio1(ratio);
+                                SpannedGridLayoutManager layoutManager;
 
-                            vh.images.setAdapter(adapter);
-                            if (ratio > 1.5) {
-                                layoutManager = new SpannedGridLayoutManager(
-                                        SpannedGridLayoutManager.Orientation.HORIZONTAL, 9);
-                                vh.images.getLayoutParams().width = Math.round(LocalDisplay.dp2px(160, context) / 1.5f);
-                            } else if (ratio < 1) {
-                                layoutManager = new SpannedGridLayoutManager(
-                                        SpannedGridLayoutManager.Orientation.VERTICAL, 9);
-                                vh.images.getLayoutParams().height = Math.round(LocalDisplay.dp2px(160, context) * ratio);
-                            } else {
-                                layoutManager = new SpannedGridLayoutManager(
-                                        SpannedGridLayoutManager.Orientation.HORIZONTAL, 9);
-                                vh.images.getLayoutParams().width = Math.round(LocalDisplay.dp2px(160, context) / ratio);
+                                vh.images.setAdapter(adapter);
+                                if (ratio > 1.5) {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.HORIZONTAL, 9);
+                                    vh.images.getLayoutParams().width = Math.round(LocalDisplay.dp2px(160, context) / 1.5f);
+                                } else if (ratio < 1) {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 9);
+                                    vh.images.getLayoutParams().height = Math.round(LocalDisplay.dp2px(160, context) * ratio);
+                                } else {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.HORIZONTAL, 9);
+                                    vh.images.getLayoutParams().width = Math.round(LocalDisplay.dp2px(160, context) / ratio);
+                                }
+                                vh.images.setLayoutManager(layoutManager);
+                                layoutManager.setItemOrderIsStable(true);
+                                vh.images.requestLayout();
                             }
-                            vh.images.setLayoutManager(layoutManager);
-                            layoutManager.setItemOrderIsStable(true);
-                            vh.images.requestLayout();
+
                         }
 
                         @Override
@@ -226,26 +232,29 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     mWebService.getImageSize(posts.get(i).getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            ImageSize size = response.body();
-                            float ratio = (float)size.getHeight() / size.getWidth();
-                            SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
-                            adapter.setContext(context);
-                            adapter.setMedias(posts.get(i).getGallery().getMedia());
-                            adapter.setRatio1(ratio);
-                            SpannedGridLayoutManager layoutManager;
+                            if (response.code() == 200){
+                                ImageSize size = response.body();
+                                float ratio = (float)size.getHeight() / size.getWidth();
+                                SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
+                                adapter.setContext(context);
+                                adapter.setMedias(posts.get(i).getGallery().getMedia());
+                                adapter.setRatio1(ratio);
+                                SpannedGridLayoutManager layoutManager;
 
-                            vh.images.setAdapter(adapter);
-                            if (ratio <= 1) {
-                                layoutManager = new SpannedGridLayoutManager(
-                                        SpannedGridLayoutManager.Orientation.VERTICAL, 4);
-                            } else {
-                                layoutManager = new SpannedGridLayoutManager(
-                                        SpannedGridLayoutManager.Orientation.VERTICAL, 4);
+                                vh.images.setAdapter(adapter);
+                                if (ratio <= 1) {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 4);
+                                } else {
+                                    layoutManager = new SpannedGridLayoutManager(
+                                            SpannedGridLayoutManager.Orientation.VERTICAL, 4);
+                                }
+                                vh.images.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                vh.images.setLayoutManager(layoutManager);
+                                layoutManager.setItemOrderIsStable(true);
+                                vh.images.requestLayout();
                             }
-                            vh.images.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
-                            vh.images.setLayoutManager(layoutManager);
-                            layoutManager.setItemOrderIsStable(true);
-                            vh.images.requestLayout();
+
                         }
 
                         @Override
@@ -257,38 +266,44 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
                     mWebService.getImageSize(posts.get(i).getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
-                            mWebService.getImageSize(posts.get(i).getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
-                                @Override
-                                public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                                    float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
-                                    SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
-                                    adapter.setContext(context);
-                                    adapter.setMedias(posts.get(i).getGallery().getMedia());
-                                    adapter.setRatio1(ratio1);
-                                    adapter.setRatio2(ratio2);
-                                    SpannedGridLayoutManager layoutManager;
+                            if (response.code() == 200){
+                                float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
+                                mWebService.getImageSize(posts.get(i).getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
+                                    @Override
+                                    public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
+                                        if (response.code() == 200){
+                                            float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
+                                            SmallPreviewImageAdapter adapter = new SmallPreviewImageAdapter();
+                                            adapter.setContext(context);
+                                            adapter.setMedias(posts.get(i).getGallery().getMedia());
+                                            adapter.setRatio1(ratio1);
+                                            adapter.setRatio2(ratio2);
+                                            SpannedGridLayoutManager layoutManager;
 
-                                    vh.images.setAdapter(adapter);
-                                    if ((ratio1 + ratio2) / 2 < 1) {
-                                        layoutManager = new SpannedGridLayoutManager(
-                                                SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
-                                    } else {
-                                        layoutManager = new SpannedGridLayoutManager(
-                                                SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                            vh.images.setAdapter(adapter);
+                                            if ((ratio1 + ratio2) / 2 < 1) {
+                                                layoutManager = new SpannedGridLayoutManager(
+                                                        SpannedGridLayoutManager.Orientation.HORIZONTAL, 2);
+                                            } else {
+                                                layoutManager = new SpannedGridLayoutManager(
+                                                        SpannedGridLayoutManager.Orientation.VERTICAL, 2);
+                                            }
+                                            vh.images.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                            vh.images.setLayoutManager(layoutManager);
+                                            layoutManager.setItemOrderIsStable(true);
+                                            vh.images.requestLayout();
+                                        }
+
                                     }
-                                    vh.images.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
-                                    vh.images.setLayoutManager(layoutManager);
-                                    layoutManager.setItemOrderIsStable(true);
-                                    vh.images.requestLayout();
-                                }
 
-                                @Override
-                                public void onFailure(Call<ImageSize> call, Throwable t) {
-                                    vh.images.setVisibility(View.GONE);
-                                }
-                            });
-                        }
+                                    @Override
+                                    public void onFailure(Call<ImageSize> call, Throwable t) {
+                                        vh.images.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                            }
+
 
                         @Override
                         public void onFailure(Call<ImageSize> call, Throwable t) {
@@ -368,6 +383,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
         ImageView imgSearchPlace;
         TextView tvSearchPlaceName;
         TextView tvSearchAddress;
+
         public PlaceVH(@NonNull View itemView) {
             super(itemView);
             imgSearchPlace = (ImageView) itemView.findViewById(R.id.imgSearchPlace);
@@ -379,9 +395,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter {
 
         @Override
         public void onClick(View view) {
+            token = Session.getToken(context);
+            PlaceViewPagerAdapter placeAdapter = new PlaceViewPagerAdapter(null);
             Intent i = new Intent(context, PlaceDetailActivity.class);
             i.putExtra("id", place.getId());
-            i.putExtra("token", token);
+            i.putExtra("name", place.getName());
+            i.putExtra("img", APIUtils.BASE_URL_API + place.getGallery().getMedia().get(0).getPath().substring(4));
 
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);

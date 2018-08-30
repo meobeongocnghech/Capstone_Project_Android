@@ -72,7 +72,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
     public void onBindViewHolder(@NonNull CommentChildrenAdapter.ViewHolder viewHolder, int i) {
         Comment comment = list.get(i);
         User user = comment.getUser();
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
         viewHolder.tvCmtContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvCmtContent.setText(comment.getContent());
@@ -92,13 +92,16 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                     mWebService.likeComment(token, userId,comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            viewHolder.btnLikeCmt.setText("Đã thích");
-                            comment.setLikesCount(comment.getLikesCount()+1);
-                            viewHolder.likeCount.setText((comment.getLikesCount()) +"");
+                            if (response.code() == 200){
+                                viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                                viewHolder.btnLikeCmt.setText("Đã thích");
+                                comment.setLikesCount(comment.getLikesCount()+1);
+                                viewHolder.likeCount.setText((comment.getLikesCount()) +"");
 
-                            viewHolder.likeFlag = true;
-                            ((PostDetailActivity)context).edtComment.clearFocus();
+                                viewHolder.likeFlag = true;
+                                ((PostDetailActivity)context).edtComment.clearFocus();
+                            }
+
                         }
 
                         @Override
@@ -111,12 +114,15 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                     mWebService.unlikeComment(token, userId,comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
-                            viewHolder.btnLikeCmt.setText("Thích");
-                            comment.setLikesCount(  comment.getLikesCount()-1);
-                            viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
-                            viewHolder.likeFlag = false;
-                            ((PostDetailActivity)context).edtComment.clearFocus();
+                            if (response.code() == 200){
+                                viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
+                                viewHolder.btnLikeCmt.setText("Thích");
+                                comment.setLikesCount(  comment.getLikesCount()-1);
+                                viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
+                                viewHolder.likeFlag = false;
+                                ((PostDetailActivity)context).edtComment.clearFocus();
+                            }
+
                         }
 
                         @Override
@@ -179,8 +185,11 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                                 mWebService.reportComent(token, userId, comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        dialog.cancel();
-                                                        Toast.makeText(context,"Cảm ơn bạn đã báo cáo bình luận này",Toast.LENGTH_LONG).show();
+                                                        if (response.code() == 200){
+                                                            dialog.cancel();
+                                                            Toast.makeText(context,"Bạn đã báo cáo bình luận này",Toast.LENGTH_LONG).show();
+                                                        }
+
                                                     }
 
                                                     @Override
@@ -216,9 +225,12 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                                                 mWebService.removeComment(token,userId,comment.getId()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        list.remove(i);
-                                                        notifyDataSetChanged();
-                                                        Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                        if (response.code() == 200){
+                                                            list.remove(i);
+                                                            notifyDataSetChanged();
+                                                            Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                        }
+
                                                     }
 
                                                     @Override

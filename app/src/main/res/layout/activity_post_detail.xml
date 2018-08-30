@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@android:color/white"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/postDetailToolbar"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/Toolbar"
-        app:title="@string/title_post_detail"
-        app:titleTextAppearance="@style/ToolbarTitleTheme"
-        app:titleTextColor="@android:color/white">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/postDetailToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/Toolbar"
+            app:title="@string/title_post_detail"
+            app:titleTextAppearance="@style/ToolbarTitleTheme"
+            app:titleTextColor="@android:color/white">
 
-    </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:background="@android:color/white">
 
@@ -82,9 +81,9 @@
                 android:maxLines="2"
                 android:textColor="@color/colorTextFieldInput"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@id/btnPostOptionDetail"
                 app:layout_constraintStart_toEndOf="@id/separator"
-                app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail"
-                app:layout_constraintEnd_toStartOf="@id/btnPostOptionDetail"/>
+                app:layout_constraintTop_toTopOf="@id/tvPostUserNameDetail" />
 
             <ImageButton
                 android:id="@+id/btnPostOptionDetail"
@@ -126,8 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintTop_toBottomOf="@id/tvPostContentDetail"
-                android:nestedScrollingEnabled="false">
+                app:layout_constraintTop_toBottomOf="@id/tvPostContentDetail">
 
             </android.support.v7.widget.RecyclerView>
 
@@ -203,24 +201,17 @@
                 android:background="#dcdcdc"
                 app:layout_constraintTop_toBottomOf="@id/btnPostLikeDetail" />
 
-            <android.support.design.widget.CoordinatorLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@id/view1">
-                <LinearLayout
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvCmtListDetail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rcvCmtListDetail"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="64dp" />
-                </LinearLayout>
+                    android:layout_marginTop="3dp" />
 
                 <android.support.design.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -230,8 +221,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="@android:color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="false"
-                    android:layout_gravity="bottom">
+                    app:cardUseCompatPadding="false">
 
                     <android.support.constraint.ConstraintLayout
                         android:id="@+id/constrainlayout"
@@ -284,9 +274,8 @@
 
                     </android.support.constraint.ConstraintLayout>
                 </android.support.design.card.MaterialCardView>
-            </android.support.design.widget.CoordinatorLayout>
+            </LinearLayout>
 
         </android.support.constraint.ConstraintLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-</LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

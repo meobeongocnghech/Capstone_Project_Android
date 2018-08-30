@@ -232,9 +232,10 @@ public class PlanDetailActivity extends AppCompatActivity {
         membersListAdapter = new MembersListAdapter(PlanDetailActivity.this);
         rcvListMembersPlan.setVisibility(View.GONE);
 
-        newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this,null, token);
+        newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this, null, token);
         newsFeedAdapter.setByPlanId(true);
         newsFeedAdapter.setDirectionId(directionId);
+        newsFeedAdapter.setUserId(userId);
         startPicker = (MaterialButton) findViewById(R.id.startDateTimePicker);
         endPicker = (MaterialButton) findViewById(R.id.endDateTimePicker);
 
@@ -246,8 +247,11 @@ public class PlanDetailActivity extends AppCompatActivity {
         mWebService.searchPlace(token, 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
-                places = response.body();
-                places.remove(0);
+                if (response.code() == 200){
+                    places = response.body();
+                    places.remove(0);
+                }
+
             }
 
             @Override
@@ -415,7 +419,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 tvPlanName.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_white_24dp, null), null);
                 ColorStateList stateList = new ColorStateList(
                         new int[][]{{}}, new int[]{Color.parseColor("#ffffff")});
-                tvPlanName.setOnClickListener((textView)-> {
+                tvPlanName.setOnClickListener((textView) -> {
                     String lastName = tvPlanName.getText().toString();
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("Tên kế hoạch");
@@ -486,20 +490,23 @@ public class PlanDetailActivity extends AppCompatActivity {
                                     mWebService.getPlaceById(token, placeId).enqueue(new Callback<Place>() {
                                         @Override
                                         public void onResponse(Call<Place> call, Response<Place> response) {
-                                            Place place = response.body();
-                                            desLocation.setName(place.getName());
-                                            desLocation.setLat(place.getLocation().getLatitude());
-                                            desLocation.setLng(place.getLocation().getLongitude());
+                                            if (response.code() == 200){
+                                                Place place = response.body();
+                                                desLocation.setName(place.getName());
+                                                desLocation.setLat(place.getLocation().getLatitude());
+                                                desLocation.setLng(place.getLocation().getLongitude());
 
-                                            Location start = new Location("");
-                                            start.setLatitude(srcLocation.getLat());
-                                            start.setLongitude(srcLocation.getLng());
-                                            Location end = new Location("");
-                                            end.setLatitude(desLocation.getLat());
-                                            end.setLongitude(desLocation.getLng());
-                                            float dist = start.distanceTo(end) / 1000;
-                                            tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
-                                        }
+                                                Location start = new Location("");
+                                                start.setLatitude(srcLocation.getLat());
+                                                start.setLongitude(srcLocation.getLng());
+                                                Location end = new Location("");
+                                                end.setLatitude(desLocation.getLat());
+                                                end.setLongitude(desLocation.getLng());
+                                                float dist = start.distanceTo(end) / 1000;
+                                                tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+
+                                            }
+                                             }
 
                                         @Override
                                         public void onFailure(Call<Place> call, Throwable t) {
@@ -525,7 +532,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 plan.getGroup().setName(tvPlanName.getText().toString());
                 Date d1 = startDate.getTime();
                 Date d2 = endDate.getTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 plan.setStartTime(sdf.format(d1));
                 plan.setFinishTime(sdf.format(d2));
 
@@ -544,9 +551,12 @@ public class PlanDetailActivity extends AppCompatActivity {
                 mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
-                        progressDialog.dismiss();
-                        Snackbar.make(findViewById(R.id.coordinatorPlanDetail), "Thay đổi thành công", Snackbar.LENGTH_LONG).show();
-                    }
+                        if (response.code() == 200){
+                            progressDialog.dismiss();
+                            Snackbar.make(findViewById(R.id.coordinatorPlanDetail), "Thay đổi thành công", Snackbar.LENGTH_LONG).show();
+
+                        }
+                        }
 
                     @Override
                     public void onFailure(Call<Plan> call, Throwable t) {
@@ -558,26 +568,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                 });
             }
         });
-        mWebService.getPostPageByDirectionId(token, 1, 5, directionId, "DESC").enqueue(new Callback<List<Post>>() {
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                if (response.code() == 200){
-                    List<Post> lp = response.body();
-                    if (lp.size() > 1){
-                        lp.remove(0);
-                        newsFeedAdapter.setListPost(lp);
-                        newsFeedAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    Toast.makeText(PlanDetailActivity.this,"Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                Toast.makeText(PlanDetailActivity.this,"Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
-            }
-        });
         rcvPlanPost.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
         rcvPlanPost.setNestedScrollingEnabled(false);
         rcvPlanPost.setAdapter(newsFeedAdapter);
@@ -585,7 +576,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         rcvPlanPost.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager=LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisible = layoutManager.findLastVisibleItemPosition();
 
@@ -681,136 +672,163 @@ public class PlanDetailActivity extends AppCompatActivity {
         mWebService.getPlanById(token, id).enqueue(new Callback<Plan>() {
             @Override
             public void onResponse(Call<Plan> call, Response<Plan> response) {
-                plan = response.body();
-                directionId = plan.getDirection().getId();
-                tvCarry.setText(plan.getCarry() + " xe");
-                try {
-                    if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())
-                            && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
-                        tvStatePlan.setText("Đang diễn ra");
-                        tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorOrange));
-                        btnEditablePlan.setVisibility(View.GONE);
-                        state = ONGOING;
-                    } else if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
-                        tvStatePlan.setText("Đã hoàn thành");
-                        tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorGray));
-                        btnEditablePlan.setVisibility(View.GONE);
-                        state = FINISH;
-                    } else {
-                        tvStatePlan.setText("Sẵn sàng");
-                        tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorPrimary));
-                        state = READY;
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                for (Member u : plan.getGroup().getMembers()) {
-                    if (u.getUserId() == userId) {
-                        userRole = u.getRoleInGroupId();
-                    }
-                }
-
-                if (userRole != 1) {
-                    state = 3;
-                }
-
-                try {
-                    tvDateStart.setText(DateTimeUtils.parseStringDate(DateTimeUtils.changeTimeToLocale(plan.getStartTime())));
-                    tvTimeStart.setText(DateTimeUtils.parseStringTime(DateTimeUtils.changeTimeToLocale(plan.getStartTime())));
-                    tvDateEnd.setText(DateTimeUtils.parseStringDate(DateTimeUtils.changeTimeToLocale(plan.getFinishTime())));
-                    tvTimeEnd.setText(DateTimeUtils.parseStringTime(DateTimeUtils.changeTimeToLocale(plan.getFinishTime())));
-                    startDate.setTime(DateTimeUtils.changeTimeToLocale(plan.getStartTime()));
-                    endDate.setTime(DateTimeUtils.changeTimeToLocale(plan.getFinishTime()));
-                    tvDurationDate.setText(DateTimeUtils.caculatorStringTime(startDate.getTime(), endDate.getTime()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                tvPlanName.setText(plan.getGroup().getName());
-                List<Member> members = plan.getGroup().getMembers();
-
-                for (Member member : members) {
-                    if (member.getUserId() == userId) {
-                        if (member.getRoleInGroupId() != 1) {
+                if (response.code() == 200){
+                    plan = response.body();
+                    directionId = plan.getDirection().getId();
+                    tvCarry.setText(plan.getCarry() + " xe");
+                    try {
+                        if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())
+                                && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
+                            tvStatePlan.setText("Đang diễn ra");
+                            tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorOrange));
                             btnEditablePlan.setVisibility(View.GONE);
+                            state = ONGOING;
+                        } else if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
+                            tvStatePlan.setText("Đã hoàn thành");
+                            tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorGray));
+                            btnEditablePlan.setVisibility(View.GONE);
+                            state = FINISH;
+                        } else {
+                            tvStatePlan.setText("Sẵn sàng");
+                            tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorPrimary));
+                            state = READY;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (Member u : plan.getGroup().getMembers()) {
+                        if (u.getUserId() == userId) {
+                            userRole = u.getRoleInGroupId();
                         }
                     }
-                }
 
-                for (Member m : members) {
-                    if (Session.getUserId(PlanDetailActivity.this) == m.getUserId() && m.getRoleInGroupId() == 4) {
-                        alertDialogBuilder.setTitle("Yêu cầu tham gia");
-                        alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
-                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
-                                            @Override
-                                            public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                                if (response.code() == 200)
-                                                    Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
-                                                dialogInterface.dismiss();
-                                                membersListAdapter.setUsers(response.body().getGroup().getMembers());
-                                                membersListAdapter.notifyDataSetChanged();
-                                            }
-
-                                            @Override
-                                            public void onFailure(Call<Plan> call, Throwable t) {
-                                                Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
-                                                dialogInterface.dismiss();
-                                            }
-                                        });
-                                    }
-                                }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
-                                    @Override
-                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                        if (response.code() == 200)
-                                            Toast.makeText(PlanDetailActivity.this, "Bạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
-                                        dialogInterface.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Plan> call, Throwable t) {
-                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
-                                        dialogInterface.dismiss();
-                                    }
-                                });
-                            }
-                        }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        }).show();
+                    if (userRole != 1) {
+                        state = 3;
                     }
+
+                    try {
+                        tvDateStart.setText(DateTimeUtils.parseStringDate(DateTimeUtils.changeTimeToLocale(plan.getStartTime())));
+                        tvTimeStart.setText(DateTimeUtils.parseStringTime(DateTimeUtils.changeTimeToLocale(plan.getStartTime())));
+                        tvDateEnd.setText(DateTimeUtils.parseStringDate(DateTimeUtils.changeTimeToLocale(plan.getFinishTime())));
+                        tvTimeEnd.setText(DateTimeUtils.parseStringTime(DateTimeUtils.changeTimeToLocale(plan.getFinishTime())));
+                        startDate.setTime(DateTimeUtils.changeTimeToLocale(plan.getStartTime()));
+                        endDate.setTime(DateTimeUtils.changeTimeToLocale(plan.getFinishTime()));
+                        tvDurationDate.setText(DateTimeUtils.caculatorStringTime(startDate.getTime(), endDate.getTime()));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    tvPlanName.setText(plan.getGroup().getName());
+                    List<Member> members = plan.getGroup().getMembers();
+
+                    boolean isInGroup = false;
+                    for (Member member : members) {
+                        if (member.getUserId() == userId && member.getRoleInGroupId() != 1) {
+
+                            isInGroup = true;
+                        }
+                    }
+
+                    if (!isInGroup) {
+                        btnEditablePlan.setVisibility(View.GONE);
+                        tvMoreAction.setVisibility(View.GONE);
+                    }
+
+                    for (Member m : members) {
+                        if (Session.getUserId(PlanDetailActivity.this) == m.getUserId() && m.getRoleInGroupId() == 4) {
+                            alertDialogBuilder.setTitle("Yêu cầu tham gia");
+                            alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
+                                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
+                                                @Override
+                                                public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                                    if (response.code() == 200)
+                                                        Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
+                                                    dialogInterface.dismiss();
+                                                    membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                                    membersListAdapter.notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<Plan> call, Throwable t) {
+                                                    Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                                    dialogInterface.dismiss();
+                                                }
+                                            });
+                                        }
+                                    }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
+                                        @Override
+                                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                            if (response.code() == 200)
+                                                Toast.makeText(PlanDetailActivity.this, "Bạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
+                                            dialogInterface.dismiss();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Plan> call, Throwable t) {
+                                            Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                }
+                            }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).show();
+                        }
+                    }
+                    membersListAdapter.setContext(PlanDetailActivity.this);
+                    membersListAdapter.setUsers(members);
+                    membersListAdapter.setPlanId(plan.getId());
+                    membersListAdapter.notifyDataSetChanged();
+                    tvMemberCount.setText(members.size() + " người");
+
+                    Type type = new TypeToken<ArrayList<PlanLocation>>() {
+                    }.getType();
+                    Gson gson = new Gson();
+                    List<PlanLocation> locs = gson.fromJson(plan.getDirection().getPlanLocation(), type);
+                    srcLocation = locs.get(0);
+                    desLocation = locs.get(1);
+                    tvStartPlace.setText(srcLocation.getName());
+                    tvEndPlace.setText(desLocation.getName());
+                    Location start = new Location("");
+                    start.setLatitude(srcLocation.getLat());
+                    start.setLongitude(srcLocation.getLng());
+                    Location end = new Location("");
+                    end.setLatitude(desLocation.getLat());
+                    end.setLongitude(desLocation.getLng());
+                    float dist = start.distanceTo(end) / 1000;
+                    tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
+                    mWebService.getPostPageByDirectionId(token, 1, 5, directionId, "DESC").enqueue(new Callback<List<Post>>() {
+                        @Override
+                        public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                            if (response.code() == 200) {
+                                List<Post> lp = response.body();
+                                if (lp.size() > 1) {
+                                    lp.remove(0);
+                                    newsFeedAdapter.setListPost(lp);
+                                    newsFeedAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                Toast.makeText(PlanDetailActivity.this, "Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<Post>> call, Throwable t) {
+                            Toast.makeText(PlanDetailActivity.this, "Có lỗi khi tải bài viết.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    placeId = plan.getDirection().getPlaceId();
                 }
-                membersListAdapter.setContext(PlanDetailActivity.this);
-                membersListAdapter.setUsers(members);
-                membersListAdapter.setPlanId(plan.getId());
-                membersListAdapter.notifyDataSetChanged();
-                tvMemberCount.setText(members.size() + " người");
 
-                Type type = new TypeToken<ArrayList<PlanLocation>>() {
-                }.getType();
-                Gson gson = new Gson();
-                List<PlanLocation> locs = gson.fromJson(plan.getDirection().getPlanLocation(), type);
-                srcLocation = locs.get(0);
-                desLocation = locs.get(1);
-                tvStartPlace.setText(srcLocation.getName());
-                tvEndPlace.setText(desLocation.getName());
-                Location start = new Location("");
-                start.setLatitude(srcLocation.getLat());
-                start.setLongitude(srcLocation.getLng());
-                Location end = new Location("");
-                end.setLatitude(desLocation.getLat());
-                end.setLongitude(desLocation.getLng());
-                float dist = start.distanceTo(end) / 1000;
-                tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
-
-                placeId = plan.getDirection().getPlaceId();
             }
 
 

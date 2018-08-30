@@ -128,7 +128,10 @@ public class NotificationFragment extends Fragment {
         mWebService.setCheckAll(token, true).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
-                List<Notification> lists = response.body();
+                if (response.code() == 200){
+                    List<Notification> lists = response.body();
+                }
+
             }
 
             @Override

@@ -156,7 +156,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         if (menuItem.getTitle().equals("Báo cáo")){
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                             alertDialogBuilder.setTitle("Báo cáo bài viết");
                             EditText edtRP = new EditText(context);
                             edtRP.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -168,9 +168,12 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                                 mWebService.reportComent(token,comment.getTargetId(), comment.getId(), edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        dialog.cancel();
-                                                        Toast.makeText(context,"Báo cáo của bạn đã được ghi nhận",Toast.LENGTH_LONG).show();
-                                                    }
+                                                        if (response.code() == 200){
+                                                            dialog.cancel();
+                                                            Toast.makeText(context,"Báo cáo của bạn đã được ghi nhận",Toast.LENGTH_LONG).show();
+
+                                                        }
+                                                         }
 
                                                     @Override
                                                     public void onFailure(Call<Post> call, Throwable t) {
@@ -204,7 +207,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                 ((PostDetailActivity)context).setUpdateCmt(true);
                                 idCmtEdit = comment.getId();
                             }else {
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn có muốn xóa bình luận?")
                                         .setCancelable(false)
@@ -214,11 +217,14 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                                                 mWebService.removeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        list.remove(position);
-                                                        notifyDataSetChanged();
-                                                        Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
-                                                        ((PostDetailActivity)context).tvCmtCount.setText(list.size()== 0 ? "" : list.size() + " bình luận");
-                                                    }
+                                                        if (response.code() == 200){
+                                                            list.remove(position);
+                                                            notifyDataSetChanged();
+                                                            Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
+                                                            ((PostDetailActivity)context).tvCmtCount.setText(list.size()== 0 ? "" : list.size() + " bình luận");
+
+                                                        }
+                                                         }
 
                                                     @Override
                                                     public void onFailure(Call<Post> call, Throwable t) {
@@ -239,7 +245,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                             }
                         } else {
                             if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa") ){
-                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context,R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bình luận của mình.")
                                         .setCancelable(false)
@@ -266,12 +272,15 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     mWebService.likeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-                            viewHolder.btnLikeCmt.setText("Đã thích");
-                            comment.setLikesCount(comment.getLikesCount() + 1);
-                            viewHolder.likeCount.setText((comment.getLikesCount()) +"");
-                            viewHolder.likeFlag = true;
-                            ((PostDetailActivity)context).edtComment.clearFocus();
+                            if (response.code() == 200){
+                                viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+                                viewHolder.btnLikeCmt.setText("Đã thích");
+                                comment.setLikesCount(comment.getLikesCount() + 1);
+                                viewHolder.likeCount.setText((comment.getLikesCount()) +"");
+                                viewHolder.likeFlag = true;
+                                ((PostDetailActivity)context).edtComment.clearFocus();
+                            }
+
                         }
 
                         @Override
@@ -284,12 +293,15 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                     mWebService.unlikeComment(token, comment.getTargetId(),comment.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
-                            viewHolder.btnLikeCmt.setText("Thích");
-                            comment.setLikesCount(comment.getLikesCount() - 1);
-                            viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
-                            viewHolder.likeFlag = false;
-                            ((PostDetailActivity)context).edtComment.clearFocus();
+                            if (response.code() == 200){
+                                viewHolder.btnLikeCmt.setTextColor(context.getResources().getColor(R.color.colorGray));
+                                viewHolder.btnLikeCmt.setText("Thích");
+                                comment.setLikesCount(comment.getLikesCount() - 1);
+                                viewHolder.likeCount.setText(comment.getLikesCount() <1 ? "" : (comment.getLikesCount()) +"");
+                                viewHolder.likeFlag = false;
+                                ((PostDetailActivity)context).edtComment.clearFocus();
+                            }
+
                         }
 
                         @Override

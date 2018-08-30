@@ -82,24 +82,27 @@ public class FullSearchActivity extends AppCompatActivity {
             mWebService.searchUserSuggestion(token, 1, size, query).enqueue(new Callback<List<User>>() {
                 @Override
                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                    List<User> users = response.body();
-                    users.remove(0);
-                    SearchResultAdapter adapter = new SearchResultAdapter();
-                    adapter.setUser(true);
-                    adapter.setPlace(false);
-                    adapter.setPost(false);
-                    adapter.setUsers(users);
-                    adapter.setToken(token);
-                    adapter.setUserId(Session.getUserId(FullSearchActivity.this));
-                    adapter.setContext(getBaseContext());
-                    rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                    rcv.setAdapter(adapter);
-                    if (users.size() < 5) {
-                        loadMore.setVisibility(View.GONE);
-                        progress.setVisibility(View.GONE);
-                    } else {
-                        loadMore.setVisibility(View.VISIBLE);
+                    if (response.code() == 200){
+                        List<User> users = response.body();
+                        users.remove(0);
+                        SearchResultAdapter adapter = new SearchResultAdapter();
+                        adapter.setUser(true);
+                        adapter.setPlace(false);
+                        adapter.setPost(false);
+                        adapter.setUsers(users);
+                        adapter.setToken(token);
+                        adapter.setUserId(Session.getUserId(FullSearchActivity.this));
+                        adapter.setContext(getBaseContext());
+                        rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                        rcv.setAdapter(adapter);
+                        if (users.size() < 5) {
+                            loadMore.setVisibility(View.GONE);
+                            progress.setVisibility(View.GONE);
+                        } else {
+                            loadMore.setVisibility(View.VISIBLE);
+                        }
                     }
+
                 }
 
                 @Override
@@ -116,24 +119,27 @@ public class FullSearchActivity extends AppCompatActivity {
             mWebService.searchPlaceSuggestion(token, 1, size, query).enqueue(new Callback<List<Place>>() {
                 @Override
                 public void onResponse(Call<List<Place>> call, Response<List<Place>> response) {
-                    List<Place> places = response.body();
-                    places.remove(0);
-                    SearchResultAdapter adapter = new SearchResultAdapter();
-                    adapter.setUser(false);
-                    adapter.setPlace(true);
-                    adapter.setPost(false);
-                    adapter.setToken(token);
-                    adapter.setUserId(Session.getUserId(FullSearchActivity.this));
-                    adapter.setPlaces(places);
-                    adapter.setContext(getBaseContext());
-                    rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                    rcv.setAdapter(adapter);
-                    if (places.size() < 5) {
-                        loadMore.setVisibility(View.GONE);
-                        progress.setVisibility(View.GONE);
-                    } else {
-                        loadMore.setVisibility(View.VISIBLE);
+                    if (response.code() == 200){
+                        List<Place> places = response.body();
+                        places.remove(0);
+                        SearchResultAdapter adapter = new SearchResultAdapter();
+                        adapter.setUser(false);
+                        adapter.setPlace(true);
+                        adapter.setPost(false);
+                        adapter.setToken(token);
+                        adapter.setUserId(Session.getUserId(FullSearchActivity.this));
+                        adapter.setPlaces(places);
+                        adapter.setContext(getBaseContext());
+                        rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                        rcv.setAdapter(adapter);
+                        if (places.size() < 5) {
+                            loadMore.setVisibility(View.GONE);
+                            progress.setVisibility(View.GONE);
+                        } else {
+                            loadMore.setVisibility(View.VISIBLE);
+                        }
                     }
+
                 }
 
                 @Override
@@ -152,24 +158,27 @@ public class FullSearchActivity extends AppCompatActivity {
                     .enqueue(new Callback<List<Post>>() {
                         @Override
                         public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                            List<Post> posts = response.body();
-                            posts.remove(0);
-                            SearchResultAdapter adapter = new SearchResultAdapter();
-                            adapter.setUser(false);
-                            adapter.setPlace(false);
-                            adapter.setPost(true);
-                            adapter.setToken(token);
-                            adapter.setUserId(Session.getUserId(FullSearchActivity.this));
-                            adapter.setPosts(posts);
-                            adapter.setContext(getBaseContext());
-                            rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                            rcv.setAdapter(adapter);
-                            if (posts.size() < 5) {
-                                loadMore.setVisibility(View.GONE);
-                                progress.setVisibility(View.GONE);
-                            } else {
-                                loadMore.setVisibility(View.VISIBLE);
+                            if (response.code() == 200){
+                                List<Post> posts = response.body();
+                                posts.remove(0);
+                                SearchResultAdapter adapter = new SearchResultAdapter();
+                                adapter.setUser(false);
+                                adapter.setPlace(false);
+                                adapter.setPost(true);
+                                adapter.setToken(token);
+                                adapter.setUserId(Session.getUserId(FullSearchActivity.this));
+                                adapter.setPosts(posts);
+                                adapter.setContext(getBaseContext());
+                                rcv.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                                rcv.setAdapter(adapter);
+                                if (posts.size() < 5) {
+                                    loadMore.setVisibility(View.GONE);
+                                    progress.setVisibility(View.GONE);
+                                } else {
+                                    loadMore.setVisibility(View.VISIBLE);
+                                }
                             }
+
                         }
 
                         @Override

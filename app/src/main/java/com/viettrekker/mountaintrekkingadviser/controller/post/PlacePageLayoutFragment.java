@@ -120,10 +120,10 @@ public class PlacePageLayoutFragment extends Fragment {
 
 
     private void bindData(View view) {
-        distance ="Chưa rõ";
-        address = "Chưa rõ";
+        distance ="Chưa có";
+        address = "Chưa có";
         description = place.getDescription();
-        total = "Chưa rõ";
+        total = "Chưa có";
         Geocoder geoCoder = new Geocoder(getContext());
         double lat = place.getLocation().getLatitude();
         double lng = place.getLocation().getLongitude();
@@ -154,7 +154,7 @@ public class PlacePageLayoutFragment extends Fragment {
         tvPlaceDistance.setText(distance);
         tvPlaceName.setText(place.getName());
         tvPlaceAddress.setText(address);
-        tvPlaceTotalPlan.setText("Chưa rõ");
+        tvPlaceTotalPlan.setText("Chưa có");
         tvPlaceDescription.setText(place.getDescription());
 
         if (place.getGallery().getMedia().size() != 0) {

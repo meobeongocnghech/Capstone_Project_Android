@@ -218,7 +218,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                                 notification.getId()).enqueue(new Callback<Notification>() {
                             @Override
                             public void onResponse(Call<Notification> call, Response<Notification> response) {
-                                layout.setBackgroundResource(R.color.colorWhite);
+                                if (response.code() == 200){
+                                    layout.setBackgroundResource(R.color.colorWhite);
+
+                                }
                             }
 
                             @Override
@@ -243,7 +246,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     notification.getId()).enqueue(new Callback<Notification>() {
                 @Override
                 public void onResponse(Call<Notification> call, Response<Notification> response) {
-                    layout.setBackgroundResource(R.color.colorWhite);
+                    if (response.code() == 200){
+                        layout.setBackgroundResource(R.color.colorWhite);
+                    }
+
                 }
 
                 @Override
@@ -273,7 +279,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 case 4:
                     intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("token", Session.getToken(context));
-                    intent.putExtra("id", notification.getComment().getTargetId());
+                    intent.putExtra("id", notification.getId());
                     intent.putExtra("cmtPosition", notification.getTargetId());
                     context.startActivity(intent);
                     break;

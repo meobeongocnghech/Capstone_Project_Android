@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.erikagtierrez.multiple_media_picker.Gallery;
+import com.google.android.gms.maps.model.LatLng;
 import com.viettrekker.mountaintrekkingadviser.model.MyGallery;
 import com.viettrekker.mountaintrekkingadviser.model.MyMedia;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
@@ -81,4 +82,20 @@ public class Session {
         SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPreferences.getString("avatar", "");
     }
+//
+//    public static void saveLatLng(Context context, LatLng latLng) {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        if (latLng == null) {
+//
+//        }
+//        editor.putFloat("lat", (float) latLng.latitude);
+//        editor.putFloat("lng", (float) latLng.longitude);
+//        editor.commit();
+//    }
+//
+//    public static LatLng getLatLng(Context context) {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+//        return new LatLng(sharedPreferences.getFloat("lat", 0), sharedPreferences.getFloat("lng", 0));
+//    }
 }
