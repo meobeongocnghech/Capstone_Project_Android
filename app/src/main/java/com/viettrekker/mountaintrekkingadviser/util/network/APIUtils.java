@@ -22,9 +22,9 @@ public class APIUtils {
      * Change the domain or specific IP address (run on local server)
      * in order to call service properly
      */
-    public static final String BASE_URL_API = "http://192.168.119.166:8088/api/";
+    public static final String BASE_URL_API = "http://10.22.170.95:8088/api/";
 
-    public static final String BASE_URL = "http://192.168.119.166:8088/";
+    public static final String BASE_URL = "http://10.22.170.95:8088/";
 
     /**
      * Create service interface using Retrofit library

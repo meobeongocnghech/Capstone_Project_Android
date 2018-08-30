@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
@@ -104,18 +105,26 @@ public class PlanFragment extends Fragment {
                         tvPublicPlan.setVisibility(View.VISIBLE);
                         rcvPublicPlan.setVisibility(View.VISIBLE);
                         int userId = Session.getUserId(getActivity());
-                        for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext(); ) {
+                        outer: for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext(); ) {
                             Plan plan = iterator.next();
                             try {
-                                if (plan.getGroup().getUserId() == userId) {
+                                if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())) {
                                     iterator.remove();
-                                } else if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())) {
-                                    iterator.remove();
+                                } else {
+                                    for (Member mem : plan.getGroup().getMembers()) {
+                                        if (mem.getUserId() == userId) {
+                                            iterator.remove();
+                                        }
+                                    }
                                 }
                             } catch (ParseException e) {
-                                e.printStackTrace();
+
                             }
                         }
+
+                        publicPlanAdapter.setListPlan(plans);
+                        publicPlanAdapter.notifyDataSetChanged();
+
                         if (plans.size() < 4) {
                             stopLoading(1);
                         } else {

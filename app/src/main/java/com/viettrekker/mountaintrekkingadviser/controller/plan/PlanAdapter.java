@@ -234,15 +234,17 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
                     plans.remove(0);
                     int lastSize = listPlan.size();
                     int userId = Session.getUserId(((PlanFragment) fragment).getActivity());
-                    outer: for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext(); ) {
+                    for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext(); ) {
                         Plan plan = iterator.next();
                         for (Member mem : plan.getGroup().getMembers()) {
                             if (mem.getUserId() == userId) {
                                 iterator.remove();
-                                continue outer;
                             }
                         }
-                        plans.add(plan);
+                    }
+
+                    for (Plan plan : plans) {
+                        listPlan.add(plan);
                     }
                     if (plans.size() < 4) {
                         ((PlanFragment) fragment).stopLoading(1);
