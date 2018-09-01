@@ -47,7 +47,8 @@
                 android:textAllCaps="false"
                 android:textColor="@color/colorWhite"
                 app:backgroundTint="@android:color/transparent"
-                app:cornerRadius="56dp" />
+                app:cornerRadius="56dp"
+                android:visibility="gone"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -61,8 +62,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
             android:paddingBottom="72dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp">
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnMaps"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_google_maps_24dp"
+                    app:iconTint="@color/colorPrimary"
+                    app:backgroundTint="@color/colorWhite"
+                    android:paddingLeft="6dp"
+                    app:cornerRadius="18dp"
+                    app:rippleColor="@color/colorPrimary"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnVehicle"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_scooter_24dp"
+                    app:iconTint="@color/colorPrimary"
+                    app:backgroundTint="@color/colorWhite"
+                    android:paddingLeft="6dp"
+                    app:cornerRadius="18dp"
+                    android:layout_marginLeft="8dp"
+                    app:layout_constraintStart_toEndOf="@id/btnMaps"
+                    app:rippleColor="@color/colorPrimary"
+                    android:visibility="gone"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnConfirm"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_confirmation_24dp"
+                    app:iconTint="@color/material_blue"
+                    app:backgroundTint="@color/colorWhite"
+                    android:paddingLeft="6dp"
+                    app:cornerRadius="18dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:rippleColor="@color/material_blue"
+                    android:visibility="gone"/>
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnLeavePlan"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_out_group_24dp"
+                    app:iconTint="#f00"
+                    app:backgroundTint="@color/colorWhite"
+                    android:paddingLeft="6dp"
+                    app:cornerRadius="18dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_goneMarginEnd="0dp"
+                    app:layout_constraintEnd_toStartOf="@id/btnDeletePlan"
+                    app:rippleColor="#f00"
+                    android:visibility="gone"/>
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/btnDeletePlan"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/ic_delete_forever_red_24dp"
+                    app:iconTint="#f00"
+                    app:backgroundTint="@color/colorWhite"
+                    android:paddingLeft="5dp"
+                    app:iconSize="27dp"
+                    app:cornerRadius="18dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:rippleColor="#f00"
+                    android:visibility="gone"/>
+            </android.support.constraint.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -142,15 +215,15 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/layout" />
 
-                    <TextView
-                        android:id="@+id/tvMoreAction"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/ic_more_vert_black_24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvMoreAction"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="8dp"-->
+                        <!--android:layout_marginEnd="8dp"-->
+                        <!--android:background="@drawable/ic_more_vert_black_24dp"-->
+                        <!--app:layout_constraintEnd_toEndOf="parent"-->
+                        <!--app:layout_constraintTop_toTopOf="parent" />-->
                 </android.support.constraint.ConstraintLayout>
 
                 <LinearLayout
@@ -437,11 +510,11 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addViewMaps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/addPost"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_map" />
+        android:src="@drawable/ic_add" />
 </android.support.design.widget.CoordinatorLayout>

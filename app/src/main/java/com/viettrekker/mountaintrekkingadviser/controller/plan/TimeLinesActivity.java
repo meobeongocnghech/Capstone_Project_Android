@@ -165,8 +165,11 @@ public class TimeLinesActivity  extends AppCompatActivity{
             btnEditTimeline.setVisibility(View.GONE);
             timelinesListAdapter.setList(newPlanActivity.timeLines);
             timelinesListAdapter.sortTimelines();
-        } else if (planState != 0) {
-            btnEditTimeline.setVisibility(View.GONE);
+        } else {
+            timelinesListAdapter.disableDelete();
+            if (planState != 0) {
+                btnEditTimeline.setVisibility(View.GONE);
+            }
         }
         btnTLDate.setOnClickListener((v) -> datePick());
         btnTLTime.setOnClickListener((v) -> timePick());
@@ -174,7 +177,6 @@ public class TimeLinesActivity  extends AppCompatActivity{
         btnAddTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO here
                 TimeLines t = new TimeLines();
                 t.setName(edtTimelineTitle.getText().toString());
                 t.setContent(edtTimelineContent.getText().toString());

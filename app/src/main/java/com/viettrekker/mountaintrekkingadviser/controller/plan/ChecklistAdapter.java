@@ -61,12 +61,12 @@ public class ChecklistAdapter extends  RecyclerView.Adapter<ChecklistAdapter.Vie
         });
     }
 
-    public void disableEdit() {
+    public void disableDelete() {
         disableEdit = true;
         notifyDataSetChanged();
     }
 
-    public void enableEdit() {
+    public void enableDelete() {
         disableEdit = false;
         notifyDataSetChanged();
     }

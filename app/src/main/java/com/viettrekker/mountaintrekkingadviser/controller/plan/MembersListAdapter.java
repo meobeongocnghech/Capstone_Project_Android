@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.button.MaterialButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -45,6 +46,11 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
     private int userId;
     private int userRole;
     private int planId;
+    private TextView tvCountMember;
+
+    public void setTvCountMember(TextView tvCountMember) {
+        this.tvCountMember = tvCountMember;
+    }
 
     APIService mWebService = APIUtils.getWebService();
 
@@ -156,28 +162,6 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
                 break;
         }
 
-//        viewHolder.tvGenderItem.setText("Thành viên");
-//        viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
-//        viewHolder.imgRemoveUser.setVisibility(View.GONE);
-//        viewHolder.imgApproveRequest.setVisibility(View.GONE);
-//        if (userId == viewHolder.member.getUserId()) {
-//            viewHolder.imgPhoneCall.setVisibility(View.GONE);
-//        } else if (viewHolder.member.getRoleInGroupId() == 4) {
-//            viewHolder.imgPhoneCall.setVisibility(View.INVISIBLE);
-//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-//            viewHolder.tvGenderItem.setText("Đang mời...");
-//        } else if (viewHolder.member.getRoleInGroupId() == 5) {
-//            viewHolder.tvGenderItem.setText("Yêu cầu tham gia");
-//            viewHolder.imgPhoneCall.setVisibility(View.GONE);
-//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-//            viewHolder.imgApproveRequest.setVisibility(View.VISIBLE);
-//        } else if (viewHolder.member.getRoleInGroupId() == 3) {
-//            viewHolder.imgRemoveUser.setVisibility(View.VISIBLE);
-//        } else if (viewHolder.member.getRoleInGroupId() == 1) {
-//            viewHolder.imgPhoneCall.setVisibility(View.VISIBLE);
-//            viewHolder.tvGenderItem.setText("Trưởng đoàn");
-//        }
-
         viewHolder.imgPhoneCall.setOnClickListener((v) -> {
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + String.format("0%d", viewHolder.member.getPhone()) ));
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -214,8 +198,6 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
                         viewHolder.imgApproveRequest.setVisibility(View.GONE);
                     } else
                         Toast.makeText(context,"Thao tác thất bại, vui lòng thử lại sau!",Toast.LENGTH_LONG).show();
-
-
                 }
 
                 @Override
@@ -237,6 +219,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
                                     if (response.code() == 200){
                                         users.remove(viewHolder.member);
                                         notifyDataSetChanged();
+                                        tvCountMember.setText(users.size() + " người");
                                         Toast.makeText(context,"Đã loại bỏ",Toast.LENGTH_LONG).show();
                                     } else
                                         Toast.makeText(context,"Thao tác thất bại, vui lòng thử lại sau!",Toast.LENGTH_LONG).show();
@@ -274,9 +257,9 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         ImageView imgAvtItem;
         TextView tvNameItem;
         TextView tvGenderItem;
-        ImageView imgPhoneCall;
-        ImageView imgRemoveUser;
-        ImageView imgApproveRequest;
+        MaterialButton imgPhoneCall;
+        MaterialButton imgRemoveUser;
+        MaterialButton imgApproveRequest;
 
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -284,11 +267,12 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
             imgAvtItem = (ImageView) itemView.findViewById(R.id.imgAvtItem);
             tvNameItem = (TextView) itemView.findViewById(R.id.tvNameItem);
             tvGenderItem = (TextView) itemView.findViewById(R.id.tvGenderItem);
-            imgPhoneCall = (ImageView) itemView.findViewById(R.id.imgPhoneCall);
-            imgRemoveUser = (ImageView) itemView.findViewById(R.id.imgInviteState);
-            imgApproveRequest = (ImageView) itemView.findViewById(R.id.imgApproveRequest);
-            imgAvtItem.setOnClickListener((v) -> eventViewProfile());
-            tvNameItem.setOnClickListener((v) -> eventViewProfile());
+            imgPhoneCall = (MaterialButton) itemView.findViewById(R.id.imgPhoneCall);
+            imgRemoveUser = (MaterialButton) itemView.findViewById(R.id.imgInviteState);
+            imgApproveRequest = (MaterialButton) itemView.findViewById(R.id.imgApproveRequest);
+            itemView.setOnClickListener(v -> eventViewProfile());
+//            imgAvtItem.setOnClickListener((v) -> eventViewProfile());
+//            tvNameItem.setOnClickListener((v) -> eventViewProfile());
         }
         private void eventViewProfile() {
             Intent i = new Intent(context, ProfileMemberActivity.class);

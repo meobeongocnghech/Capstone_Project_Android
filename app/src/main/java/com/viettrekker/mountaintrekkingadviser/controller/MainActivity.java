@@ -445,7 +445,7 @@ public class MainActivity extends AppCompatActivity
                             .into(imgCover);
                 }
 
-                tvNavName.setText(user.getLastName() + " " + user.getFirstName());
+                tvNavName.setText(user.getFirstName() + " " + user.getLastName());
                 tvNavEmail.setText(user.getEmail());
             }
 
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity
                             .into(imgNavAvatar);
                 }
 
-                tvNavName.setText(user.getLastName() + " " + user.getFirstName());
+                tvNavName.setText(user.getFirstName() + " " + user.getLastName());
                 tvNavEmail.setText(user.getEmail());
             }
         });
@@ -541,7 +541,7 @@ public class MainActivity extends AppCompatActivity
                         double tlng = location.getLongitude();
                         mLatLng = new LatLng(tlat, tlng);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Location loading...", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Location loading...", Toast.LENGTH_LONG).show();
                     }
                 }
 

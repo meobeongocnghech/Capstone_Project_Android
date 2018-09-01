@@ -43,7 +43,9 @@ import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
@@ -155,7 +157,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                                         @Override
                                         public void onSelected(BaseSearchDialogCompat dialog, PlanOwn item, int position) {
                                             alertDialogBuilder.setTitle("Mời thành viên tham gia kế hoạch của bạn");
-                                            alertDialogBuilder.setMessage("Bạn có chắc chắn muốn mời "+ user.getFirstName() +" tham gia " + item.getmTitle())
+                                            alertDialogBuilder.setMessage("Bạn có chắc chắn muốn mời "+ user.getLastName() +" tham gia " + item.getmTitle())
                                                     .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -535,7 +537,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
 
     private ArrayList<PlanOwn> createSampleData(int id) {
         ArrayList<PlanOwn> items = new ArrayList<>();
-        mWebService.getListPlan(token,1,20,"id").enqueue(new Callback<List<Plan>>() {
+        mWebService.getListPlan(token,1,100,"id").enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
                 if (response.code() == 200){
@@ -546,14 +548,18 @@ public class ProfileMemberActivity extends AppCompatActivity {
                         for (Plan pl: p) {
                             List<Member> m = pl.getGroup().getMembers();
                             for (Member me: m) {
-                                if (id == me.getUserId()){
-                                    isJoin= true;
-                                } else
-                                    isJoin = false;
+                                if (id == me.getUserId()) {
+                                    isJoin = true;
+                                    break;
+                                }
                             }
-                            if (pl.getGroup().getUserId() == Session.getUserId(ProfileMemberActivity.this) && !isJoin){
-                                PlanOwn po = new PlanOwn(pl.getGroup().getName(),pl.getId());
-                                items.add(po);
+                            try {
+                                if (DateTimeUtils.changeTimeToLocale(pl.getStartTime()).before(Calendar.getInstance().getTime()) && !isJoin) {
+                                    PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
+                                    items.add(po);
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
 
                         }

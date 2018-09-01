@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -42,7 +43,9 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedAdapter;
+import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
@@ -94,9 +97,15 @@ public class PlanDetailActivity extends AppCompatActivity {
     private RecyclerView rcvPlanPost;
     private MaterialButton startPicker;
     private MaterialButton endPicker;
-    private TextView tvMoreAction;
-    private FloatingActionButton addViewMaps;
+    //    private TextView tvMoreAction;
+    private FloatingActionButton addPost;
     private TextView tvCarry;
+    private MaterialButton btnDeletePlan;
+    private MaterialButton btnLeavePlan;
+    private MaterialButton btnViewMaps;
+    private MaterialButton btnVehicle;
+    private MaterialButton btnConfirm;
+
 
     private boolean changeActivity = true;
 
@@ -219,9 +228,14 @@ public class PlanDetailActivity extends AppCompatActivity {
         tvPlanName = (TextView) findViewById(R.id.tvPlanName);
         btnEditablePlan = (MaterialButton) findViewById(R.id.btnEditablePlan);
         tvMemberCount = (TextView) findViewById(R.id.tvMemberCount);
-        addViewMaps = (FloatingActionButton) findViewById(R.id.addViewMaps);
-        tvMoreAction = (TextView) findViewById(R.id.tvMoreAction);
+        addPost = (FloatingActionButton) findViewById(R.id.addPost);
+//        tvMoreAction = (TextView) findViewById(R.id.tvMoreAction);
         tvCarry = (TextView) findViewById(R.id.tvCarry);
+        btnDeletePlan = (MaterialButton) findViewById(R.id.btnDeletePlan);
+        btnLeavePlan = (MaterialButton) findViewById(R.id.btnLeavePlan);
+        btnViewMaps = (MaterialButton) findViewById(R.id.btnMaps);
+        btnVehicle = (MaterialButton) findViewById(R.id.btnVehicle);
+        btnConfirm = (MaterialButton) findViewById(R.id.btnConfirm);
 
         rcvPlanPost = (RecyclerView) findViewById(R.id.rcvPlanPost);
 
@@ -230,6 +244,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         rcvListMembersPlan = (RecyclerView) findViewById(R.id.rcvListMembersPlan);
         rcvListMembersPlan.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
         membersListAdapter = new MembersListAdapter(PlanDetailActivity.this);
+        membersListAdapter.setTvCountMember(tvMemberCount);
         rcvListMembersPlan.setVisibility(View.GONE);
 
         newsFeedAdapter = new NewsFeedAdapter(PlanDetailActivity.this, null, token);
@@ -247,7 +262,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         mWebService.searchPlace(token, 1, 100, "id", "").enqueue(new Callback<ArrayList<Place>>() {
             @Override
             public void onResponse(Call<ArrayList<Place>> call, Response<ArrayList<Place>> response) {
-                if (response.code() == 200){
+                if (response.code() == 200) {
                     places = response.body();
                     places.remove(0);
                 }
@@ -260,122 +275,199 @@ public class PlanDetailActivity extends AppCompatActivity {
             }
         });
 
-        tvMoreAction.setOnClickListener((v) -> {
-            PopupMenu popupMenu = new PopupMenu(PlanDetailActivity.this, tvMoreAction);
-            popupMenu.getMenuInflater().inflate(R.menu.action_plan_menu, popupMenu.getMenu());
-            Menu menu = popupMenu.getMenu();
-            if (userId == plan.getGroup().getUserId()) {
-                menu.findItem(R.id.actLeave).setVisible(false);
-            } else {
-                menu.findItem(R.id.actRemove).setVisible(false);
-            }
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        btnVehicle.setOnClickListener((v) -> {
+            alertDialogBuilder.setTitle("Cập nhật phương tiện di chuyển");
+            alertDialogBuilder.setMessage("Bạn có phương tiện di chuyển không?")
+                    .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mWebService.updateTraffic(token, plan.getId(), 0, "Xe máy", 1).enqueue(new Callback<Plan>() {
+                                @Override
+                                public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                    if (response.code() == 200) {
+                                        Toast.makeText(PlanDetailActivity.this, "Bạn đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                                        tvCarry.setText(response.body().getCarry() + " xe");
+                                    } else
+                                        Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Plan> call, Throwable t) {
+                                    Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            dialogInterface.dismiss();
+                        }
+                    }).setNegativeButton("Không", new DialogInterface.OnClickListener() {
                 @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    if (menuItem.getTitle().equals("Sửa phương tiện")) {
-                        alertDialogBuilder.setTitle("Cập nhật phương tiện di chuyển");
-                        alertDialogBuilder.setMessage("Bạn có phương tiện di chuyển không?")
-                                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        mWebService.updateTraffic(token, plan.getId(), 0, "Xe máy", 1).enqueue(new Callback<Plan>() {
-                                            @Override
-                                            public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                                if (response.code() == 200) {
-                                                    Toast.makeText(PlanDetailActivity.this, "Bạn đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                                                } else
-                                                    Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                            }
-
-                                            @Override
-                                            public void onFailure(Call<Plan> call, Throwable t) {
-                                                Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                        dialogInterface.dismiss();
-                                    }
-                                }).setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mWebService.updateTraffic(token, plan.getId(), 0, "Xe máy", 0).enqueue(new Callback<Plan>() {
+                        @Override
+                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            if (response.code() == 200) {
                                 Toast.makeText(PlanDetailActivity.this, "Bạn đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                                dialogInterface.dismiss();
-                            }
-                        }).show();
+                                tvCarry.setText(response.body().getCarry() + " xe");
+                            } else
+                                Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
 
-                    } else if (menuItem.getTitle().equals("Rời khỏi")) {
-                        alertDialogBuilder.setTitle("Rời khỏi kế hoạch");
-                        alertDialogBuilder.setMessage("Bạn có muốn rời khỏi kế hoạch này không?")
-                                .setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mWebService.quitPlan(token, plan.getId()).enqueue(new Callback<Plan>() {
-                                    @Override
-                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                        if (response.code() == 200) {
-                                            onBackPressed();
-                                            Toast.makeText(PlanDetailActivity.this, "Bạn đã rời khỏi kế hoạch.", Toast.LENGTH_SHORT).show();
-                                        } else
-                                            Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Plan> call, Throwable t) {
-                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                });
-                                dialogInterface.dismiss();
-                            }
-                        }).show();
-                    } else {
-                        alertDialogBuilder.setTitle("Xóa kế hoạch");
-                        alertDialogBuilder.setMessage("Bạn có chắc chắn muốn xóa kế hoạch này không?")
-                                .setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                        dialogInterface.dismiss();
-                                    }
-                                }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mWebService.removePlan(token, plan.getId()).enqueue(new Callback<Plan>() {
-                                    @Override
-                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                        if (response.code() == 200) {
-                                            onBackPressed();
-                                            Toast.makeText(PlanDetailActivity.this, "Đã xóa", Toast.LENGTH_SHORT).show();
-                                        } else
-                                            Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<Plan> call, Throwable t) {
-                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                dialogInterface.dismiss();
-                            }
-                        }).show();
-
-                    }
-                    return true;
+                        @Override
+                        public void onFailure(Call<Plan> call, Throwable t) {
+                            Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialogInterface.dismiss();
                 }
-            });
-            popupMenu.show();
+            }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).show();
         });
 
-        addViewMaps.setOnClickListener((v) -> {
+        btnLeavePlan.setOnClickListener((v) -> {
+            alertDialogBuilder.setTitle("Rời khỏi kế hoạch");
+            alertDialogBuilder.setMessage("Bạn có muốn rời khỏi kế hoạch này không?")
+                    .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mWebService.quitPlan(token, plan.getId()).enqueue(new Callback<Plan>() {
+                        @Override
+                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            if (response.code() == 200) {
+                                onBackPressed();
+                                Toast.makeText(PlanDetailActivity.this, "Bạn đã rời khỏi kế hoạch.", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Plan> call, Throwable t) {
+                            Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
+
+                    });
+                    dialogInterface.dismiss();
+                }
+            }).show();
+        });
+
+
+        btnDeletePlan.setOnClickListener((v) -> {
+            alertDialogBuilder.setTitle("Xóa kế hoạch");
+            alertDialogBuilder.setMessage("Bạn có chắc chắn muốn xóa kế hoạch này không?")
+                    .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mWebService.removePlan(token, plan.getId()).enqueue(new Callback<Plan>() {
+                        @Override
+                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            if (response.code() == 200) {
+                                onBackPressed();
+                                Toast.makeText(PlanDetailActivity.this, "Đã xóa", Toast.LENGTH_SHORT).show();
+                            } else
+                                Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Plan> call, Throwable t) {
+                            Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialogInterface.dismiss();
+                }
+            }).show();
+        });
+
+        btnViewMaps.setOnClickListener(v -> {
             Uri gmmIntentUri = Uri.parse("http://maps.google.com/maps?saddr=" + srcLocation.getLat() + "," + srcLocation.getLng() + "&daddr=" + desLocation.getLat() + "," + desLocation.getLng());
             //Uri gmmIntentUri = Uri.parse("geo:0,0?q=1600 Amphitheatre Parkway, Mountain+View, California");
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
             startActivity(mapIntent);
+        });
+
+        btnConfirm.setOnClickListener(v -> {
+            alertDialogBuilder.setTitle("Yêu cầu tham gia");
+            alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
+                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
+                                @Override
+                                public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                    if (response.code() == 200) {
+                                        Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
+                                        btnConfirm.setVisibility(View.GONE);
+                                        membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                        membersListAdapter.notifyDataSetChanged();
+                                        btnLeavePlan.setVisibility(View.VISIBLE);
+                                        btnVehicle.setVisibility(View.VISIBLE);
+                                        addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                        addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                        addPost.requestLayout();
+                                    } else {
+                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Plan> call, Throwable t) {
+                                    Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            dialogInterface.dismiss();
+                        }
+                    }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
+                        @Override
+                        public void onResponse(Call<Plan> call, Response<Plan> response) {
+                            if (response.code() == 200) {
+                                Toast.makeText(PlanDetailActivity.this, "Bạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
+                                btnConfirm.setVisibility(View.GONE);
+                                membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                membersListAdapter.notifyDataSetChanged();
+                                tvMemberCount.setText(response.body().getGroup().getMembers().size() + " người");
+                            } else {
+                                Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Plan> call, Throwable t) {
+                            Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    dialogInterface.dismiss();
+                }
+            }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            }).show();
+        });
+
+        addPost.setOnClickListener((v) -> {
+            Intent intent = new Intent(this, PostAddActivity.class);
+            intent.putExtra("isPostPlan", true);
+            intent.putExtra("planName", plan.getGroup().getName());
+            intent.putExtra("planId", plan.getId());
+            changeActivity = true;
+            startActivity(intent);
         });
 
         startPicker.setOnClickListener((v) -> {
@@ -490,7 +582,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                                     mWebService.getPlaceById(token, placeId).enqueue(new Callback<Place>() {
                                         @Override
                                         public void onResponse(Call<Place> call, Response<Place> response) {
-                                            if (response.code() == 200){
+                                            if (response.code() == 200) {
                                                 Place place = response.body();
                                                 desLocation.setName(place.getName());
                                                 desLocation.setLat(place.getLocation().getLatitude());
@@ -506,7 +598,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                                                 tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
 
                                             }
-                                             }
+                                        }
 
                                         @Override
                                         public void onFailure(Call<Place> call, Throwable t) {
@@ -551,12 +643,12 @@ public class PlanDetailActivity extends AppCompatActivity {
                 mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
-                        if (response.code() == 200){
+                        if (response.code() == 200) {
                             progressDialog.dismiss();
                             Snackbar.make(findViewById(R.id.coordinatorPlanDetail), "Thay đổi thành công", Snackbar.LENGTH_LONG).show();
 
                         }
-                        }
+                    }
 
                     @Override
                     public void onFailure(Call<Plan> call, Throwable t) {
@@ -672,39 +764,71 @@ public class PlanDetailActivity extends AppCompatActivity {
         mWebService.getPlanById(token, id).enqueue(new Callback<Plan>() {
             @Override
             public void onResponse(Call<Plan> call, Response<Plan> response) {
-                if (response.code() == 200){
+                if (response.code() == 200) {
                     plan = response.body();
                     directionId = plan.getDirection().getId();
                     tvCarry.setText(plan.getCarry() + " xe");
+                    List<Member> members = plan.getGroup().getMembers();
+                    for (Member u : members) {
+                        if (u.getUserId() == userId) {
+                            userRole = u.getRoleInGroupId();
+                            break;
+                        }
+                    }
+                    switch (userRole) {
+                        case 0:
+                            state = 3;
+                            break;
+                        case 1:
+                            btnDeletePlan.setVisibility(View.VISIBLE);
+                            btnVehicle.setVisibility(View.VISIBLE);
+                            addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            addPost.requestLayout();
+                            break;
+                        case 3:
+                            state = 3;
+                            btnLeavePlan.setVisibility(View.VISIBLE);
+                            btnVehicle.setVisibility(View.VISIBLE);
+                            addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            addPost.requestLayout();
+                            break;
+                        case 4:
+                            state = 3;
+                            btnConfirm.setVisibility(View.VISIBLE);
+                            break;
+                        case 5:
+                            state = 3;
+                            break;
+                    }
+
                     try {
                         if (DateTimeUtils.changeTimeToLocale(plan.getStartTime()).before(Calendar.getInstance().getTime())
                                 && DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).after(Calendar.getInstance().getTime())) {
                             tvStatePlan.setText("Đang diễn ra");
                             tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorOrange));
-                            btnEditablePlan.setVisibility(View.GONE);
-                            state = ONGOING;
+                            btnVehicle.setVisibility(View.GONE);
+                            if (userRole == 1) {
+                                state = ONGOING;
+                            }
                         } else if (DateTimeUtils.changeTimeToLocale(plan.getFinishTime()).before(Calendar.getInstance().getTime())) {
                             tvStatePlan.setText("Đã hoàn thành");
                             tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorGray));
-                            btnEditablePlan.setVisibility(View.GONE);
-                            state = FINISH;
+                            btnVehicle.setVisibility(View.GONE);
+                            if (userRole == 1) {
+                                state = FINISH;
+                            }
                         } else {
                             tvStatePlan.setText("Sẵn sàng");
                             tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorPrimary));
-                            state = READY;
+                            if (userRole == 1) {
+                                state = READY;
+                                btnEditablePlan.setVisibility(View.VISIBLE);
+                            }
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
-                    }
-
-                    for (Member u : plan.getGroup().getMembers()) {
-                        if (u.getUserId() == userId) {
-                            userRole = u.getRoleInGroupId();
-                        }
-                    }
-
-                    if (userRole != 1) {
-                        state = 3;
                     }
 
                     try {
@@ -719,71 +843,70 @@ public class PlanDetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     tvPlanName.setText(plan.getGroup().getName());
-                    List<Member> members = plan.getGroup().getMembers();
 
-                    boolean isInGroup = false;
-                    for (Member member : members) {
-                        if (member.getUserId() == userId && member.getRoleInGroupId() != 1) {
-
-                            isInGroup = true;
-                        }
-                    }
-
-                    if (!isInGroup) {
-                        btnEditablePlan.setVisibility(View.GONE);
-                        tvMoreAction.setVisibility(View.GONE);
-                    }
-
-                    for (Member m : members) {
-                        if (Session.getUserId(PlanDetailActivity.this) == m.getUserId() && m.getRoleInGroupId() == 4) {
-                            alertDialogBuilder.setTitle("Yêu cầu tham gia");
-                            alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
-                                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
-                                                @Override
-                                                public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                                    if (response.code() == 200)
-                                                        Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
-                                                    dialogInterface.dismiss();
+                    if (userRole == 4) {
+                        alertDialogBuilder.setTitle("Yêu cầu tham gia");
+                        alertDialogBuilder.setMessage("Bạn đã được mời tham gia vào kế hoạch này, Bạn có muốn tham gia hay không?")
+                                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        mWebService.approveInvitation(token, id).enqueue(new Callback<Plan>() {
+                                            @Override
+                                            public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                                if (response.code() == 200) {
+                                                    Toast.makeText(PlanDetailActivity.this, "Tham gia nhóm thành công", Toast.LENGTH_SHORT).show();
+                                                    btnConfirm.setVisibility(View.GONE);
                                                     membersListAdapter.setUsers(response.body().getGroup().getMembers());
                                                     membersListAdapter.notifyDataSetChanged();
-                                                }
-
-                                                @Override
-                                                public void onFailure(Call<Plan> call, Throwable t) {
+                                                    btnLeavePlan.setVisibility(View.VISIBLE);
+                                                    btnVehicle.setVisibility(View.VISIBLE);
+                                                    addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                                    addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                                                    addPost.requestLayout();
+                                                } else {
                                                     Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
-                                                    dialogInterface.dismiss();
                                                 }
-                                            });
-                                        }
-                                    }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
-                                        @Override
-                                        public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                            if (response.code() == 200)
-                                                Toast.makeText(PlanDetailActivity.this, "Bạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
-                                            dialogInterface.dismiss();
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onFailure(Call<Plan> call, Throwable t) {
+                                            @Override
+                                            public void onFailure(Call<Plan> call, Throwable t) {
+                                                Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        dialogInterface.dismiss();
+                                    }
+                                }).setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mWebService.rejectInvitation(token, id).enqueue(new Callback<Plan>() {
+                                    @Override
+                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                        if (response.code() == 200) {
+                                            Toast.makeText(PlanDetailActivity.this, "Bạn đã từ chối lời mời", Toast.LENGTH_SHORT).show();
+                                            btnConfirm.setVisibility(View.GONE);
+                                            membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                            membersListAdapter.notifyDataSetChanged();
+                                            tvMemberCount.setText(response.body().getGroup().getMembers().size() + " người");
+                                        } else {
                                             Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
-                                            dialogInterface.dismiss();
                                         }
-                                    });
-                                }
-                            }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            }).show();
-                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Plan> call, Throwable t) {
+                                        Toast.makeText(PlanDetailActivity.this, "Có lỗi xảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                dialogInterface.dismiss();
+                            }
+                        }).setNeutralButton("Đóng", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
                     }
+
                     membersListAdapter.setContext(PlanDetailActivity.this);
                     membersListAdapter.setUsers(members);
                     membersListAdapter.setPlanId(plan.getId());

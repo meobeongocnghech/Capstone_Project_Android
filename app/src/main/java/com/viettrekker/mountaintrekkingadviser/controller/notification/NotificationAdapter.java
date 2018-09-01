@@ -125,7 +125,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         String user = noti.getUser().getFirstName() + " " + noti.getUser().getLastName();
         String content = noti.getContent().replace("${{source}}", "<b>" + user + "</b>");
         if (noti.getContent().contains("${{source.gender}}")) {
-            content = noti.getContent().replace("${{source.gender}}", noti.getUser().getGender() == 0 ? "anh ấy" : "cô ấy");
+            content = content.replace("${{source.gender}}", noti.getUser().getGender() == 0 ? "anh ấy" : "cô ấy");
         }
         holder.tvNotiTitle.setText(Html.fromHtml(content));
         if (!noti.getUser().getAvatar().getPath().isEmpty()) {

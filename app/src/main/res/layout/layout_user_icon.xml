@@ -13,12 +13,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/cardview_bg">
-
+        android:layout_height="match_parent">
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:orientation="horizontal"
@@ -30,7 +28,9 @@
                 android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/avatar_default"
-                card_view:layout_constraintStart_toStartOf="parent" />
+                card_view:layout_constraintStart_toStartOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent"/>
 
             <LinearLayout
                 android:layout_width="230dp"
@@ -39,7 +39,9 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
-                card_view:layout_constraintStart_toEndOf="@id/imgAvtItem">
+                card_view:layout_constraintStart_toEndOf="@id/imgAvtItem"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/tvNameItem"
@@ -59,36 +61,62 @@
                     android:textColor="@color/colorLightGray"
                     android:textSize="10dp" />
             </LinearLayout>
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="left">
 
-            <ImageView
+            <android.support.design.button.MaterialButton
                 android:id="@+id/imgPhoneCall"
-                android:layout_width="21dp"
-                android:layout_height="21dp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_local_phone_black_24dp"
+                android:paddingLeft="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                card_view:cornerRadius="16dp"
+                card_view:icon="@drawable/ic_local_phone_primary_24dp"
+                card_view:iconTint="@color/colorPrimary"
+                card_view:backgroundTint="@color/colorWhite"
+                card_view:rippleColor="@color/colorPrimary"
                 card_view:layout_constraintEnd_toStartOf="@+id/imgApproveRequest"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="gone"/>
 
-            <ImageView
-                android:id="@+id/imgInviteState"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/error_icon"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"/>
-
-            <ImageView
+            <android.support.design.button.MaterialButton
                 android:id="@+id/imgApproveRequest"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_check"
+                android:paddingLeft="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                card_view:cornerRadius="16dp"
+                card_view:icon="@drawable/ic_check_black_24dp"
+                card_view:iconTint="#4aedc5"
+                card_view:backgroundTint="@color/colorWhite"
+                card_view:rippleColor="#4aedc5"
                 card_view:layout_constraintEnd_toStartOf="@+id/imgInviteState"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"/>
+
+            <android.support.design.button.MaterialButton
+                android:id="@+id/imgInviteState"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:paddingLeft="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                card_view:cornerRadius="16dp"
+                card_view:icon="@drawable/ic_clear_red_24dp"
+                card_view:iconTint="#f00"
+                card_view:backgroundTint="@color/colorWhite"
+                card_view:rippleColor="#f00"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintBottom_toBottomOf="parent"
                 android:visibility="gone"/>
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>

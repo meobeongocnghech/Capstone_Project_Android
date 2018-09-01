@@ -46,6 +46,11 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     public PlanAdapter() {
     }
 
+    public void resetPageCount() {
+        pageMyPlan = 1;
+        pagePublicPlan = 1;
+    }
+
     public void setListPlan(List<Plan> listPlan) {
         this.listPlan = listPlan;
     }

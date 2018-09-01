@@ -75,7 +75,6 @@ public class ChecklistActivity extends AppCompatActivity {
                         checklistAdapter.setList(items);
                         checklistAdapter.notifyDataSetChanged();
                     }
-
                 }
 
                 @Override
@@ -103,6 +102,7 @@ public class ChecklistActivity extends AppCompatActivity {
                 }
             });
         } else {
+            checklistAdapter.disableDelete();
             if (planState == 0) {
                 btnAddChecklist.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -119,12 +119,12 @@ public class ChecklistActivity extends AppCompatActivity {
                 btnEditCheckList.setOnClickListener((v) -> {
                     if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
                         btnEditCheckList.setText("Xong");
-                        checklistAdapter.enableEdit();
+                        checklistAdapter.enableDelete();
                         btnAddChecklist.setVisibility(View.VISIBLE);
                         edtAddChecklist.setVisibility(View.VISIBLE);
                     } else {
                         btnEditCheckList.setText("Sửa");
-                        checklistAdapter.disableEdit();
+                        checklistAdapter.disableDelete();
                         btnAddChecklist.setVisibility(View.GONE);
                         edtAddChecklist.setVisibility(View.GONE);
 

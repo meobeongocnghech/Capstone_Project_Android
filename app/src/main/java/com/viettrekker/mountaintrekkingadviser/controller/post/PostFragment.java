@@ -68,6 +68,7 @@ public class PostFragment extends Fragment {
 
         fragmentTransaction.replace(R.id.postFragment, placeFragment, "place");
         fragmentTransaction.commitAllowingStateLoss();
+        ((MainActivity) getActivity()).hideAdd();
     }
 
     private void loadNewsfeedData() {
@@ -78,6 +79,7 @@ public class PostFragment extends Fragment {
 
         fragmentTransaction.replace(R.id.postFragment, newsFeedFragment, "newsfeed");
         fragmentTransaction.commitAllowingStateLoss();
+        ((MainActivity) getActivity()).showAdd();
     }
 
     private void loadChipAnimation(Chip chip, String hint) {
@@ -102,11 +104,11 @@ public class PostFragment extends Fragment {
         if (switchView.isChecked()) {
             loadPlaceData();
             hideProgress();
-            ((MainActivity) getActivity()).hideAdd();
+
         } else {
             loadNewsfeedData();
             showProgress();
-            ((MainActivity) getActivity()).showAdd();
+
         }
     }
 

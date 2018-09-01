@@ -96,15 +96,15 @@ public class PostAddActivity extends AppCompatActivity {
     ImageView imgPostAvatar;
     int typeId;
     APIService mWebService = APIUtils.getWebService();
-    int placeId;
+    int placeId = 0;
     int idUpdate;
     String point = "";
     Direction d;
-    int planId;
+    int planId = 0;
     AlertDialog.Builder alertDialogBuilder;
 
-    public final static int PICK_IMAGE_REQUEST = 1;
-    public final static int READ_EXTERNAL_REQUEST = 2;
+    private boolean isPostPlan = false;
+    private String planName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,11 +129,22 @@ public class PostAddActivity extends AppCompatActivity {
         btnPlan = (MaterialButton) findViewById(R.id.btnPlan);
         rcvImageSelect = (RecyclerView) findViewById(R.id.rcvImageSelect);
 
+        isPostPlan = getIntent().getBooleanExtra("isPostPlan", false);
+        if(isPostPlan) {
+            planName = getIntent().getStringExtra("planName");
+            planId = getIntent().getIntExtra("planId", 0);
+            btnLocation.setVisibility(View.GONE);
+            btnPlan.setText(planName);
+            btnPlan.setFocusable(false);
+            btnPlan.setClickable(false);
+        } else {
+            btnPlan.setVisibility(View.GONE);
+        }
+
         rcvImageSelect.setLayoutManager(new LinearLayoutManager(PostAddActivity.this, LinearLayoutManager.HORIZONTAL, false));
 
         imageAddAdapter = new ImageAddAdapter();
         imageAddAdapter.setContext(this);
-        planId = 0;
         if (!Session.getAvatarPath(this).isEmpty()) {
             GlideApp.with(this)
                     .load(APIUtils.BASE_URL_API + Session.getAvatarPath(this).substring(4))
@@ -145,7 +156,6 @@ public class PostAddActivity extends AppCompatActivity {
 
         places = new ArrayList<>();
         btnLocation.setText("Chọn địa điểm");
-        placeId = -1;
         typeId = 4;
         tvPostUserName.setText(Session.getUser(getApplicationContext()).getFirstName() + " " + Session.getUser(getApplicationContext()).getLastName());
         idUpdate = getIntent().getIntExtra("id", 0);
@@ -245,13 +255,15 @@ public class PostAddActivity extends AppCompatActivity {
                     mWebService.addPostWithImages(Session.getToken(PostAddActivity.this), builder.build()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                                progressDialog.dismiss();
-                                Toast.makeText(PostAddActivity.this, "Tạo thành công", Toast.LENGTH_LONG).show();
+                            progressDialog.dismiss();
+//                            Toast.makeText(PostAddActivity.this, "Tạo thành công", Toast.LENGTH_LONG).show();
+                            if (isPostPlan) {
+                                onBackPressed();
+                            } else {
                                 Intent intent = new Intent(PostAddActivity.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
-
-
+                            }
                         }
 
                         @Override
@@ -269,10 +281,10 @@ public class PostAddActivity extends AppCompatActivity {
                     mWebService.updatePost(Session.getToken(PostAddActivity.this), idUpdate, edtTitlePost.getText().toString(), edtContent.getText().toString()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                                progressDialog.dismiss();
-                                Toast.makeText(PostAddActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(PostAddActivity.this,MainActivity.class));
-                            }
+                            progressDialog.dismiss();
+//                            Toast.makeText(PostAddActivity.this, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        }
 
                         @Override
                         public void onFailure(Call<Post> call, Throwable t) {
@@ -285,24 +297,24 @@ public class PostAddActivity extends AppCompatActivity {
 
             }
         });
-
-        btnPlan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new SimpleSearchDialogCompat(PostAddActivity.this, "Tìm kiếm kế hoạch của bạn",
-                        "Nhập tên kế hoạch có dấu...", null, createPlanData(),
-                        new SearchResultListener<PlanOwn>() {
-                            @Override
-                            public void onSelected(BaseSearchDialogCompat dialog, PlanOwn item, int position) {
-                                btnPlan.setText(item.getmTitle());
-                                btnLocation.setText("Địa điểm");
-                                btnLocation.setClickable(false);
-                                planId = item.getId();
-                                dialog.dismiss();
-                            }
-                        }).show();
-            }
-        });
+//
+//        btnPlan.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                new SimpleSearchDialogCompat(PostAddActivity.this, "Tìm kiếm kế hoạch của bạn",
+//                        "Nhập tên kế hoạch có dấu...", null, createPlanData(),
+//                        new SearchResultListener<PlanOwn>() {
+//                            @Override
+//                            public void onSelected(BaseSearchDialogCompat dialog, PlanOwn item, int position) {
+//                                btnPlan.setText(item.getmTitle());
+//                                btnLocation.setText("Địa điểm");
+//                                btnLocation.setClickable(false);
+//                                planId = item.getId();
+//                                dialog.dismiss();
+//                            }
+//                        }).show();
+//            }
+//        });
 
         btnAddPhoto.setOnClickListener((v) -> {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -386,29 +398,29 @@ public class PostAddActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    private ArrayList<PlanOwn> createPlanData() {
-        ArrayList<PlanOwn> items = new ArrayList<>();
-        mWebService.getListPlan(Session.getToken(PostAddActivity.this), 1, 20, "id").enqueue(new Callback<List<Plan>>() {
-            @Override
-            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
-                if (response.code() == 200){
-                    if (response.body().size() > 1) {
-                        List<Plan> p = response.body();
-                        p.remove(0);
-                        for (Plan pl : p) {
-                            PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
-                            items.add(po);
-                        }
-                    }
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Plan>> call, Throwable t) {
-
-            }
-        });
-        return items;
-    }
+//    private ArrayList<PlanOwn> createPlanData() {
+//        ArrayList<PlanOwn> items = new ArrayList<>();
+//        mWebService.getListPlan(Session.getToken(PostAddActivity.this), 1, 20, "id").enqueue(new Callback<List<Plan>>() {
+//            @Override
+//            public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
+//                if (response.code() == 200){
+//                    if (response.body().size() > 1) {
+//                        List<Plan> p = response.body();
+//                        p.remove(0);
+//                        for (Plan pl : p) {
+//                            PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
+//                            items.add(po);
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Plan>> call, Throwable t) {
+//
+//            }
+//        });
+//        return items;
+//    }
 }
