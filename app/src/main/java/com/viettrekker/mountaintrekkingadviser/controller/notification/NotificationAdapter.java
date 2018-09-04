@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
@@ -280,56 +281,57 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 case 4:
                     intent = new Intent(context, PostDetailActivity.class);
                     intent.putExtra("token", Session.getToken(context));
-                    intent.putExtra("id", notification.getId());
-                    intent.putExtra("cmtPosition", notification.getTargetId());
+                    intent.putExtra("id", notification.getComment().getTargetId());
+                    intent.putExtra("cmtPosition", notification.getComment().getId());
                     context.startActivity(intent);
                     break;
                 case 9:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 10:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 11:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 12:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 13:
                     intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getTargetId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("id", notification.getPlan().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 14:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
                 case 15:
-                    intent = new Intent(context, PlanDetailActivity.class);
-                    intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
-                    context.startActivity(intent);
+//                    intent = new Intent(context, PlanDetailActivity.class);
+//                    intent.putExtra("id", notification.getPlan().getId());
+//                    intent.putExtra("userId", notification.getTargetOwner().getId());
+//                    context.startActivity(intent);
+                    Toast.makeText(context,"Bạn đã bị loại khỏi kế hoạch", Toast.LENGTH_SHORT).show();
                     break;
                 case 16:
                     intent = new Intent(context, PlanDetailActivity.class);
                     intent.putExtra("id", notification.getPlan().getId());
-                    intent.putExtra("userId", notification.getTargetOwner().getId());
+                    intent.putExtra("userId", Session.getUserId(context));
                     context.startActivity(intent);
                     break;
             }

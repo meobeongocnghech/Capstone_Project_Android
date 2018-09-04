@@ -1,10 +1,12 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -127,7 +129,19 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (getIntent().getBooleanExtra("ban", false)) {
-            Snackbar.make(findViewById(R.id.loginLayout), "Tài khoản của bạn đã bị khóa", Snackbar.LENGTH_LONG).show();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+            alertDialogBuilder.setTitle("Thông báo");
+            alertDialogBuilder.setMessage("Tài khoản của bạn đã bị khóa bởi quản trị viên. Để biết thêm chi tiết liên hệ tại mountaintrekkingadvisor@gmail.com")
+                    .setCancelable(false)
+                    .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // if this button is clicked, close
+                            // current activity
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 

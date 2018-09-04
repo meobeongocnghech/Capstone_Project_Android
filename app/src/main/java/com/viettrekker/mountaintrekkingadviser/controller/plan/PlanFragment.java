@@ -41,9 +41,7 @@ public class PlanFragment extends Fragment {
     PlanAdapter myPlanAdapter;
     PlanAdapter publicPlanAdapter;
     ProgressBar progressMyPlan;
-    ProgressBar progressPublicPlan;
     MaterialButton loadMoreMyPlan;
-    MaterialButton loadMorePublicPlan;
     NestedScrollView planScrollView;
     TextView tvNoPlan;
     int hasNoPlan = 0;
@@ -110,7 +108,7 @@ public class PlanFragment extends Fragment {
         });
 
         publicPlanAdapter.resetPageCount();
-        mWebService.getListPlanIsPublic(Session.getToken(getActivity()), 1, 4, "id", true).enqueue(new Callback<List<Plan>>() {
+        mWebService.getListPlanIsPublic(Session.getToken(getActivity()), 1, 100, "id", true).enqueue(new Callback<List<Plan>>() {
             @Override
             public void onResponse(Call<List<Plan>> call, Response<List<Plan>> response) {
                 List<Plan> plans = response.body();
@@ -129,6 +127,7 @@ public class PlanFragment extends Fragment {
                                     for (Member mem : plan.getGroup().getMembers()) {
                                         if (mem.getUserId() == userId) {
                                             iterator.remove();
+                                            break;
                                         }
                                     }
                                 }
@@ -139,12 +138,12 @@ public class PlanFragment extends Fragment {
 
                         publicPlanAdapter.setListPlan(plans);
                         publicPlanAdapter.notifyDataSetChanged();
-
-                        if (plans.size() < 4) {
-                            stopLoading(1);
-                        } else {
-                            showLoading(1);
-                        }
+//
+//                        if (plans.size() < 4) {
+//                            stopLoading(1);
+//                        } else {
+//                            showLoading(1);
+//                        }
 
                         if (plans.size() == 0) {
                             tvPublicPlan.setVisibility(View.GONE);
@@ -177,9 +176,7 @@ public class PlanFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressMyPlan = (ProgressBar) view.findViewById(R.id.progressMyPlan);
-        progressPublicPlan = (ProgressBar) view.findViewById(R.id.progressPublicPlan);
         loadMoreMyPlan = (MaterialButton) view.findViewById(R.id.loadMoreMyPlan);
-        loadMorePublicPlan = (MaterialButton) view.findViewById(R.id.loadMorePublicPlan);
         rcvPlanListItem = (RecyclerView) view.findViewById(R.id.rcvPlanListItem);
         rcvPublicPlan = (RecyclerView) view.findViewById(R.id.rcvPublicPlanListItem);
         planScrollView = (NestedScrollView) view.findViewById(R.id.planScrollView);
@@ -209,27 +206,18 @@ public class PlanFragment extends Fragment {
             loadMoreMyPlan.setVisibility(View.GONE);
             myPlanAdapter.loadMoreMyPlan();
         });
-        loadMorePublicPlan.setOnClickListener((v) -> {
-            loadMorePublicPlan.setVisibility(View.GONE);
-            publicPlanAdapter.loadMorePublicPlan();
-        });
     }
 
     public void stopLoading(int i) {
         if (i == 0) {
             loadMoreMyPlan.setVisibility(View.GONE);
             progressMyPlan.setVisibility(View.GONE);
-        } else {
-            loadMorePublicPlan.setVisibility(View.GONE);
-            progressPublicPlan.setVisibility(View.GONE);
         }
     }
 
     public void showLoading(int i) {
         if (i == 0) {
             loadMoreMyPlan.setVisibility(View.VISIBLE);
-        } else {
-            loadMorePublicPlan.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -112,13 +112,17 @@ public class ChecklistActivity extends AppCompatActivity {
                 btnAddChecklist.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ChecklistItem c = new ChecklistItem();
-                        c.setContent("- " + edtAddChecklist.getText().toString());
-                        c.setState(0);
-                        items.add(c);
-                        checklistAdapter.setList(items);
-                        checklistAdapter.notifyDataSetChanged();
-                        edtAddChecklist.setText("");
+                        if (edtAddChecklist.getText().toString().isEmpty()) {
+                            Toast.makeText(ChecklistActivity.this, "Không được để trống!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ChecklistItem c = new ChecklistItem();
+                            c.setContent("- " + edtAddChecklist.getText().toString());
+                            c.setState(0);
+                            items.add(c);
+                            checklistAdapter.setList(items);
+                            checklistAdapter.notifyDataSetChanged();
+                            edtAddChecklist.setText("");
+                        }
                     }
                 });
 

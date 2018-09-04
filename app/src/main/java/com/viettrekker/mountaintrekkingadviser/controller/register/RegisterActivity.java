@@ -3,6 +3,7 @@ package com.viettrekker.mountaintrekkingadviser.controller.register;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -24,6 +25,7 @@ import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.model.MyMessage;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
+import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
@@ -98,8 +100,12 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onVisibilityChanged(boolean isOpen) {
                         if (isOpen) {
                             toolbar.setVisibility(View.GONE);
+                            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) submit.getLayoutParams();
+                            layoutParams.bottomMargin = LocalDisplay.dp2px(8, RegisterActivity.this);
                         } else {
                             toolbar.setVisibility(View.VISIBLE);
+                            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) submit.getLayoutParams();
+                            layoutParams.bottomMargin = LocalDisplay.dp2px(32, RegisterActivity.this);
                         }
                     }
                 });

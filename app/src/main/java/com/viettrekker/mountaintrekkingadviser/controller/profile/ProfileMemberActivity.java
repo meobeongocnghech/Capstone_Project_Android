@@ -553,6 +553,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                         p.remove(0);
                         for (Plan pl: p) {
                             List<Member> m = pl.getGroup().getMembers();
+                            isJoin = false;
                             for (Member me: m) {
                                 if (id == me.getUserId()) {
                                     isJoin = true;
@@ -560,7 +561,7 @@ public class ProfileMemberActivity extends AppCompatActivity {
                                 }
                             }
                             try {
-                                if (DateTimeUtils.changeTimeToLocale(pl.getStartTime()).before(Calendar.getInstance().getTime()) && !isJoin) {
+                                if (DateTimeUtils.changeTimeToLocale(pl.getStartTime()).after(Calendar.getInstance().getTime()) && !isJoin) {
                                     PlanOwn po = new PlanOwn(pl.getGroup().getName(), pl.getId());
                                     items.add(po);
                                 }

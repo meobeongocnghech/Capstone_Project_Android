@@ -69,6 +69,7 @@
             app:layout_constraintTop_toBottomOf="@id/progressMyPlan"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginLeft="5dp"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvPublicPlanListItem"
             android:layout_width="match_parent"
@@ -76,27 +77,6 @@
             android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@id/tvPublicPlan"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-        <ProgressBar
-            android:id="@+id/progressPublicPlan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/rcvPublicPlanListItem"/>/
-        <android.support.design.button.MaterialButton
-            android:id="@+id/loadMorePublicPlan"
-            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/rcvPublicPlanListItem"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="Tải thêm"
-            app:backgroundTint="@color/colorWhite"
-            android:textColor="@color/colorPrimary"
-            app:cornerRadius="0dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:visibility="gone"/>
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

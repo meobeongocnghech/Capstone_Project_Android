@@ -30,7 +30,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
-        android:layout_marginTop="32dp"
         android:layout_marginRight="80dp"
         android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorPrimary"

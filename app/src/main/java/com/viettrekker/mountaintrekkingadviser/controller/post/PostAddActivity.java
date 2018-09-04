@@ -170,8 +170,6 @@ public class PostAddActivity extends AppCompatActivity {
                                 btnLocation.setText(item.getTitle());
                                 placeId = item.getId();
                                 point = item.getmTitle();
-                                btnPlan.setText("Kế hoạch");
-                                btnPlan.setClickable(false);
                                 dialog.dismiss();
                             }
                         }).show();
@@ -183,6 +181,7 @@ public class PostAddActivity extends AppCompatActivity {
 
                 String content = edtContent.getText().toString();
                 String title = edtTitlePost.getText().toString();
+
                 if (placeId > 0) {
                     typeId = 1;
                     direction = new Direction();

@@ -341,7 +341,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
                 } else {
                     viewHolder.rcvCmtItem.setVisibility(View.GONE);
                     viewHolder.btnReplyComment.setTextColor(context.getResources().getColor(R.color.colorGray));
-                    ((PostDetailActivity)context).edtComment.setHint("Bình luận về bài viết...");
+                    ((PostDetailActivity)context).edtComment.setHint("Bình luận về bài viết");
                     viewHolder.commentFlag = false;
                 }
             }

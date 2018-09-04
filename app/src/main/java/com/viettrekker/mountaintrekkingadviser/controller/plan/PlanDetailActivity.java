@@ -281,6 +281,9 @@ public class PlanDetailActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     places = response.body();
                     places.remove(0);
+                } else {
+                    Toast.makeText(PlanDetailActivity.this, "Không thể truy cập", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
                 }
 
             }
@@ -318,6 +321,8 @@ public class PlanDetailActivity extends AppCompatActivity {
                                     if (response.code() == 200) {
                                         Toast.makeText(PlanDetailActivity.this, "Bạn đã cập nhật thành công!", Toast.LENGTH_SHORT).show();
                                         tvCarry.setText(response.body().getCarry() + " xe");
+                                        membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                        membersListAdapter.notifyDataSetChanged();
                                     } else
                                         Toast.makeText(PlanDetailActivity.this, "Thao tác thất bại, vui lòng thử lại sau!", Toast.LENGTH_SHORT).show();
                                 }
@@ -496,7 +501,7 @@ public class PlanDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(this, PostAddActivity.class);
             intent.putExtra("isPostPlan", true);
             intent.putExtra("planName", plan.getGroup().getName());
-            intent.putExtra("planId", plan.getId());
+            intent.putExtra("planId", plan.getDirection().getId());
             changeActivity = true;
             startActivity(intent);
         });
@@ -877,9 +882,6 @@ public class PlanDetailActivity extends AppCompatActivity {
                             state = 3;
                             btnLeavePlan.setVisibility(View.VISIBLE);
                             btnVehicle.setVisibility(View.VISIBLE);
-                            addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                            addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                            addPost.requestLayout();
                             break;
                         case 4:
                             state = 3;
@@ -1043,6 +1045,9 @@ public class PlanDetailActivity extends AppCompatActivity {
                         }
                     });
                     placeId = plan.getDirection().getPlaceId();
+                } else {
+                    Toast.makeText(PlanDetailActivity.this, "Không thể truy cập", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
                 }
 
             }
@@ -1050,7 +1055,8 @@ public class PlanDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Plan> call, Throwable t) {
-
+                Toast.makeText(PlanDetailActivity.this, "Không thể truy cập", Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
     }

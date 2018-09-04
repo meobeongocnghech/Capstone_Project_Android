@@ -19,7 +19,7 @@ public class DateTimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat();
         sdf.applyPattern("dd/MM/yyyy");
         Date date = sdf.parse(sDate);
-        sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+        sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         return sdf.format(date);
     }
 
@@ -28,7 +28,7 @@ public class DateTimeUtils {
         sdf.applyPattern("dd/MM/yyyy");
         Date date = sdf.parse(sDate);
         sdf.setTimeZone(TimeZone.getDefault());
-        sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+        sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         return sdf.format(date);
     }
 
@@ -37,7 +37,7 @@ public class DateTimeUtils {
         sdf.applyPattern("dd/MM/yyyy");
         Date date = sdf.parse(sDate);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+        sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         return sdf.format(date);
     }
 

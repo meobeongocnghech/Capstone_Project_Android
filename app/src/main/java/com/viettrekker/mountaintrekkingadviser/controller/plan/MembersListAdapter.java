@@ -126,6 +126,9 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
             }
         });
 
+        if (viewHolder.member.getCarry() == 1){
+            viewHolder.imgMoto.setVisibility(View.VISIBLE);
+        }
         if (!users.get(i).getAvatar().getPath().isEmpty()) {
             GlideApp.with(viewHolder.itemView)
                     .load(APIUtils.BASE_URL_API + users.get(i).getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(30, context))
@@ -167,7 +170,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         }
 
         viewHolder.imgPhoneCall.setOnClickListener((v) -> {
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + String.format("0%d", viewHolder.member.getPhone()) ));
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + viewHolder.member.getPhone() ));
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 if (ActivityCompat.shouldShowRequestPermissionRationale((PlanDetailActivity)context, Manifest.permission.CALL_PHONE)) {
@@ -264,6 +267,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
         MaterialButton imgPhoneCall;
         MaterialButton imgRemoveUser;
         MaterialButton imgApproveRequest;
+        ImageView imgMoto;
 
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
@@ -274,6 +278,7 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
             imgPhoneCall = (MaterialButton) itemView.findViewById(R.id.imgPhoneCall);
             imgRemoveUser = (MaterialButton) itemView.findViewById(R.id.imgInviteState);
             imgApproveRequest = (MaterialButton) itemView.findViewById(R.id.imgApproveRequest);
+            imgMoto = (ImageView) itemView.findViewById(R.id.imgMoto);
             itemView.setOnClickListener(v -> eventViewProfile());
 //            imgAvtItem.setOnClickListener((v) -> eventViewProfile());
 //            tvNameItem.setOnClickListener((v) -> eventViewProfile());

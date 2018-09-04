@@ -93,7 +93,6 @@ public class PostDetailActivity extends AppCompatActivity {
     User user;
     boolean likeFlag;
     boolean updateCmt = false;
-    private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
 
     public static int currentPos;
 
@@ -143,7 +142,7 @@ public class PostDetailActivity extends AppCompatActivity {
         tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
         separator = (TextView) findViewById(R.id.separator);
         ownerAvatar = (ImageView) findViewById(R.id.ownerAvatar);
-        ownerAvatar.setOnClickListener(v -> emojiPopup.toggle());
+//        ownerAvatar.setOnClickListener(v -> emojiPopup.toggle());
         imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
         tvPostUserName = (TextView) findViewById(R.id.tvPostUserNameDetail);
         tvTime = (TextView) findViewById(R.id.tvTimeDetail);
@@ -154,7 +153,7 @@ public class PostDetailActivity extends AppCompatActivity {
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
         likeFlag = false;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        setUpEmojiPopup();
+//        setUpEmojiPopup();
 
         btnPostComent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +191,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
                     });
                 } else if (!edtComment.getText().toString().isEmpty()) {
-                    if (edtComment.getHint().toString().contains("Bình luận bài viết")) {
+                    if (edtComment.getHint().toString().contains("Bình luận về bài viết")) {
                         mWebService.commentPost(Session.getToken(PostDetailActivity.this), id, edtComment.getText().toString()).enqueue(new Callback<Post>() {
                             @Override
                             public void onResponse(Call<Post> call, Response<Post> response) {
@@ -448,9 +447,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
 
                     tvPostUserName.setText(post.getUser().getFirstName() + " " + post.getUser().getLastName());
-                    String typPost = postType[post.getTypeId() - 1];
-                    boolean isByPlanId = getIntent().getBooleanExtra("isByPlanId", false);
-                    if (isByPlanId) {
+                    if (post.getTypeId() == 2) {
                         separator.setVisibility(View.GONE);
                         tvPostCategory.setVisibility(View.GONE);
                     } else if (post.getTypeId() == 1 && post.getDirectionId() > 0) {
@@ -518,16 +515,16 @@ public class PostDetailActivity extends AppCompatActivity {
                                 .into(imgPostAvatar);
                     }
 
-//                    if (!Session.getAvatarPath(PostDetailActivity.this).isEmpty()) {
-//                        GlideApp.with(PostDetailActivity.this)
-//                                .load(APIUtils.BASE_URL_API + Session.getAvatarPath(PostDetailActivity.this).substring(4))
-//                                .placeholder(R.drawable.avatar_default)
-//                                .fallback(R.drawable.avatar_default)
-//                                .apply(RequestOptions.circleCropTransform())
-//                                .into(ownerAvatar);
-//                    }
+                    if (!Session.getAvatarPath(PostDetailActivity.this).isEmpty()) {
+                        GlideApp.with(PostDetailActivity.this)
+                                .load(APIUtils.BASE_URL_API + Session.getAvatarPath(PostDetailActivity.this).substring(4))
+                                .placeholder(R.drawable.avatar_default)
+                                .fallback(R.drawable.avatar_default)
+                                .apply(RequestOptions.circleCropTransform())
+                                .into(ownerAvatar);
+                    }
 
-//                    ownerAvatar.setOnClickListener((v) -> eventViewProfile(Session.getUser(PostDetailActivity.this)));
+                    ownerAvatar.setOnClickListener((v) -> eventViewProfile(Session.getUser(PostDetailActivity.this)));
 
                     if (post.getGallery().getMedia().size() == 0) {
                         rcvPostImage.setVisibility(View.GONE);
@@ -613,14 +610,14 @@ public class PostDetailActivity extends AppCompatActivity {
         this.updateCmt = updateCmt;
     }
 
-    private void setUpEmojiPopup() {
-        emojiPopup = EmojiPopup.Builder.fromRootView(rootView)
-                .setOnEmojiBackspaceClickListener(ignore -> Log.d("PostDetailActivity", "Clicked on Backspace"))
-                .setOnEmojiClickListener((ignore, ignore2) -> Log.d("PostDetailActivity", "Clicked on emoji"))
-                .setOnEmojiPopupShownListener(() -> ownerAvatar.setImageResource(R.drawable.ic_keyboard))
-                .setOnSoftKeyboardOpenListener(ignore -> Log.d("PostDetailActivity", "Opened soft keyboard"))
-                .setOnEmojiPopupDismissListener(() -> ownerAvatar.setImageResource(R.drawable.ic_smiling))
-                .setOnSoftKeyboardCloseListener(() -> Log.d("PostDetailActivity", "Closed soft keyboard"))
-                .build(edtComment);
-    }
+//    private void setUpEmojiPopup() {
+//        emojiPopup = EmojiPopup.Builder.fromRootView(rootView)
+//                .setOnEmojiBackspaceClickListener(ignore -> Log.d("PostDetailActivity", "Clicked on Backspace"))
+//                .setOnEmojiClickListener((ignore, ignore2) -> Log.d("PostDetailActivity", "Clicked on emoji"))
+//                .setOnEmojiPopupShownListener(() -> ownerAvatar.setImageResource(R.drawable.ic_keyboard))
+//                .setOnSoftKeyboardOpenListener(ignore -> Log.d("PostDetailActivity", "Opened soft keyboard"))
+//                .setOnEmojiPopupDismissListener(() -> ownerAvatar.setImageResource(R.drawable.ic_smiling))
+//                .setOnSoftKeyboardCloseListener(() -> Log.d("PostDetailActivity", "Closed soft keyboard"))
+//                .build(edtComment);
+//    }
 }

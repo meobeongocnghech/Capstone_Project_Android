@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.notification;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
+import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Notification;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -116,10 +119,13 @@ public class NotificationFragment extends Fragment {
 
     public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
-        tvNoNoti.setVisibility(View.GONE);
-        if (progress != null) {
-            progress.setVisibility(View.VISIBLE);
+        if (tvNoNoti != null) {
+            tvNoNoti.setVisibility(View.GONE);
         }
+
+//        if (progress != null) {
+//            progress.setVisibility(View.VISIBLE);
+//        }
         mWebService.getNoti(token).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
@@ -139,6 +145,13 @@ public class NotificationFragment extends Fragment {
                     if (notiAdapter != null) {
                         notiAdapter.setOlderId(list.get(0).getOldestId());
                         list.remove(0);
+                        if (list.get(0).getTypeId() == 7) {
+                            Session.clearSession(getActivity());
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            intent.putExtra("ban", true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
                         if (list.size() > 0) {
                             notiAdapter.setListNoti(list);
                             notiAdapter.notifyDataSetChanged();

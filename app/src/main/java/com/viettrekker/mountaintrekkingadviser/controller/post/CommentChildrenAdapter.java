@@ -139,7 +139,6 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
                 }
             }
         });
-        viewHolder.likeCount.setText(comment.getLikesCount()+"");
         DateTimeUtils datetime = new DateTimeUtils();
         try {
             viewHolder.tvTime.setText(datetime.caculatorTime(Calendar.getInstance().getTime().getTime(), comment.getUpdated_at().getTime()));

@@ -38,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TimeLinesActivity  extends AppCompatActivity{
+public class TimeLinesActivity extends AppCompatActivity {
     private APIService mWebService;
     private RecyclerView rcvTimelineList;
     private EditText edtTimelineTitle;
@@ -49,7 +49,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
     private TextView tvTLTime;
     private TextView tvTLDate;
     private int id;
-    private String state= "";
+    private String state = "";
     private int planState;
 
     private Plan plan;
@@ -79,7 +79,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
 
         state = getIntent().getStringExtra("state") == null ? "" : getIntent().getStringExtra("state");
         planState = getIntent().getIntExtra("planState", 0);
-        id = getIntent().getIntExtra("id",-1);
+        id = getIntent().getIntExtra("id", -1);
         edtTimelineTitle.setVisibility(View.GONE);
         edtTimelineContent.setVisibility(View.GONE);
         btnAddTimeline.setVisibility(View.GONE);
@@ -122,11 +122,11 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
-                        if (response.code() == 200){
+                        if (response.code() == 200) {
                             Toast.makeText(TimeLinesActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
 
                         }
-                         }
+                    }
 
                     @Override
                     public void onFailure(Call<Plan> call, Throwable t) {
@@ -136,14 +136,15 @@ public class TimeLinesActivity  extends AppCompatActivity{
             }
         });
 
-        if (id > -1){
-            mWebService.getPlanById(token,id).enqueue(new Callback<Plan>() {
+        if (id > -1) {
+            mWebService.getPlanById(token, id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
-                    if (response.code() == 200){
+                    if (response.code() == 200) {
                         plan = response.body();
                         String timeline = response.body().getTimelines();
-                        Type type = new TypeToken<ArrayList<TimeLines>>(){}.getType();
+                        Type type = new TypeToken<ArrayList<TimeLines>>() {
+                        }.getType();
                         Gson gson = new Gson();
                         timeLines = gson.fromJson(timeline, type);
                         if (timeLines.size() == 0) {
@@ -158,7 +159,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
 
                 @Override
                 public void onFailure(Call<Plan> call, Throwable t) {
-                    Toast.makeText(TimeLinesActivity.this,"Có lỗi xảy ra vui lòng thử lại...",Toast.LENGTH_LONG).show();
+                    Toast.makeText(TimeLinesActivity.this, "Có lỗi xảy ra vui lòng thử lại...", Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -185,51 +186,69 @@ public class TimeLinesActivity  extends AppCompatActivity{
         btnAddTimeline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TimeLines t = new TimeLines();
-                t.setName(edtTimelineTitle.getText().toString());
-                t.setContent(edtTimelineContent.getText().toString());
-                t.setTime(tvTLDate.getText().toString() + tvTLTime.getText().toString());
-                if (state.equalsIgnoreCase("new")) {
-                    newPlanActivity.timeLines.add(t);
+                if (edtTimelineContent.getText().toString().isEmpty() ||
+                        edtTimelineTitle.getText().toString().isEmpty() ||
+                        tvTLDate.getText().toString().isEmpty() ||
+                        tvTLTime.getText().toString().isEmpty()) {
+                    Toast.makeText(TimeLinesActivity.this, "Không được để trống!", Toast.LENGTH_SHORT).show();
                 } else {
-                    timeLines.add(t);
+                    TimeLines t = new TimeLines();
+                    t.setName(edtTimelineTitle.getText().toString());
+                    t.setContent(edtTimelineContent.getText().toString());
+                    t.setTime(tvTLDate.getText().toString() + tvTLTime.getText().toString());
+                    if (state.equalsIgnoreCase("new")) {
+                        newPlanActivity.timeLines.add(t);
+                    } else {
+                        timeLines.add(t);
+                    }
+                    timelinesListAdapter.sortTimelines();
+                    timelinesListAdapter.notifyDataSetChanged();
+                    edtTimelineContent.setText("");
+                    edtTimelineTitle.setText("");
+                    tvTLDate.setText("");
+                    tvTLTime.setText("");
                 }
-                timelinesListAdapter.sortTimelines();
-                edtTimelineContent.setText("");
-                edtTimelineTitle.setText("");
-                tvTLDate.setText("");
-                tvTLTime.setText("");
             }
         });
     }
-    private void datePick(){
+
+    private void datePick() {
         SpinnerDatePickerDialogBuilder datepicker = new SpinnerDatePickerDialogBuilder()
                 .context(TimeLinesActivity.this)
                 .callback(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        tvTLDate.setText(String.format("%d-%02d-%02d",year , monthOfYear + 1, dayOfMonth));
+                        tvTLDate.setText(String.format("%d-%02d-%02d", year, monthOfYear + 1, dayOfMonth));
                         tvTLDate.setVisibility(View.VISIBLE);
                     }
                 })
                 .spinnerTheme(R.style.NumberPickerStyle)
                 .showTitle(true)
                 .showDaySpinner(true);
+        Calendar now = Calendar.getInstance();
         if (plan != null) {
             try {
                 Date start = DateTimeUtils.changeTimeToLocale(plan.getStartTime());
+                Calendar cStart = Calendar.getInstance();
+                cStart.setTime(start);
                 Date end = DateTimeUtils.changeTimeToLocale(plan.getFinishTime());
-                datepicker.maxDate(start.getYear() + 1900, start.getMonth(), start.getDate());
-                datepicker.minDate(end.getYear() + 1900, end.getMonth(), end.getDate());
-                datepicker.defaultDate(start.getYear() + 1900, start.getMonth(), start.getDate());
+                Calendar cEnd = Calendar.getInstance();
+                cEnd.setTime(end);
+                if (end.getDate() == start.getDate()) {
+                    cEnd.add(Calendar.DATE, 1);
+                }
+                datepicker.minDate(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), cStart.get(Calendar.DATE));
+                datepicker.maxDate(cEnd.get(Calendar.YEAR), cEnd.get(Calendar.MONTH), cEnd.get(Calendar.DATE));
+                datepicker.minDate(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), cStart.get(Calendar.DATE));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         } else {
-            datepicker.maxDate(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
-            datepicker.minDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
+            datepicker.maxDate(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DATE));
+            datepicker.maxDate(now.get(Calendar.YEAR) + 1, now.get(Calendar.MONTH), now.get(Calendar.DATE));
             datepicker.defaultDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
         }
+
         datepicker.build().show();
     }
 
