@@ -87,7 +87,19 @@ public class LoginActivity extends AppCompatActivity {
                             } else {
                                 User user = response.body();
                                 if (user.getState() == 1) {
-                                    Snackbar.make(view, "Tài khoản của bạn đã bị khóa", Snackbar.LENGTH_LONG).show();
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(LoginActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                                    alertDialogBuilder.setTitle("Thông báo");
+                                    alertDialogBuilder.setMessage("Tài khoản của bạn đã bị khóa bởi quản trị viên. Để biết thêm chi tiết liên hệ tại mountaintrekkingadvisor@gmail.com")
+                                            .setCancelable(false)
+                                            .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    // if this button is clicked, close
+                                                    // current activity
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
                                 } else {
                                     Session.setSession(LoginActivity.this, user);
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -129,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         if (getIntent().getBooleanExtra("ban", false)) {
+            Session.clearSession(this);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
             alertDialogBuilder.setTitle("Thông báo");
             alertDialogBuilder.setMessage("Tài khoản của bạn đã bị khóa bởi quản trị viên. Để biết thêm chi tiết liên hệ tại mountaintrekkingadvisor@gmail.com")

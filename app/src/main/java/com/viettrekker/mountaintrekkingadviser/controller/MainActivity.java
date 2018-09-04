@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void call(Object... args) {
             Log.d("SocketServer", "New noti");
+            adapter.getNotificationFragment().setNewNoti(true);
             adapter.getNotificationFragment().initLoad();
+
         }
     };
 
@@ -332,7 +334,7 @@ public class MainActivity extends AppCompatActivity
         initRefreshLayout();
 
         adapter = new MainScreenPagerAdapter(getSupportFragmentManager());
-        adapter.setToken(Session.getToken(this));
+        adapter.setToken(Session.getToken(this), this);
         viewPager.setAdapter(adapter);
 
         adapter.getNotificationFragment().setNotiCount(notiCount);

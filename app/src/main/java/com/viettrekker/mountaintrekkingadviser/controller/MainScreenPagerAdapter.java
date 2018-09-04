@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -14,11 +15,10 @@ public class MainScreenPagerAdapter extends FragmentPagerAdapter {
     private PlanFragment planFragment;
     private NotificationFragment notificationFragment;
     private SearchFragment searchFragment;
-    private String token;
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setToken(String token, Context context) {
         notificationFragment.setToken(token);
+        notificationFragment.setContext(context);
     }
 
     public PostFragment getPostFragment() {

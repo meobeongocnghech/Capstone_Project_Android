@@ -149,10 +149,9 @@ public class TimeLinesActivity extends AppCompatActivity {
                         timeLines = gson.fromJson(timeline, type);
                         if (timeLines.size() == 0) {
                             findViewById(R.id.tvEmptyTimelines).setVisibility(View.VISIBLE);
-                        } else {
-                            timelinesListAdapter.setList(timeLines);
-                            timelinesListAdapter.sortTimelines();
                         }
+                        timelinesListAdapter.setList(timeLines);
+                        timelinesListAdapter.sortTimelines();
                     }
 
                 }
@@ -202,7 +201,6 @@ public class TimeLinesActivity extends AppCompatActivity {
                         timeLines.add(t);
                     }
                     timelinesListAdapter.sortTimelines();
-                    timelinesListAdapter.notifyDataSetChanged();
                     edtTimelineContent.setText("");
                     edtTimelineTitle.setText("");
                     tvTLDate.setText("");

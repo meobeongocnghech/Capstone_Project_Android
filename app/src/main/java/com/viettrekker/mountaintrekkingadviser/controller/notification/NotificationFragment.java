@@ -1,5 +1,6 @@
 package com.viettrekker.mountaintrekkingadviser.controller.notification;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,6 +41,8 @@ public class NotificationFragment extends Fragment {
     private int newestId;
     private NestedScrollView layout;
     private TextView tvNoNoti;
+    private Context context;
+    private boolean newNoti = false;
 
     public int getCountNew() {
         return countNew;
@@ -49,6 +52,10 @@ public class NotificationFragment extends Fragment {
 
     public NotificationFragment() {
 
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     private String token;
@@ -67,6 +74,10 @@ public class NotificationFragment extends Fragment {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setNewNoti(boolean newNoti) {
+        this.newNoti = newNoti;
     }
 
     @Override
@@ -119,9 +130,9 @@ public class NotificationFragment extends Fragment {
 
     public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
-        if (tvNoNoti != null) {
-            tvNoNoti.setVisibility(View.GONE);
-        }
+//        if (tvNoNoti != null) {
+//            tvNoNoti.setVisibility(View.GONE);
+//        }
 
 //        if (progress != null) {
 //            progress.setVisibility(View.VISIBLE);
@@ -133,6 +144,15 @@ public class NotificationFragment extends Fragment {
                 if (list != null) {
                     newestId = list.get(0).getNewestId();
                     countNew = list.get(0).getCountNew();
+                    if (list.size() > 1 && newNoti) {
+                        newNoti = false;
+                        if (list.get(1).getTypeId() == 7) {
+                            Intent intent = new Intent(context, LoginActivity.class);
+                            intent.putExtra("ban", true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            context.startActivity(intent);
+                        }
+                    }
                     if (countNew > 0 && countNew <= 9) {
                         notiCount.setText(countNew + "");
                         notiCount.setVisibility(View.VISIBLE);
@@ -145,16 +165,10 @@ public class NotificationFragment extends Fragment {
                     if (notiAdapter != null) {
                         notiAdapter.setOlderId(list.get(0).getOldestId());
                         list.remove(0);
-                        if (list.get(0).getTypeId() == 7) {
-                            Session.clearSession(getActivity());
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                            intent.putExtra("ban", true);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }
                         if (list.size() > 0) {
                             notiAdapter.setListNoti(list);
                             notiAdapter.notifyDataSetChanged();
+
                         } else {
                             tvNoNoti.setVisibility(View.VISIBLE);
                         }
@@ -176,7 +190,7 @@ public class NotificationFragment extends Fragment {
         mWebService.setCheckAll(token, true, newestId).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
-                if (response.code() == 200){
+                if (response.code() == 200) {
                     List<Notification> lists = response.body();
                 }
             }
