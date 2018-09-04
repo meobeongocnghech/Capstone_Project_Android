@@ -10,7 +10,7 @@
 
         <!-- specify shared element transitions -->
         <item name="android:windowSharedElementEnterTransition">
-            @transition/change_image_transform</item>
+            @transition/grid_exit_transition</item>
         <item name="android:windowSharedElementExitTransition">
             @transition/change_image_transform</item>
     </style>

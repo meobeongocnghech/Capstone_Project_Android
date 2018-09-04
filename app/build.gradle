@@ -64,6 +64,8 @@ dependencies {
     implementation 'com.github.pwiniars:SlideDateTimePicker:v1.0.8'
     implementation 'com.github.nkzawa:socket.io-client:0.6.0'
 
-    implementation 'com.vanniktech:emoji-google:0.5.1'
+    implementation 'com.vanniktech:emoji-twitter:0.5.1'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
+
+    implementation 'com.github.danylovolokh:hashtag-helper:1.1.0'
 }

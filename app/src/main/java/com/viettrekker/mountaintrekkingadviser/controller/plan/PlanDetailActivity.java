@@ -11,9 +11,12 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,14 +49,18 @@ import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedAdapter;
+import com.viettrekker.mountaintrekkingadviser.controller.post.NewsFeedFragment;
 import com.viettrekker.mountaintrekkingadviser.controller.post.PostAddActivity;
+import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
 import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
+import com.viettrekker.mountaintrekkingadviser.model.SearchMember;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
+import com.viettrekker.mountaintrekkingadviser.model.User;
 import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
@@ -86,7 +94,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     private TextView tvDurationDate;
     private APIService mWebService;
     private RecyclerView rcvListMembersPlan;
-    private RelativeLayout layoutViewMember;
+    private ConstraintLayout layoutViewMember;
     private Button btnTimeLines;
     private Button btnCheckList;
     private TextView tvDistance;
@@ -105,7 +113,9 @@ public class PlanDetailActivity extends AppCompatActivity {
     private MaterialButton btnViewMaps;
     private MaterialButton btnVehicle;
     private MaterialButton btnConfirm;
-
+    private MaterialButton btnAddMember;
+    private NestedScrollView planPostScrollview;
+    private Switch swPublic;
 
     private boolean changeActivity = true;
 
@@ -125,6 +135,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     private int userRole;
 
     private List<Place> places;
+    private List<User> users;
     private int placeId;
 
     private Calendar startDate;
@@ -221,7 +232,7 @@ public class PlanDetailActivity extends AppCompatActivity {
         tvDateEnd = (TextView) findViewById(R.id.tvDateEnd);
         tvTimeEnd = (TextView) findViewById(R.id.tvTimeEnd);
         tvDurationDate = (TextView) findViewById(R.id.tvDurationDate);
-        layoutViewMember = (RelativeLayout) findViewById(R.id.layoutViewMember);
+        layoutViewMember = (ConstraintLayout) findViewById(R.id.layoutViewMember);
         btnTimeLines = (Button) findViewById(R.id.btnTimeLines);
         btnCheckList = (Button) findViewById(R.id.btnCheckList);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
@@ -236,6 +247,11 @@ public class PlanDetailActivity extends AppCompatActivity {
         btnViewMaps = (MaterialButton) findViewById(R.id.btnMaps);
         btnVehicle = (MaterialButton) findViewById(R.id.btnVehicle);
         btnConfirm = (MaterialButton) findViewById(R.id.btnConfirm);
+        btnAddMember = (MaterialButton) findViewById(R.id.btnAddMember);
+        swPublic = (Switch) findViewById(R.id.swPublic);
+        swPublic.setClickable(false);
+        btnAddMember.setOnClickListener(null);
+        planPostScrollview = (NestedScrollView) findViewById(R.id.planPostScrollview);
 
         rcvPlanPost = (RecyclerView) findViewById(R.id.rcvPlanPost);
 
@@ -271,6 +287,21 @@ public class PlanDetailActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ArrayList<Place>> call, Throwable t) {
+
+            }
+        });
+        users = new ArrayList<>();
+        mWebService.getAllMembers(token, 1, 100).enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.code() == 200) {
+                    users = response.body();
+                    users.remove(0);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
 
             }
         });
@@ -506,6 +537,7 @@ public class PlanDetailActivity extends AppCompatActivity {
             if (btnEditablePlan.getText().toString().equalsIgnoreCase("sửa")) {
                 startPicker.setVisibility(View.VISIBLE);
                 endPicker.setVisibility(View.VISIBLE);
+                swPublic.setClickable(true);
                 tvStartPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
                 tvEndPlace.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_primary_24dp, null), null);
                 tvPlanName.setCompoundDrawablesWithIntrinsicBounds(null, null, getApplicationContext().getResources().getDrawable(R.drawable.ic_edit_white_24dp, null), null);
@@ -577,6 +609,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                                 public void onSelected(BaseSearchDialogCompat dialog, SearchPlace item, int position) {
                                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                     imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    planPostScrollview.smoothScrollTo(0, 0);
                                     tvEndPlace.setText(item.getTitle());
                                     placeId = item.getId();
                                     mWebService.getPlaceById(token, placeId).enqueue(new Callback<Place>() {
@@ -611,6 +644,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                             }).show();
                 });
             } else {
+                swPublic.setClickable(false);
                 tvPlanName.setOnClickListener(null);
                 tvStartPlace.setOnClickListener(null);
                 tvEndPlace.setOnClickListener(null);
@@ -640,6 +674,12 @@ public class PlanDetailActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
 
+                if (swPublic.isChecked()) {
+                    plan.setIsPublic(1);
+                } else {
+                    plan.setIsPublic(0);
+                }
+
                 mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                     @Override
                     public void onResponse(Call<Plan> call, Response<Plan> response) {
@@ -661,20 +701,29 @@ public class PlanDetailActivity extends AppCompatActivity {
             }
         });
 
-        rcvPlanPost.setLayoutManager(new LinearLayoutManager(PlanDetailActivity.this));
+        LinearLayoutManager mLayoutManager;
+        mLayoutManager = new LinearLayoutManager(this);
+        rcvPlanPost.setLayoutManager(mLayoutManager);
         rcvPlanPost.setNestedScrollingEnabled(false);
         rcvPlanPost.setAdapter(newsFeedAdapter);
         rcvPlanPost.setVisibility(View.VISIBLE);
-        rcvPlanPost.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        planPostScrollview.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                int totalItemCount = layoutManager.getItemCount();
-                int lastVisible = layoutManager.findLastVisibleItemPosition();
+            public void onScrollChange(NestedScrollView v, int i, int i1, int i2, int i3) {
+                if (i1 > 0) {
+                    if (v.getChildAt(v.getChildCount() - 1) != null) {
+                        if ((i1 >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                                i1 > i3) {
 
-                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
-                if (totalItemCount > 0 && endHasBeenReached) {
-                    newsFeedAdapter.incrementalLoad();
+                            int visibleItemCount = mLayoutManager.getChildCount();
+                            int totalItemCount = mLayoutManager.getItemCount();
+                            int pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                newsFeedAdapter.incrementalLoad();
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -737,6 +786,8 @@ public class PlanDetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 com.google.android.gms.location.places.Place place = PlaceAutocomplete.getPlace(this, data);
@@ -755,7 +806,6 @@ public class PlanDetailActivity extends AppCompatActivity {
                 tvDistance.setText("Khoảng " + (double) Math.floor(dist * 10) / 10 + " km");
             } else if (resultCode == RESULT_CANCELED) {
             }
-        } else {
         }
     }
 
@@ -766,7 +816,13 @@ public class PlanDetailActivity extends AppCompatActivity {
             public void onResponse(Call<Plan> call, Response<Plan> response) {
                 if (response.code() == 200) {
                     plan = response.body();
+                    if (plan.getIsPublic() == 0) {
+                        swPublic.setChecked(false);
+                    } else {
+                        swPublic.setChecked(true);
+                    }
                     directionId = plan.getDirection().getId();
+                    newsFeedAdapter.setDirectionId(directionId);
                     tvCarry.setText(plan.getCarry() + " xe");
                     List<Member> members = plan.getGroup().getMembers();
                     for (Member u : members) {
@@ -778,6 +834,7 @@ public class PlanDetailActivity extends AppCompatActivity {
                     switch (userRole) {
                         case 0:
                             state = 3;
+                            rcvPlanPost.setVisibility(View.GONE);
                             break;
                         case 1:
                             btnDeletePlan.setVisibility(View.VISIBLE);
@@ -785,6 +842,36 @@ public class PlanDetailActivity extends AppCompatActivity {
                             addPost.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                             addPost.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
                             addPost.requestLayout();
+                            btnAddMember.setVisibility(View.VISIBLE);
+                            btnAddMember.setOnClickListener(v -> {
+                                new SimpleSearchDialogCompat(PlanDetailActivity.this, "Tìm kiếm thành viên",
+                                        "Nhập tên thành viên có dấu...", null, createSampleMemberData(),
+                                        new SearchResultListener<SearchMember>() {
+                                            @Override
+                                            public void onSelected(BaseSearchDialogCompat dialog, SearchMember item, int position) {
+                                                planPostScrollview.smoothScrollTo(0, 0);
+                                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                mWebService.invitePlan(token, plan.getId(), item.getId(), 0, "", 0).enqueue(new Callback<Plan>() {
+                                                    @Override
+                                                    public void onResponse(Call<Plan> call, Response<Plan> response) {
+                                                        if (response.code() == 200) {
+                                                            Toast.makeText(PlanDetailActivity.this, "Mời thành công", Toast.LENGTH_SHORT).show();
+                                                            membersListAdapter.setUsers(response.body().getGroup().getMembers());
+                                                            membersListAdapter.notifyDataSetChanged();
+                                                            tvMemberCount.setText(response.body().getGroup().getMembers().size() + " người");
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Call<Plan> call, Throwable t) {
+
+                                                    }
+                                                });
+                                                dialog.dismiss();
+                                            }
+                                        }).show();
+                            });
                             break;
                         case 3:
                             state = 3;
@@ -797,9 +884,11 @@ public class PlanDetailActivity extends AppCompatActivity {
                         case 4:
                             state = 3;
                             btnConfirm.setVisibility(View.VISIBLE);
+                            rcvPlanPost.setVisibility(View.GONE);
                             break;
                         case 5:
                             state = 3;
+                            rcvPlanPost.setVisibility(View.GONE);
                             break;
                     }
 
@@ -809,6 +898,8 @@ public class PlanDetailActivity extends AppCompatActivity {
                             tvStatePlan.setText("Đang diễn ra");
                             tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorOrange));
                             btnVehicle.setVisibility(View.GONE);
+                            btnConfirm.setVisibility(View.GONE);
+                            btnAddMember.setVisibility(View.GONE);
                             if (userRole == 1) {
                                 state = ONGOING;
                             }
@@ -816,6 +907,8 @@ public class PlanDetailActivity extends AppCompatActivity {
                             tvStatePlan.setText("Đã hoàn thành");
                             tvStatePlan.setTextColor(PlanDetailActivity.this.getResources().getColor(R.color.colorGray));
                             btnVehicle.setVisibility(View.GONE);
+                            btnConfirm.setVisibility(View.GONE);
+                            btnAddMember.setVisibility(View.GONE);
                             if (userRole == 1) {
                                 state = FINISH;
                             }
@@ -971,10 +1064,27 @@ public class PlanDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         if (changeActivity) {
             changeActivity = false;
             loadPlan();
         }
+    }
+
+    private ArrayList<SearchMember> createSampleMemberData() {
+        ArrayList<SearchMember> items = new ArrayList<>();
+        List<Member> members = membersListAdapter.getUsers();
+        if (users != null && members != null) {
+            outer:
+            for (User u : users) {
+                for (Member m : members) {
+                    if (m.getUserId() == u.getId()) {
+                        continue outer;
+                    }
+                }
+                items.add(new SearchMember(u.getFirstName() + " " + u.getLastName(), u.getId()));
+            }
+        }
+
+        return items;
     }
 }

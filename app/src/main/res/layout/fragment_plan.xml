@@ -10,8 +10,17 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="72dp">
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tvNoPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hiện tại chưa có kế hoạch nào"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
         <TextView
             android:id="@+id/tvMyPlan"
             android:layout_width="wrap_content"

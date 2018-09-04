@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorWhite">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarChecklist"
@@ -25,7 +26,7 @@
         android:layout_marginRight="8dp"
         android:orientation="vertical"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rectangle"
+        android:background="@drawable/timelines_bg"
         app:layout_constraintTop_toBottomOf="@+id/toolbarChecklist">
 
         <android.support.v7.widget.RecyclerView
@@ -64,7 +65,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
-        android:hint="Thêm item mới..."
+        android:hint="Thêm đầu việc mới..."
+        android:inputType="text"
         android:textSize="15dp"
         android:layout_marginRight="8dp"
         app:layout_constraintStart_toStartOf="@id/layoutChecklistItem"
@@ -86,12 +88,15 @@
         app:layout_constraintTop_toBottomOf="@+id/layoutChecklistItem" />
 
     <TextView
+        android:id="@+id/tvEmptyCheclist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/edtAddChecklist"
-        app:layout_constraintStart_toStartOf="@id/edtAddChecklist"
+        app:layout_constraintStart_toStartOf="@id/layoutChecklistItem"
+        app:layout_constraintEnd_toEndOf="@id/layoutChecklistItem"
         android:text="Chưa có đầu việc nào được thêm"
         app:layout_goneMarginTop="16dp"
+        android:layout_marginTop="16dp"
         android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

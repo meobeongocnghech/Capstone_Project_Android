@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -67,11 +69,21 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private APIService mWebService = APIUtils.getWebService();
     private String token;
     private boolean continueLoad = true;
+    private TextView tvMessage;
+    private ProgressBar progressBar;
 
     public NewsFeedAdapter(Context context, Fragment fragment, String token) {
         this.context = context;
         this.token = token;
         this.width = LocalDisplay.getScreenWidth(context);
+    }
+
+    public void setTvMessage(TextView tvMessage) {
+        this.tvMessage = tvMessage;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
     }
 
     public void setUserId(int userId) {
@@ -102,6 +114,10 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         this.directionId = directionId;
     }
 
+    public boolean isContinueLoad() {
+        return continueLoad;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -122,14 +138,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.post = listPost.get(postion);
         viewHolder.isByUserId = isByUserId;
         viewHolder.isByPlanId = isByPlanId;
-        String typPost = "null";
         Post post = listPost.get(postion);
         DateTimeUtils datetime = new DateTimeUtils();
-        typPost = postType[post.getTypeId() - 1];
         if (isByPlanId) {
             viewHolder.separator.setVisibility(View.GONE);
             viewHolder.tvPostCategory.setVisibility(View.GONE);
-        } else if (post.getTypeId() == 1 && (post.getDirectionId()) > 0){
+        } else if (post.getTypeId() == 1 && (post.getDirectionId()) > 0) {
             viewHolder.separator.setBackground(context.getResources().getDrawable(R.drawable.ic_location_on));
             viewHolder.tvPostCategory.setText(post.getDirection().getPlace().getName());
         } else {
@@ -150,9 +164,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         }
 
         viewHolder.tvPostTitle.setText(post.getName());
+        HashTagHelper helper = HashTagHelper.Creator.create(context.getResources().getColor(R.color.colorPrimary), null);
+        helper.handle(viewHolder.tvPostContent);
         viewHolder.tvPostContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvPostContent.setText(post.getContent());
-        viewHolder.tvCmtCount.setText(post.getCommentsCount()==0 ? "" : post.getCommentsCount()+" bình luận");
+        viewHolder.tvCmtCount.setText(post.getCommentsCount() == 0 ? "" : post.getCommentsCount() + " bình luận");
 
         viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like));
         viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
@@ -162,16 +178,16 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
         } else {
             viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-            viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
+            viewHolder.tvlikeCount.setText(post.getLikesCount() + " thích");
         }
-        if (post.getLiked() != 0){
+        if (post.getLiked() != 0) {
             viewHolder.likeFlag = true;
             viewHolder.btnPostLike.setIcon(context.getResources().getDrawable(R.drawable.ic_like_pressed));
             viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
             viewHolder.btnPostLike.setText("Đã thích");
             viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-            viewHolder.tvlikeCount.setText(post.getLikesCount()+" thích");
+            viewHolder.tvlikeCount.setText(post.getLikesCount() + " thích");
         }
         try {
             viewHolder.tvTime.setText(datetime.caculatorTime(Calendar.getInstance().getTime().getTime(), post.getUpdated_at().getTime()));
@@ -197,19 +213,19 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         viewHolder.btnPostLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!viewHolder.likeFlag){
+                if (!viewHolder.likeFlag) {
                     viewHolder.btnPostLike.setClickable(false);
                     mWebService.likePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            if (response.code() == 200){
+                            if (response.code() == 200) {
                                 Post p = response.body();
                                 viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like_pressed));
                                 viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorPrimary));
                                 viewHolder.btnPostLike.setIconTint(context.getResources().getColorStateList(R.color.colorPrimary));
                                 viewHolder.btnPostLike.setText("Bỏ thích");
                                 viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-                                viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) +" thích");
+                                viewHolder.tvlikeCount.setText((p.getLikesCount() == 0 ? 1 : p.getLikesCount()) + " thích");
                                 viewHolder.likeFlag = true;
                                 viewHolder.btnPostLike.setClickable(true);
                             }
@@ -218,7 +234,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
                         @Override
                         public void onFailure(Call<Post> call, Throwable t) {
-                            Toast.makeText(context,"Có lỗi vui lòng thử lại sau",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Có lỗi vui lòng thử lại sau", Toast.LENGTH_LONG).show();
                             viewHolder.btnPostLike.setClickable(true);
                         }
                     });
@@ -229,7 +245,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.unlikePost(token, post.getId()).enqueue(new Callback<Post>() {
                         @Override
                         public void onResponse(Call<Post> call, Response<Post> response) {
-                            if (response.code() == 200){
+                            if (response.code() == 200) {
                                 Post p = response.body();
                                 viewHolder.btnPostLike.setIcon(context.getDrawable(R.drawable.ic_like));
                                 viewHolder.btnPostLike.setTextColor(context.getResources().getColor(R.color.colorBlack));
@@ -239,7 +255,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                     viewHolder.tvlikeCount.setVisibility(View.INVISIBLE);
                                 } else {
                                     viewHolder.tvlikeCount.setVisibility(View.VISIBLE);
-                                    viewHolder.tvlikeCount.setText((p.getLikesCount())+" thích");
+                                    viewHolder.tvlikeCount.setText((p.getLikesCount()) + " thích");
                                 }
                                 viewHolder.likeFlag = false;
                                 viewHolder.btnPostLike.setClickable(true);
@@ -249,7 +265,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
                         @Override
                         public void onFailure(Call<Post> call, Throwable t) {
-                            Toast.makeText(context,"Có lỗi vui lòng thử lại sau",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Có lỗi vui lòng thử lại sau", Toast.LENGTH_LONG).show();
                             viewHolder.btnPostLike.setClickable(true);
                         }
                     });
@@ -269,7 +285,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            if (response.code() == 200){
+                            if (response.code() == 200) {
                                 ImageSize imgSize = response.body();
                                 float ratio = (float) imgSize.getHeight() / imgSize.getWidth();
                                 viewHolder.singlePreview.setVisibility(View.VISIBLE);
@@ -286,6 +302,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                 } else {
                                     viewHolder.singlePreview.getLayoutParams().height = (int) (width * ratio);
                                 }
+                                viewHolder.singlePreview.getLayoutParams().width = width;
                                 viewHolder.singlePreview.requestLayout();
                             } else {
                                 viewHolder.singlePreview.setVisibility(View.GONE);
@@ -303,12 +320,12 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            if (response.code() == 200){
+                            if (response.code() == 200) {
                                 float ratio1 = (float) response.body().getHeight() / response.body().getWidth();
                                 mWebService.getImageSize(post.getGallery().getMedia().get(1).getPath()).enqueue(new Callback<ImageSize>() {
                                     @Override
                                     public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                                        if (response.code() == 200){
+                                        if (response.code() == 200) {
                                             float ratio2 = (float) response.body().getHeight() / response.body().getWidth();
                                             PostImageAdapter adapter = new PostImageAdapter();
                                             adapter.setContext(context);
@@ -332,7 +349,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                                         SpannedGridLayoutManager.Orientation.VERTICAL, 2);
                                             }
                                             viewHolder.rcvImagePreview.getLayoutParams().height = width;
-                                            viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                            if (viewHolder.rcvImagePreview.getItemDecorationCount() == 0) {
+                                                viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                            }
                                             viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
                                             layoutManager.setItemOrderIsStable(true);
                                             viewHolder.rcvImagePreview.requestLayout();
@@ -346,7 +365,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                     }
                                 });
                             }
-                            }
+                        }
 
 
                         @Override
@@ -359,7 +378,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     mWebService.getImageSize(post.getGallery().getMedia().get(0).getPath()).enqueue(new Callback<ImageSize>() {
                         @Override
                         public void onResponse(Call<ImageSize> call, Response<ImageSize> response) {
-                            if (response.code() == 200){
+                            if (response.code() == 200) {
                                 float ratio = (float) response.body().getHeight() / response.body().getWidth();
                                 PostImageAdapter adapter = new PostImageAdapter();
                                 adapter.setContext(context);
@@ -393,7 +412,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                 }
 
                                 viewHolder.rcvImagePreview.getLayoutParams().height = width;
-                                viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                if (viewHolder.rcvImagePreview.getItemDecorationCount() == 0) {
+                                    viewHolder.rcvImagePreview.addItemDecoration(new SpaceItemDecorator(new Rect(2, 2, 2, 2)));
+                                }
                                 viewHolder.rcvImagePreview.setLayoutManager(layoutManager);
                                 layoutManager.setItemOrderIsStable(true);
                                 viewHolder.rcvImagePreview.requestLayout();
@@ -415,7 +436,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         if (continueLoad) {
             APIService mWebService = APIUtils.getWebService();
             if (isByUserId) {
-                mWebService.getPostPageByUserId(token, userId, pageCount++,"DESC").enqueue(new Callback<List<Post>>() {
+                mWebService.getPostPageByUserId(token, userId, pageCount++, "DESC").enqueue(new Callback<List<Post>>() {
                     @Override
                     public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                         List<Post> list = response.body();
@@ -438,32 +459,38 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     }
                 });
             } else if (isByPlaceId) {
-                mWebService.getPostPageByPlaceId(token, pageCount++, 5, placeId, "DESC").enqueue(new Callback<List<Post>>() {
-                    @Override
-                    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-                        List<Post> list = response.body();
-                        if (list != null) {
-                            list.remove(0);
-                            if (list.isEmpty()) {
-                                continueLoad = false;
-                            } else {
-                                int lastPosition = listPost.size();
-                                for (Post p : list) {
-                                    if (p.getState() != 1) {
-                                        listPost.add(p);
+                if (continueLoad) {
+                    mWebService.getPostPageByPlaceId(token, pageCount++, 5, placeId, "DESC").enqueue(new Callback<List<Post>>() {
+                        @Override
+                        public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                            if (continueLoad) {
+                                List<Post> list = response.body();
+                                if (list != null) {
+                                    list.remove(0);
+                                    if (list.isEmpty()) {
+                                        continueLoad = false;
+                                        tvMessage.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        int lastPosition = listPost.size();
+                                        for (Post p : list) {
+                                            if (p.getState() != 1) {
+                                                listPost.add(p);
+                                            }
+                                        }
+                                        notifyItemRangeChanged(lastPosition, list.size());
                                     }
                                 }
-                                notifyItemRangeChanged(lastPosition, list.size());
                             }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<List<Post>> call, Throwable t) {
-                        Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
-                    }
-                });
-            } else if(isByPlanId) {
+                        @Override
+                        public void onFailure(Call<List<Post>> call, Throwable t) {
+                            Toast.makeText(context, "Xảy ra lỗi!!", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            } else if (isByPlanId) {
                 mWebService.getPostPageByDirectionId(token, pageCount++, 5, directionId, "DESC").enqueue(new Callback<List<Post>>() {
                     @Override
                     public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
@@ -498,6 +525,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             list.remove(0);
                             if (list.isEmpty()) {
                                 continueLoad = false;
+                                tvMessage.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.INVISIBLE);
                             } else {
                                 int lastPosition = listPost.size();
                                 for (Post p : list) {
@@ -551,6 +580,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         boolean likeFlag;
         ImageView singlePreview;
         ImageButton btnPostOption;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPostAvatar = (ImageView) itemView.findViewById(R.id.imgPostAvatar);
@@ -590,6 +620,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 }
             });
 
+            itemView.setOnClickListener(v -> eventViewPostDetail());
+
             btnPostOption.setOnClickListener((v) -> {
                 APIService mWebService = APIUtils.getWebService();
                 PopupMenu popupMenu = new PopupMenu(context, btnPostOption);
@@ -597,7 +629,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        if (menuItem.getTitle().equals("Báo cáo")){
+                        if (menuItem.getTitle().equals("Báo cáo")) {
                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                             alertDialogBuilder.setTitle("Báo cáo bài viết");
                             EditText edtRP = new EditText(context);
@@ -605,15 +637,15 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             alertDialogBuilder.setView(edtRP);
                             alertDialogBuilder.setMessage("Báo cáo của bạn đã được ghi nhận")
                                     .setCancelable(false)
-                                    .setPositiveButton("Gửi",new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,int id) {
-                                            if (!edtRP.getText().toString().matches("")){
-                                                mWebService.reportPost(Session.getToken(context), postId,edtRP.getText().toString()).enqueue(new Callback<Post>() {
+                                    .setPositiveButton("Gửi", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            if (!edtRP.getText().toString().matches("")) {
+                                                mWebService.reportPost(Session.getToken(context), postId, edtRP.getText().toString()).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        if (response.code() == 200){
+                                                        if (response.code() == 200) {
                                                             dialog.cancel();
-                                                            Toast.makeText(context,"Đã báo cáo bài viết.",Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(context, "Đã báo cáo bài viết.", Toast.LENGTH_LONG).show();
                                                         }
 
                                                     }
@@ -621,13 +653,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                                     @Override
                                                     public void onFailure(Call<Post> call, Throwable t) {
 
-                                                        Toast.makeText(context,"Báo cáo không thành công, thử lại sau.",Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(context, "Báo cáo không thành công, thử lại sau.", Toast.LENGTH_LONG).show();
                                                         dialog.cancel();
                                                     }
                                                 });
                                                 dialog.cancel();
                                             } else {
-                                                Toast.makeText(context,"Vui lòng điền lý do.",Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, "Vui lòng điền lý do.", Toast.LENGTH_LONG).show();
 //                                                        edtRP.requestFocus();
                                             }
                                         }
@@ -639,9 +671,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                             });
                             AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
-                        } else
-                        if (userId == user.getId()){
-                            if (menuItem.getTitle().equals("Sửa")){
+                        } else if (userId == user.getId()) {
+                            if (menuItem.getTitle().equals("Sửa")) {
                                 Intent intent = new Intent(context, PostAddActivity.class);
                                 intent.putExtra("id", postId);
                                 intent.putExtra("title", post.getName());
@@ -660,26 +691,26 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                                 List<Integer> li = new ArrayList<>();
                                                 li.add(post.getId());
                                                 pi.setId(li);
-                                                mWebService.removePost(Session.getToken(context),pi).enqueue(new Callback<Post>() {
+                                                mWebService.removePost(Session.getToken(context), pi).enqueue(new Callback<Post>() {
                                                     @Override
                                                     public void onResponse(Call<Post> call, Response<Post> response) {
-                                                        if (response.code() == 200){
-                                                            Toast.makeText(context, "Đã xóa",Toast.LENGTH_SHORT).show();
-                                                            context.startActivity(new Intent(context,MainActivity.class));
+                                                        if (response.code() == 200) {
+                                                            Toast.makeText(context, "Đã xóa", Toast.LENGTH_SHORT).show();
+                                                            context.startActivity(new Intent(context, MainActivity.class));
                                                         }
 
                                                     }
 
                                                     @Override
                                                     public void onFailure(Call<Post> call, Throwable t) {
-                                                        Toast.makeText(context, "Có lỗi xảy ra, thử lại sau.",Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(context, "Có lỗi xảy ra, thử lại sau.", Toast.LENGTH_SHORT).show();
                                                     }
                                                 });
 
                                             }
                                         })
-                                        .setNegativeButton("Quay lại",new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,int id) {
+                                        .setNegativeButton("Quay lại", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
                                                 dialog.cancel();
                                             }
                                         });
@@ -687,13 +718,13 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                                 alertDialog.show();
                             }
                         } else {
-                            if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa") ){
+                            if (menuItem.getTitle().equals("Sửa") || menuItem.getTitle().equals("Xóa")) {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
                                 alertDialogBuilder.setTitle("Cảnh báo");
                                 alertDialogBuilder.setMessage("Bạn chỉ có thể thao tác trên bài viết của mình.")
                                         .setCancelable(false)
-                                        .setNegativeButton("Đóng",new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,int id) {
+                                        .setNegativeButton("Đóng", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
                                                 // if this button is clicked, close
                                                 // current activity
                                                 dialog.cancel();

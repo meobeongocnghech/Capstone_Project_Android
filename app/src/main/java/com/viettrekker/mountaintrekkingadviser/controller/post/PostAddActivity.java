@@ -2,31 +2,21 @@ package com.viettrekker.mountaintrekkingadviser.controller.post;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
-import android.support.v13.view.inputmethod.EditorInfoCompat;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -36,48 +26,30 @@ import android.widget.Toast;
 import com.bumptech.glide.request.RequestOptions;
 import com.erikagtierrez.multiple_media_picker.Gallery;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
-import com.viettrekker.mountaintrekkingadviser.controller.LoginActivity;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.plan.ChecklistActivity;
-import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
 import com.viettrekker.mountaintrekkingadviser.model.Direction;
-import com.viettrekker.mountaintrekkingadviser.model.Member;
 import com.viettrekker.mountaintrekkingadviser.model.Place;
-import com.viettrekker.mountaintrekkingadviser.model.Plan;
-import com.viettrekker.mountaintrekkingadviser.model.PlanLocation;
-import com.viettrekker.mountaintrekkingadviser.model.PlanOwn;
 import com.viettrekker.mountaintrekkingadviser.model.Post;
 import com.viettrekker.mountaintrekkingadviser.model.SearchPlace;
-import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
-import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
-
-import org.w3c.dom.Text;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.io.File;
-import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import ir.mirrajabi.searchdialog.SimpleSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.BaseSearchDialogCompat;
 import ir.mirrajabi.searchdialog.core.SearchResultListener;
-import ir.mirrajabi.searchdialog.core.Searchable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
 public class PostAddActivity extends AppCompatActivity {
     //
@@ -99,9 +71,10 @@ public class PostAddActivity extends AppCompatActivity {
     int placeId = 0;
     int idUpdate;
     String point = "";
-    Direction d;
+    Direction direction;
     int planId = 0;
     AlertDialog.Builder alertDialogBuilder;
+    private HashTagHelper helper;
 
     private boolean isPostPlan = false;
     private String planName;
@@ -111,6 +84,7 @@ public class PostAddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_add);
         alertDialogBuilder = new AlertDialog.Builder(PostAddActivity.this);
+        helper = HashTagHelper.Creator.create(getResources().getColor(R.color.colorPrimary), null);
         Toolbar toolbar = (Toolbar) findViewById(R.id.addPostToolbar);
 
         setSupportActionBar(toolbar);
@@ -124,6 +98,7 @@ public class PostAddActivity extends AppCompatActivity {
         spnCategory = (Spinner) findViewById(R.id.spnCategory);
         edtTitlePost = (EditText) findViewById(R.id.edtTitlePost);
         edtContent = (EditText) findViewById(R.id.edtContent);
+        helper.handle(edtContent);
         btnAddPhoto = (MaterialButton) findViewById(R.id.btnAddPhoto);
         btnLocation = (MaterialButton) findViewById(R.id.btnLocation);
         btnPlan = (MaterialButton) findViewById(R.id.btnPlan);
@@ -210,8 +185,8 @@ public class PostAddActivity extends AppCompatActivity {
                 String title = edtTitlePost.getText().toString();
                 if (placeId > 0) {
                     typeId = 1;
-                    d = new Direction();
-                    d.setPlaceId(placeId);
+                    direction = new Direction();
+                    direction.setPlaceId(placeId);
                 } else if (planId > 0) {
                     typeId = 2;
                 } else {
@@ -237,9 +212,10 @@ public class PostAddActivity extends AppCompatActivity {
                     builder.addFormDataPart("typeId", typeId + "");
 
                     Gson gson = new Gson();
-                    builder.addFormDataPart("direction", gson.toJson(d));
                     if (planId > 0) {
                         builder.addFormDataPart("directionId", planId + "");
+                    } else if (placeId > 0) {
+                        builder.addFormDataPart("direction", gson.toJson(direction));
                     }
 
                     for (String s : imageAddAdapter.getListImg()) {
@@ -258,6 +234,8 @@ public class PostAddActivity extends AppCompatActivity {
                             progressDialog.dismiss();
 //                            Toast.makeText(PostAddActivity.this, "Tạo thành công", Toast.LENGTH_LONG).show();
                             if (isPostPlan) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                 onBackPressed();
                             } else {
                                 Intent intent = new Intent(PostAddActivity.this, MainActivity.class);
@@ -341,6 +319,7 @@ public class PostAddActivity extends AppCompatActivity {
             intent.putExtra("title", "Chọn ảnh");
             // Mode 1 for both images and videos selection, 2 for images only and 3 for videos!
             intent.putExtra("mode", 2);
+            intent.putExtra("maxSelection", 10);
             startActivityForResult(intent, OPEN_MEDIA_PICKER);
         });
 
@@ -365,7 +344,7 @@ public class PostAddActivity extends AppCompatActivity {
             // Make sure the request was successful
             if (resultCode == RESULT_OK && data != null) {
                 ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
-                if (selectionResult.size() > 0) {
+                if (selectionResult != null && selectionResult.size() > 0) {
                     imageAddAdapter.addItem(selectionResult);
                     btnAddPhoto.setText("Bạn đã chọn " + (imageAddAdapter.getItemCount()) + " ảnh");
                 } else {

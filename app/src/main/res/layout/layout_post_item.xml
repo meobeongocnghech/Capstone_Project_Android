@@ -132,7 +132,7 @@
 
         <ImageView
             android:id="@+id/imgSinglePreview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
@@ -180,7 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:letterSpacing="0.01"
-            android:text="Like"
+            android:text="Thích"
             android:textAllCaps="false"
             android:textColor="@color/colorTextFieldInput"
             app:backgroundTint="@android:color/white"
@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:letterSpacing="0.01"
-            android:text="Comment"
+            android:text="Bình luận"
             android:textAllCaps="false"
             android:textColor="@color/colorTextFieldInput"
             app:backgroundTint="@android:color/white"
@@ -216,19 +216,19 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#dcdcdc"
+            android:background="#ddd"
             app:layout_constraintTop_toTopOf="@id/btnPostLike" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#dcdcdc"
+            android:background="#ddd"
             app:layout_constraintTop_toBottomOf="@id/btnPostLike" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#dcdcdc"
+            android:background="#ddd"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>

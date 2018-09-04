@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
@@ -113,6 +114,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                                 .load(APIUtils.BASE_URL_API + user.getAvatar().getPath().substring(4) + "&w=" + LocalDisplay.dp2px(56, ForgotPasswordActivity.this))
                                                 .placeholder(R.drawable.avatar_default)
                                                 .fallback(R.drawable.avatar_default)
+                                                .apply(RequestOptions.circleCropTransform())
                                                 .into(avatar);
                                     }
                                     name.setText(user.getFirstName() + " " + user.getLastName());

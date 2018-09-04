@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:background="@color/colorWhite">
+    android:layout_marginRight="5dp">
 
     <TextView
         android:id="@+id/tvDateMilestones"
@@ -24,7 +23,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorDefaultBackground">
 
             <View
                 android:id="@+id/view4"

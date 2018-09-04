@@ -119,7 +119,7 @@ public class DateTimeUtils {
     public static Date changeTimeToLocale(String sDate) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat();
         if (sDate.contains("Z")) {
-            sdf.applyPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+            sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             Date date = sdf.parse(sDate);
             return date;
         } else {

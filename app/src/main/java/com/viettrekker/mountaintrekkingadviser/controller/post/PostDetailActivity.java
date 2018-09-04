@@ -17,8 +17,10 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -31,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiPopup;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
@@ -44,10 +48,12 @@ import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -67,8 +73,7 @@ public class PostDetailActivity extends AppCompatActivity {
     ImageButton btnPostOption;
     TextView tvPostTitle;
     TextView tvPostContent;
-    TextView tvCount;
-    EditText edtComment;
+    EmojiEditText edtComment;
     MaterialButton btnPostLike;
     MaterialButton btnPostComent;
     TextView tvCmtCount;
@@ -81,14 +86,16 @@ public class PostDetailActivity extends AppCompatActivity {
     RecyclerView rcvCmtItem;
     APIService mWebService;
     ImageView ownerAvatar;
+    private HashTagHelper mTextHashTagHelper;
+    private ViewGroup rootView;
+    EmojiPopup emojiPopup;
     Post post;
     User user;
     boolean likeFlag;
     boolean updateCmt = false;
     private String[] postType = {"Bài viết đánh giá", "Bài viết hướng dẫn", "Bài viết chia sẻ", "Bài viết khác"};
 
-    public static int currentPosition;
-    private static final String KEY_CURRENT_POSITION = "com.google.samples.gridtopager.key.currentPosition";
+    public static int currentPos;
 
     public PostDetailActivity() {
     }
@@ -98,19 +105,19 @@ public class PostDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
 
+        rootView = (ViewGroup) findViewById(R.id.rootView);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.postDetailToolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        mTextHashTagHelper = HashTagHelper.Creator.create(getResources().getColor(R.color.colorPrimary), null);
+
         mWebService = APIUtils.getWebService();
         InputMethodManager imm = (InputMethodManager) PostDetailActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (savedInstanceState != null) {
-            currentPosition = savedInstanceState.getInt(KEY_CURRENT_POSITION, 0);
-            // Return here to prevent adding additional GridFragments when changing orientation.
-            return;
-        }
 
         isByUserId = getIntent().getBooleanExtra("isByUserId", false);
 
@@ -122,27 +129,32 @@ public class PostDetailActivity extends AppCompatActivity {
         tvPostCategory = (TextView) findViewById(R.id.tvPostCategoryDetail);
         btnPostOption = (ImageButton) findViewById(R.id.btnPostOptionDetail);
         tvPostTitle = (TextView) findViewById(R.id.tvPostTitleDetail);
+        tvPostTitle.setVisibility(View.GONE);
         tvPostContent = (TextView) findViewById(R.id.tvPostContentDetail);
+        mTextHashTagHelper.handle(tvPostContent);
 //        tvCount = (TextView) findViewById(R.id.tvCount);
         btnPostLike = (MaterialButton) findViewById(R.id.btnPostLikeDetail);
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
-        edtComment = (EditText) findViewById(R.id.edtInputComment);
+        edtComment = (EmojiEditText) findViewById(R.id.edtInputComment);
+        HashTagHelper helper = HashTagHelper.Creator.create(getResources().getColor(R.color.colorPrimary), null);
+        helper.handle(edtComment);
         btnSendCmtDetail = (MaterialButton) findViewById(R.id.btnSendCmtDetail);
         tvCmtCount = (TextView) findViewById(R.id.tvCmtCount);
         tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
         separator = (TextView) findViewById(R.id.separator);
         ownerAvatar = (ImageView) findViewById(R.id.ownerAvatar);
+        ownerAvatar.setOnClickListener(v -> emojiPopup.toggle());
         imgPostAvatar = (ImageView) findViewById(R.id.imgPostAvatarDetail);
         tvPostUserName = (TextView) findViewById(R.id.tvPostUserNameDetail);
         tvTime = (TextView) findViewById(R.id.tvTimeDetail);
         tvPostCategory = (TextView) findViewById(R.id.tvPostCategoryDetail);
         btnPostOption = (ImageButton) findViewById(R.id.btnPostOptionDetail);
-        tvPostTitle = (TextView) findViewById(R.id.tvPostTitleDetail);
         tvPostContent = (TextView) findViewById(R.id.tvPostContentDetail);
         btnPostLike = (MaterialButton) findViewById(R.id.btnPostLikeDetail);
         btnPostComent = (MaterialButton) findViewById(R.id.btnPostCommentDetail);
         likeFlag = false;
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        setUpEmojiPopup();
 
         btnPostComent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +173,6 @@ public class PostDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (updateCmt) {
                     updateCmt = false;
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     mWebService.updateComment(Session.getToken(PostDetailActivity.this), id, cmtListAdapter.idCmtEdit,
                             edtComment.getText().toString()).enqueue(new Callback<Post>() {
                         @Override
@@ -215,7 +226,6 @@ public class PostDetailActivity extends AppCompatActivity {
 
                                     cmtListAdapter.notifyDataSetChanged();
                                 }
-
                             }
 
                             @Override
@@ -451,6 +461,7 @@ public class PostDetailActivity extends AppCompatActivity {
                         separator.setBackground(getApplicationContext().getResources().getDrawable(R.drawable.ic_play_arrow_16dp));
                     }
                     tvPostTitle.setText(post.getName());
+                    getSupportActionBar().setTitle(post.getName());
                     tvPostContent.setAutoLinkMask(Linkify.WEB_URLS);
                     tvPostContent.setText(post.getContent());
                     cmtListAdapter.setList(post.getComments());
@@ -507,16 +518,16 @@ public class PostDetailActivity extends AppCompatActivity {
                                 .into(imgPostAvatar);
                     }
 
-                    if (!Session.getAvatarPath(PostDetailActivity.this).isEmpty()) {
-                        GlideApp.with(PostDetailActivity.this)
-                                .load(APIUtils.BASE_URL_API + Session.getAvatarPath(PostDetailActivity.this).substring(4))
-                                .placeholder(R.drawable.avatar_default)
-                                .fallback(R.drawable.avatar_default)
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(ownerAvatar);
-                    }
+//                    if (!Session.getAvatarPath(PostDetailActivity.this).isEmpty()) {
+//                        GlideApp.with(PostDetailActivity.this)
+//                                .load(APIUtils.BASE_URL_API + Session.getAvatarPath(PostDetailActivity.this).substring(4))
+//                                .placeholder(R.drawable.avatar_default)
+//                                .fallback(R.drawable.avatar_default)
+//                                .apply(RequestOptions.circleCropTransform())
+//                                .into(ownerAvatar);
+//                    }
 
-                    ownerAvatar.setOnClickListener((v) -> eventViewProfile(Session.getUser(PostDetailActivity.this)));
+//                    ownerAvatar.setOnClickListener((v) -> eventViewProfile(Session.getUser(PostDetailActivity.this)));
 
                     if (post.getGallery().getMedia().size() == 0) {
                         rcvPostImage.setVisibility(View.GONE);
@@ -524,17 +535,21 @@ public class PostDetailActivity extends AppCompatActivity {
                         HashMap<Integer, float[]> map = new HashMap<>();
                         int mediaIdx = 0;
                         int mediaSize = post.getGallery().getMedia().size();
-                        for (int i = 0; i < post.getGallery().getMedia().size(); i++) {
+                        for (int i = 0; i < mediaSize && mediaIdx < mediaSize; i++) {
                             float ratio1 = (float) post.getGallery().getMedia().get(mediaIdx).getHeight() / post.getGallery().getMedia().get(mediaIdx).getWidth();
                             mediaIdx++;
-                            if (ratio1 >= 1.2 && mediaSize > 1) {
+                            if (ratio1 >= 0.5 && mediaSize > 2 && mediaIdx < mediaSize) {
                                 float ratio2 = (float) post.getGallery().getMedia().get(mediaIdx).getHeight() / post.getGallery().getMedia().get(mediaIdx).getWidth();
                                 mediaIdx++;
-                                if (ratio2 >= 1.2  && mediaSize > 2) {
-                                    mediaIdx++;
+                                if (ratio2 >= 0.5  && mediaSize > 2 && mediaIdx < mediaSize) {
                                     float ratio3 = (float) post.getGallery().getMedia().get(mediaIdx).getHeight() / post.getGallery().getMedia().get(mediaIdx).getWidth();
-                                    if (ratio3 < 1.2) {
-                                        map.put(i, new float[]{ratio1, ratio2, ratio3});
+                                    if(ratio1 > 1.2 && ratio2 > 1.2) {
+                                        if (ratio3 > 0.5 && ratio3 < 1.2) {
+                                            map.put(i, new float[]{ratio1, ratio2, ratio3});
+                                            mediaIdx++;
+                                        } else {
+                                            map.put(i, new float[]{ratio1, ratio2});
+                                        }
                                     } else {
                                         map.put(i, new float[]{ratio1, ratio2});
                                     }
@@ -547,7 +562,10 @@ public class PostDetailActivity extends AppCompatActivity {
                         }
 
                         DetailImageAdapter imageAdapter = new DetailImageAdapter();
+                        imageAdapter.setContext(PostDetailActivity.this);
+                        imageAdapter.setActivity(PostDetailActivity.this);
                         imageAdapter.setMap(map);
+                        imageAdapter.setTitle(post.getName());
                         imageAdapter.setWidth(LocalDisplay.getScreenWidth(PostDetailActivity.this));
                         imageAdapter.setMedias(post.getGallery().getMedia());
                         rcvPostImage.setAdapter(imageAdapter);
@@ -585,31 +603,6 @@ public class PostDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void scrollToPosition() {
-        rcvPostImage.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v,
-                                       int left,
-                                       int top,
-                                       int right,
-                                       int bottom,
-                                       int oldLeft,
-                                       int oldTop,
-                                       int oldRight,
-                                       int oldBottom) {
-                rcvPostImage.removeOnLayoutChangeListener(this);
-                final RecyclerView.LayoutManager layoutManager = rcvPostImage.getLayoutManager();
-                View viewAtPosition = layoutManager.findViewByPosition(PostDetailActivity.currentPosition);
-                // Scroll to position if the view for the current position is null (not currently part of
-                // layout manager children), or it's not completely visible.
-                if (viewAtPosition == null || layoutManager
-                        .isViewPartiallyVisible(viewAtPosition, false, true)) {
-                    rcvPostImage.post(() -> layoutManager.scrollToPosition(PostDetailActivity.currentPosition));
-                }
-            }
-        });
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -618,5 +611,16 @@ public class PostDetailActivity extends AppCompatActivity {
 
     public void setUpdateCmt(boolean updateCmt) {
         this.updateCmt = updateCmt;
+    }
+
+    private void setUpEmojiPopup() {
+        emojiPopup = EmojiPopup.Builder.fromRootView(rootView)
+                .setOnEmojiBackspaceClickListener(ignore -> Log.d("PostDetailActivity", "Clicked on Backspace"))
+                .setOnEmojiClickListener((ignore, ignore2) -> Log.d("PostDetailActivity", "Clicked on emoji"))
+                .setOnEmojiPopupShownListener(() -> ownerAvatar.setImageResource(R.drawable.ic_keyboard))
+                .setOnSoftKeyboardOpenListener(ignore -> Log.d("PostDetailActivity", "Opened soft keyboard"))
+                .setOnEmojiPopupDismissListener(() -> ownerAvatar.setImageResource(R.drawable.ic_smiling))
+                .setOnSoftKeyboardCloseListener(() -> Log.d("PostDetailActivity", "Closed soft keyboard"))
+                .build(edtComment);
     }
 }

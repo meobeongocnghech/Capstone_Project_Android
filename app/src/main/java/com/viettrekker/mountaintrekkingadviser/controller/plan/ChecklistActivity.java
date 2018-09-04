@@ -65,15 +65,19 @@ public class ChecklistActivity extends AppCompatActivity {
         edtAddChecklist.setVisibility(View.GONE);
         rcvChecklistItem.setLayoutManager(new LinearLayoutManager(ChecklistActivity.this));
         ChecklistAdapter checklistAdapter = new ChecklistAdapter(ChecklistActivity.this);
-        if (id != -1){
+        if (id != -1) {
             mWebService.getPlanById(Session.getToken(this), id).enqueue(new Callback<Plan>() {
                 @Override
                 public void onResponse(Call<Plan> call, Response<Plan> response) {
-                    if (response.code() == 200){
+                    if (response.code() == 200) {
                         plan = response.body();
                         items = plan.getChecklist().getItems();
-                        checklistAdapter.setList(items);
-                        checklistAdapter.notifyDataSetChanged();
+                        if (items.size() == 0) {
+                            findViewById(R.id.tvEmptyCheclist).setVisibility(View.VISIBLE);
+                        } else {
+                            checklistAdapter.setList(items);
+                            checklistAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
 
@@ -83,7 +87,7 @@ public class ChecklistActivity extends AppCompatActivity {
                 }
             });
         }
-        if (state.equalsIgnoreCase("new")){
+        if (state.equalsIgnoreCase("new")) {
             btnEditCheckList.setVisibility(View.GONE);
             checklistAdapter.setList(newPlanActivity.checkLists);
             checklistAdapter.notifyDataSetChanged();
@@ -94,11 +98,12 @@ public class ChecklistActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     ChecklistItem c = new ChecklistItem();
-                    c.setContent(edtAddChecklist.getText().toString());
+                    c.setContent("- " + edtAddChecklist.getText().toString());
                     c.setState(0);
                     newPlanActivity.checkLists.add(c);
                     checklistAdapter.setList(newPlanActivity.checkLists);
                     checklistAdapter.notifyDataSetChanged();
+                    edtAddChecklist.setText("");
                 }
             });
         } else {
@@ -108,16 +113,18 @@ public class ChecklistActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         ChecklistItem c = new ChecklistItem();
-                        c.setContent(edtAddChecklist.getText().toString());
+                        c.setContent("- " + edtAddChecklist.getText().toString());
                         c.setState(0);
                         items.add(c);
                         checklistAdapter.setList(items);
                         checklistAdapter.notifyDataSetChanged();
+                        edtAddChecklist.setText("");
                     }
                 });
 
                 btnEditCheckList.setOnClickListener((v) -> {
                     if (btnEditCheckList.getText().toString().equalsIgnoreCase("sửa")) {
+                        findViewById(R.id.tvEmptyCheclist).setVisibility(View.GONE);
                         btnEditCheckList.setText("Xong");
                         checklistAdapter.enableDelete();
                         btnAddChecklist.setVisibility(View.VISIBLE);
@@ -132,11 +139,11 @@ public class ChecklistActivity extends AppCompatActivity {
                         mWebService.updatePlan(token, plan).enqueue(new Callback<Plan>() {
                             @Override
                             public void onResponse(Call<Plan> call, Response<Plan> response) {
-                                if (response.code() == 200){
+                                if (response.code() == 200) {
                                     Toast.makeText(ChecklistActivity.this, "Thành công", Toast.LENGTH_SHORT).show();
 
                                 }
-                                }
+                            }
 
                             @Override
                             public void onFailure(Call<Plan> call, Throwable t) {

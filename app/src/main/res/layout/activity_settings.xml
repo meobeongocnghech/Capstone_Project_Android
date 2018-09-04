@@ -109,7 +109,7 @@
                 android:visibility="gone">
 
                 <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:id="@+id/pwdLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -142,7 +142,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:id="@+id/newpwdLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -177,7 +177,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:id="@+id/renewpwdLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

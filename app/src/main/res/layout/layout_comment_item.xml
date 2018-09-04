@@ -38,7 +38,7 @@
                 android:src="@drawable/avatar_default"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <EditText
+            <com.vanniktech.emoji.EmojiTextView
                 android:id="@+id/tvCmtContent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -46,15 +46,12 @@
                 android:text="Moi di Ba Vi ve xong, dep lam anh em oi.... :) vui lam nhe"
                 android:textColor="@android:color/black"
                 android:textSize="13sp"
-                android:clickable="false"
-                android:focusable="false"
                 android:background="@android:color/transparent"
                 android:maxLines="3"
                 android:ellipsize="end"
                 app:layout_constraintEnd_toStartOf="@id/btnActionCmt"
                 app:layout_constraintStart_toEndOf="@+id/imgAvtCmt"
-                app:layout_constraintTop_toBottomOf="@id/tvUserCmt"
-                />
+                app:layout_constraintTop_toBottomOf="@id/tvUserCmt" />
 
             <TextView
                 android:id="@+id/tvUserCmt"
@@ -64,10 +61,7 @@
                 android:textSize="13sp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toEndOf="@id/imgAvtCmt"
-                />
-
-
+                app:layout_constraintStart_toEndOf="@id/imgAvtCmt" />
 
             <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/btnActionCmt"

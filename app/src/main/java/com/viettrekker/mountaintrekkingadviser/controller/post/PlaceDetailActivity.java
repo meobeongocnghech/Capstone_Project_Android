@@ -10,16 +10,21 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +60,11 @@ public class PlaceDetailActivity extends AppCompatActivity {
     private TextView tvPlaceDescription;
     private final int ACCESS_FINE_LOCATION_INTENT_ID = 3;
     Place place;
+    private NestedScrollView placeScrollView;
+    private CoordinatorLayout coordinatorLayout;
+    private ProgressBar progressPlace;
+    private TextView tvNoMore;
+    private AppBarLayout appbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +81,16 @@ public class PlaceDetailActivity extends AppCompatActivity {
     }
 
     private void init() {
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        appbar = (AppBarLayout) findViewById(R.id.appbar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.placeToolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        progressPlace = (ProgressBar) findViewById(R.id.progressPlace);
+        tvNoMore = (TextView) findViewById(R.id.tvNoMorePostPlace);
 
         tvPlaceAddress = (TextView) findViewById(R.id.tvPlaceAddress);
 //        tvPlaceAddress.setText(getIntent().getStringExtra("address"));
@@ -87,7 +102,9 @@ public class PlaceDetailActivity extends AppCompatActivity {
 //        tvPlaceDescription.setText(getIntent().getStringExtra("description"));
 
         rvGuide = (RecyclerView) findViewById(R.id.rvListGuide);
-        rvGuide.setLayoutManager(new LinearLayoutManager(this));
+        placeScrollView = (NestedScrollView) findViewById(R.id.placeScrollView);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        rvGuide.setLayoutManager(mLayoutManager);
         NewsFeedAdapter adapter = new NewsFeedAdapter(this, null, Session.getToken(this));
 
         int id = getIntent().getIntExtra("id", 0);
@@ -175,14 +192,22 @@ public class PlaceDetailActivity extends AppCompatActivity {
         adapter.setUserId(Session.getUserId(this));
         adapter.setByPlaceId(true);
         adapter.setPlaceId(id);
+        adapter.setTvMessage(tvNoMore);
+        adapter.setProgressBar(progressPlace);
         mWebService.getPostPageByPlaceId(token, 1, 5, id, "DESC").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.code() == HttpURLConnection.HTTP_OK && response.body() != null && !response.body().isEmpty()) {
                     List<Post> list = response.body();
                     list.remove(0);
-                    adapter.setListPost(list);
-                    adapter.notifyDataSetChanged();
+                    if (list.size() == 0) {
+                        progressPlace.setVisibility(View.INVISIBLE);
+                        tvNoMore.setVisibility(View.VISIBLE);
+                        tvNoMore.setText("Không có bài đăng trong địa điểm này");
+                    } else {
+                        adapter.setListPost(list);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
 
@@ -193,21 +218,39 @@ public class PlaceDetailActivity extends AppCompatActivity {
         });
 
         rvGuide.setAdapter(adapter);
-
-        rvGuide.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        placeScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager = LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
-                int totalItemCount = layoutManager.getItemCount();
-                int lastVisible = layoutManager.findLastVisibleItemPosition();
+            public void onScrollChange(NestedScrollView v, int i, int i1, int i2, int i3) {
+                if (i1 > 0) {
+                    if (v.getChildAt(v.getChildCount() - 1) != null) {
+                        if ((i1 >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                                i1 > i3) {
 
-                boolean endHasBeenReached = lastVisible + 5 >= totalItemCount;
-                if (totalItemCount > 0 && endHasBeenReached) {
-                    adapter.incrementalLoad();
+                            int visibleItemCount = mLayoutManager.getChildCount();
+                            int totalItemCount = mLayoutManager.getItemCount();
+                            int pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                adapter.incrementalLoad();
+                            }
+                        }
+                    }
                 }
             }
         });
-//        mWebService.searchPostSuggestion()
+
+        appbar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if (i < 0) {
+                    if (placeScrollView.getChildAt(placeScrollView.getChildCount() - 1) != null) {
+                        if ((Math.abs(i) >= (placeScrollView.getChildAt(placeScrollView.getChildCount() - 1).getMeasuredHeight() - placeScrollView.getMeasuredHeight()))) {
+                                adapter.incrementalLoad();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override

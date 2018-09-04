@@ -21,7 +21,7 @@
             android:scaleType="centerCrop"
             android:scaleY="1.2"
             android:scaleX="1.2"
-            android:translationY="30dp"
+            android:translationY="29dp"
             android:transitionName="placeImg"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -118,7 +118,8 @@
             android:drawablePadding="8dp"
             android:paddingVertical="4dp"
             android:background="@android:color/white"
-            app:layout_constraintTop_toBottomOf="@id/tvPlaceDistance" />
+            app:layout_constraintTop_toBottomOf="@id/tvPlaceDistance"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tvPlaceDescription"
@@ -243,7 +244,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvPlaceDistanceHolder" />
+                app:layout_constraintTop_toBottomOf="@id/tvPlaceDistanceHolder"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="match_parent"

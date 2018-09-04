@@ -139,7 +139,8 @@
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="@id/buttonGroup"
-        app:textAllCaps="false" />
+        app:textAllCaps="false"
+        app:rippleColor="@color/colorPrimary"/>
 
     <android.support.constraint.Group
         android:id="@+id/buttonGroup"
@@ -149,7 +150,7 @@
         app:constraint_referenced_ids="btnLogin, textView2, btnRegister"
         app:layout_constraintTop_toBottomOf="@id/edtLoginPassword"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.2"/>
+        app:layout_constraintVertical_bias="0.2" />
 
     <android.support.design.button.MaterialButton
         android:id="@+id/btnForgotPassword"

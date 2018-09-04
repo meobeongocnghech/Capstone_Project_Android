@@ -92,7 +92,8 @@ public interface APIService {
     @PUT("noti")
     @FormUrlEncoded
     Call<List<Notification>> setCheckAll(@Header("AUTH_TOKEN_ID") String token,
-                                         @Field("check") boolean check);
+                                         @Field("check") boolean check,
+                                         @Field("newestId") int id);
 
     @GET("post/paging")
     Call<List<Post>> getPostPage(@Header("AUTH_TOKEN_ID") String token,
@@ -265,6 +266,11 @@ public interface APIService {
                                           @Query("page") int page,
                                           @Query("pageSize") int size,
                                           @Query("search") String search);
+
+    @GET("member/paging")
+    Call<List<User>> getAllMembers(@Header("AUTH_TOKEN_ID") String token,
+                                          @Query("page") int page,
+                                          @Query("pageSize") int size);
 
     @GET("place/paging")
     Call<List<Place>> searchPlaceSuggestion(@Header("AUTH_TOKEN_ID") String token,

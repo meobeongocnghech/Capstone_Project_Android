@@ -57,6 +57,10 @@ public class Notification {
         this.typeId = typeId;
     }
 
+    @SerializedName("newestId")
+    @Expose
+    private int newestId;
+
     public int getId() {
         return id;
     }
@@ -175,5 +179,13 @@ public class Notification {
 
     public void setPlan(Plan plan) {
         this.plan = plan;
+    }
+
+    public int getNewestId() {
+        return newestId;
+    }
+
+    public void setNewestId(int newestId) {
+        this.newestId = newestId;
     }
 }

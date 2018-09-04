@@ -21,11 +21,10 @@
             app:icon="@drawable/ic_date_range_primary_24dp"
             app:iconTint="@color/colorPrimary"
             app:iconSize="32dp"
-            app:iconPadding="24dp"
-            android:layout_marginLeft="72dp"
+            android:paddingLeft="148dp"
             android:textAlignment="textStart"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:textSize="16sp"
             android:text="22/03/1993"
             android:textColor="@color/colorDisable"
@@ -34,7 +33,8 @@
             app:backgroundTint="@color/colorWhite"
             android:letterSpacing="0.01"
             app:textAllCaps="false"
-            android:clickable="false"/>
+            android:clickable="false"
+            app:rippleColor="@color/colorPrimary"/>
 
         <android.support.design.button.MaterialButton
             android:id="@+id/phone"
@@ -45,11 +45,10 @@
             app:icon="@drawable/ic_phone_android_primary_24dp"
             app:iconTint="@color/colorPrimary"
             app:iconSize="32dp"
-            app:iconPadding="24dp"
-            android:layout_marginLeft="72dp"
+            android:paddingLeft="148dp"
             android:textAlignment="textStart"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:textSize="16sp"
             android:text="09566643335"
             android:textColor="@color/colorDisable"
@@ -58,7 +57,8 @@
             app:backgroundTint="@color/colorWhite"
             android:letterSpacing="0.01"
             app:textAllCaps="false"
-            android:clickable="false"/>
+            android:clickable="false"
+            app:rippleColor="@color/colorPrimary"/>
 
         <android.support.design.button.MaterialButton
             android:id="@+id/gender"
@@ -66,14 +66,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:strokeWidth="0dp"
-            android:textAlignment="textStart"
             app:icon="@drawable/ic_gender_symbol_primary_24dp"
             app:iconTint="@color/colorPrimary"
             app:iconSize="32dp"
-            app:iconPadding="24dp"
-            android:layout_marginLeft="72dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="24dp"
+            android:paddingLeft="148dp"
+            android:textAlignment="textStart"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:textSize="16sp"
             android:text="Nam"
             android:textColor="@color/colorDisable"
@@ -82,7 +81,8 @@
             app:backgroundTint="@color/colorWhite"
             android:letterSpacing="0.01"
             app:textAllCaps="false"
-            android:clickable="false"/>
+            android:clickable="false"
+            app:rippleColor="@color/colorPrimary"/>
 
         <android.support.design.button.MaterialButton
             android:id="@+id/btnChangeProfile"
@@ -141,6 +141,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnChangeProfile"
             app:textAllCaps="false"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:rippleColor="@color/colorPrimary"/>
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

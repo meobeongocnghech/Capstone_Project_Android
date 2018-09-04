@@ -61,6 +61,7 @@ public class TimelinesListAdapter extends RecyclerView.Adapter<TimelinesListAdap
         viewHolder.tvTlContent.setText(timeLines.getContent());
         try {
             Date newDate = DateTimeUtils.changeTimeToLocale(timeLines.getTime());
+            viewHolder.tvDateMilestones.setVisibility(View.GONE);
             if (i == 0
                     || lastDate.getDay() != newDate.getDay()
                     || lastDate.getMonth() != newDate.getMonth()

@@ -7,6 +7,7 @@ import android.support.design.chip.Chip;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.MainActivity;
@@ -24,7 +26,6 @@ public class PostFragment extends Fragment {
 
     private NestedScrollView layout;
     private SwitchCompat switchView;
-    private ProgressBar progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,22 +41,47 @@ public class PostFragment extends Fragment {
 
         switchView = (SwitchCompat) view.findViewById(R.id.swtMode);
         Chip chip = (Chip) view.findViewById(R.id.postHint);
-        progress = (ProgressBar) view.findViewById(R.id.progressPost);
 
         loadNewsfeedData();
         switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
-                    hideProgress();
                     loadPlaceData();
                     ((MainActivity) getActivity()).setTitle("Địa điểm");
                     loadChipAnimation(chip, "Địa điểm");
                 } else {
-                    showProgress();
                     loadNewsfeedData();
                     ((MainActivity) getActivity()).setTitle("Bảng tin");
                     loadChipAnimation(chip, "Bảng tin");
+                }
+            }
+        });
+
+        layout.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int i, int i1, int i2, int i3) {
+                if (i1 > 0 && !switchView.isChecked()) {
+                    NewsFeedFragment fragment = null;
+                    for (Fragment fragment1 : getFragmentManager().getFragments()) {
+                        if (fragment1.getTag() != null && fragment1.getTag().equalsIgnoreCase("newsfeed")) {
+                            fragment = (NewsFeedFragment) fragment1;
+                        }
+                    }
+                    LinearLayoutManager layoutManager = fragment.getmLayoutManager();
+                    if (v.getChildAt(v.getChildCount() - 1) != null) {
+                        if ((i1 >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                                i1 > i3) {
+
+                            int visibleItemCount = layoutManager.getChildCount();
+                            int totalItemCount = layoutManager.getItemCount();
+                            int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                fragment.incrementalLoad();
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -91,7 +117,7 @@ public class PostFragment extends Fragment {
     }
 
     public void scrollToTop() {
-        layout.dispatchTouchEvent(MotionEvent.obtain(0,0,MotionEvent.ACTION_DOWN, 100,100,0.5f,5,0,1,1,0,0));
+        layout.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN, 100, 100, 0.5f, 5, 0, 1, 1, 0, 0));
         layout.fling(0);
         layout.smoothScrollTo(0, 0);
     }
@@ -103,20 +129,8 @@ public class PostFragment extends Fragment {
     public void refreshData() {
         if (switchView.isChecked()) {
             loadPlaceData();
-            hideProgress();
-
         } else {
             loadNewsfeedData();
-            showProgress();
-
         }
-    }
-
-    public void showProgress() {
-        progress.setVisibility(View.VISIBLE);
-    }
-
-    public void hideProgress() {
-        progress.setVisibility(View.GONE);
     }
 }

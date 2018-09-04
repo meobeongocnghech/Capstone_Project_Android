@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controller.post.DetailImageActivity"
+    android:background="#000">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/imgDetailPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/btnBack"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        app:cornerRadius="28dp"
+        app:icon="@drawable/arrow_back"
+        app:backgroundTint="@android:color/transparent"
+        android:paddingLeft="6dp"
+        android:insetLeft="10dp"
+        android:insetRight="10dp"/>
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/btnBack"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="72dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="Tiêu đề"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"/>
+
+</android.support.constraint.ConstraintLayout>

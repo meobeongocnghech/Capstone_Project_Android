@@ -48,6 +48,10 @@ public class MembersListAdapter extends RecyclerView.Adapter<MembersListAdapter.
     private int planId;
     private TextView tvCountMember;
 
+    public List<Member> getUsers() {
+        return users;
+    }
+
     public void setTvCountMember(TextView tvCountMember) {
         this.tvCountMember = tvCountMember;
     }

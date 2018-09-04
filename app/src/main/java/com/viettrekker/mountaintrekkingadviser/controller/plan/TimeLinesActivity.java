@@ -23,12 +23,15 @@ import com.tsongkha.spinnerdatepicker.SpinnerDatePickerDialogBuilder;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.model.Plan;
 import com.viettrekker.mountaintrekkingadviser.model.TimeLines;
+import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -94,6 +97,7 @@ public class TimeLinesActivity  extends AppCompatActivity{
         MaterialButton btnEditTimeline = (MaterialButton) findViewById(R.id.btnEditTimeline);
         btnEditTimeline.setOnClickListener((v) -> {
             if (btnEditTimeline.getText().toString().equalsIgnoreCase("sửa")) {
+                findViewById(R.id.tvEmptyTimelines).setVisibility(View.GONE);
                 edtTimelineTitle.setVisibility(View.VISIBLE);
                 edtTimelineContent.setVisibility(View.VISIBLE);
                 btnAddTimeline.setVisibility(View.VISIBLE);
@@ -142,8 +146,12 @@ public class TimeLinesActivity  extends AppCompatActivity{
                         Type type = new TypeToken<ArrayList<TimeLines>>(){}.getType();
                         Gson gson = new Gson();
                         timeLines = gson.fromJson(timeline, type);
-                        timelinesListAdapter.setList(timeLines);
-                        timelinesListAdapter.sortTimelines();
+                        if (timeLines.size() == 0) {
+                            findViewById(R.id.tvEmptyTimelines).setVisibility(View.VISIBLE);
+                        } else {
+                            timelinesListAdapter.setList(timeLines);
+                            timelinesListAdapter.sortTimelines();
+                        }
                     }
 
                 }
@@ -187,11 +195,14 @@ public class TimeLinesActivity  extends AppCompatActivity{
                     timeLines.add(t);
                 }
                 timelinesListAdapter.sortTimelines();
+                edtTimelineContent.setText("");
+                edtTimelineTitle.setText("");
+                tvTLDate.setText("");
+                tvTLTime.setText("");
             }
         });
     }
     private void datePick(){
-        Calendar currentDate = Calendar.getInstance();
         SpinnerDatePickerDialogBuilder datepicker = new SpinnerDatePickerDialogBuilder()
                 .context(TimeLinesActivity.this)
                 .callback(new DatePickerDialog.OnDateSetListener() {
@@ -203,10 +214,22 @@ public class TimeLinesActivity  extends AppCompatActivity{
                 })
                 .spinnerTheme(R.style.NumberPickerStyle)
                 .showTitle(true)
-                .showDaySpinner(true)
-                .maxDate(currentDate.get(Calendar.YEAR) + 1, currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH))
-                .minDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
-        datepicker.defaultDate(currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DAY_OF_MONTH));
+                .showDaySpinner(true);
+        if (plan != null) {
+            try {
+                Date start = DateTimeUtils.changeTimeToLocale(plan.getStartTime());
+                Date end = DateTimeUtils.changeTimeToLocale(plan.getFinishTime());
+                datepicker.maxDate(start.getYear() + 1900, start.getMonth(), start.getDate());
+                datepicker.minDate(end.getYear() + 1900, end.getMonth(), end.getDate());
+                datepicker.defaultDate(start.getYear() + 1900, start.getMonth(), start.getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } else {
+            datepicker.maxDate(Calendar.getInstance().get(Calendar.YEAR) + 1, Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
+            datepicker.minDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
+            datepicker.defaultDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
+        }
         datepicker.build().show();
     }
 

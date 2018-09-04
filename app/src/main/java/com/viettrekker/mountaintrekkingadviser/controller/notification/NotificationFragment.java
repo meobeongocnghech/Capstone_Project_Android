@@ -5,12 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.viettrekker.mountaintrekkingadviser.R;
@@ -31,6 +34,9 @@ public class NotificationFragment extends Fragment {
     NotificationAdapter notiAdapter;
     private int countNew;
     MaterialButton notiCount;
+    private int newestId;
+    private NestedScrollView layout;
+    private TextView tvNoNoti;
 
     public int getCountNew() {
         return countNew;
@@ -70,7 +76,10 @@ public class NotificationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rcvNotiItem = (RecyclerView) view.findViewById(R.id.rcvNotiItem);
-        rcvNotiItem.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        layout = (NestedScrollView) view.findViewById(R.id.notiSrollView);
+        tvNoNoti = (TextView) view.findViewById(R.id.tvNoNoti);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        rcvNotiItem.setLayoutManager(layoutManager);
         notiAdapter = new NotificationAdapter();
         notiAdapter.setContext(getContext());
         notiAdapter.setFragment(this);
@@ -78,23 +87,45 @@ public class NotificationFragment extends Fragment {
         rcvNotiItem.setAdapter(notiAdapter);
 
         progress = (ProgressBar) view.findViewById(R.id.progressNoti);
+
+        layout.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
+                if (i1 > 0) {
+                    int visibleItemCount = layoutManager.getChildCount();
+                    int totalItemCount = layoutManager.getItemCount();
+                    int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        tvNoNoti.setVisibility(View.GONE);
+                        notiAdapter.incrementalLoad();
+                    }
+                }
+            }
+        });
     }
 
     public int getCurrentScrollY() {
-        return rcvNotiItem.computeVerticalScrollOffset();
+        return layout.getScrollY();
     }
 
     public void scrollToTop() {
-        rcvNotiItem.smoothScrollToPosition(0);
+        layout.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN, 100, 100, 0.5f, 5, 0, 1, 1, 0, 0));
+        layout.fling(0);
+        layout.smoothScrollTo(0, 0);
     }
 
     public void initLoad() {
         APIService mWebService = APIUtils.getWebService();
+        tvNoNoti.setVisibility(View.GONE);
+        if (progress != null) {
+            progress.setVisibility(View.VISIBLE);
+        }
         mWebService.getNoti(token).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 List<Notification> list = response.body();
                 if (list != null) {
+                    newestId = list.get(0).getNewestId();
                     countNew = list.get(0).getCountNew();
                     if (countNew > 0 && countNew <= 9) {
                         notiCount.setText(countNew + "");
@@ -108,8 +139,12 @@ public class NotificationFragment extends Fragment {
                     if (notiAdapter != null) {
                         notiAdapter.setOlderId(list.get(0).getOldestId());
                         list.remove(0);
-                        notiAdapter.setListNoti(list);
-                        notiAdapter.notifyDataSetChanged();
+                        if (list.size() > 0) {
+                            notiAdapter.setListNoti(list);
+                            notiAdapter.notifyDataSetChanged();
+                        } else {
+                            tvNoNoti.setVisibility(View.VISIBLE);
+                        }
                         stopProgress();
                     }
                 }
@@ -125,13 +160,12 @@ public class NotificationFragment extends Fragment {
 
     public void setAllCheck() {
         APIService mWebService = APIUtils.getWebService();
-        mWebService.setCheckAll(token, true).enqueue(new Callback<List<Notification>>() {
+        mWebService.setCheckAll(token, true, newestId).enqueue(new Callback<List<Notification>>() {
             @Override
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 if (response.code() == 200){
                     List<Notification> lists = response.body();
                 }
-
             }
 
             @Override

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
 import android.text.util.Linkify;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiInformation;
+import com.vanniktech.emoji.EmojiTextView;
+import com.vanniktech.emoji.EmojiUtils;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -36,6 +41,7 @@ import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.Session;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +94,8 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         User user = comment.getUser();
         DateTimeUtils datetime = new DateTimeUtils();
         CommentChildrenAdapter cmtChild = new CommentChildrenAdapter(context, comment.getTargetId(), token, userId);
+        HashTagHelper helper = HashTagHelper.Creator.create(context.getResources().getColor(R.color.colorPrimary), null);
+        helper.handle(viewHolder.tvCmtContent);
         viewHolder.tvCmtContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(position).getUser().getLastName());
@@ -351,7 +359,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvtCmt;
-        EditText tvCmtContent;
+        EmojiTextView tvCmtContent;
         TextView tvUserCmt;
         AppCompatImageButton btnActionCmt;
         MaterialButton btnLikeCmt;
@@ -367,7 +375,7 @@ public class CommentListAdapter extends RecyclerView.Adapter<CommentListAdapter.
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             imgAvtCmt = (ImageView) itemView.findViewById(R.id.imgAvtCmt);
-            tvCmtContent = (EditText) itemView.findViewById(R.id.tvCmtContent);
+            tvCmtContent = (EmojiTextView) itemView.findViewById(R.id.tvCmtContent);
             tvUserCmt =(TextView) itemView.findViewById(R.id.tvUserCmt);
             btnActionCmt = (AppCompatImageButton) itemView.findViewById(R.id.btnActionCmt);
             btnLikeCmt = (MaterialButton) itemView.findViewById(R.id.btnLikeCmt);

@@ -151,6 +151,17 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    private Emitter.Listener onBanned = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.d("SocketServer", "banned: " + args[0].toString());
+            Session.clearSession(MainActivity.this);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -163,6 +174,7 @@ public class MainActivity extends AppCompatActivity
         socket.on("authenticated", onAuthenticate);
         socket.on("notiNew", onNotiNew);
         socket.on("unauthorized", onUnauthorized);
+        socket.on("banned", onBanned);
         socket.connect();
     }
 
@@ -178,6 +190,7 @@ public class MainActivity extends AppCompatActivity
         socket.off("authenticated", onAuthenticate);
         socket.off("notiNew", onNotiNew);
         socket.off("unauthorized", onUnauthorized);
+        socket.off("banned", onBanned);
     }
 
     @Override

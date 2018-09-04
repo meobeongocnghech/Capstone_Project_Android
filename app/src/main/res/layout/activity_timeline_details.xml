@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +58,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="8dp"
-                android:background="@drawable/rectangle"
+                android:background="@drawable/timelines_bg"
                 android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -79,6 +80,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:hint="Nhập nội dung công việc..."
+                android:inputType="text"
                 android:maxLines="1"
                 android:textSize="14dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -90,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Tiêu đề công việc..."
+                android:inputType="text"
                 android:maxLines="1"
                 android:textSize="14dp"
                 app:layout_constraintTop_toBottomOf="@id/layoutTimelineItem"
@@ -159,6 +162,18 @@
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/edtTimelineContent"
                 app:layout_constraintTop_toTopOf="@+id/btnTLTime" />
+
+            <TextView
+                android:id="@+id/tvEmptyTimelines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/btnAddTimeline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Chưa có công việc nào được thêm"
+                app:layout_goneMarginTop="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"/>
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
 </ScrollView>

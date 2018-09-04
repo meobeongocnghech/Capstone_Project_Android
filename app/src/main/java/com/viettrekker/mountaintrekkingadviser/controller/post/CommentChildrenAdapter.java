@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.Layout;
 import android.text.util.Linkify;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.request.RequestOptions;
+import com.vanniktech.emoji.EmojiTextView;
 import com.viettrekker.mountaintrekkingadviser.GlideApp;
 import com.viettrekker.mountaintrekkingadviser.R;
 import com.viettrekker.mountaintrekkingadviser.controller.profile.ProfileMemberActivity;
@@ -33,6 +35,7 @@ import com.viettrekker.mountaintrekkingadviser.util.DateTimeUtils;
 import com.viettrekker.mountaintrekkingadviser.util.LocalDisplay;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIService;
 import com.viettrekker.mountaintrekkingadviser.util.network.APIUtils;
+import com.volokh.danylo.hashtaghelper.HashTagHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -74,6 +77,8 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         User user = comment.getUser();
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         viewHolder.likeCount.setText(comment.getLikesCount() == 0 ? "" : comment.getLikesCount()+"");
+        HashTagHelper helper = HashTagHelper.Creator.create(context.getResources().getColor(R.color.colorPrimary), null);
+        helper.handle(viewHolder.tvCmtContent);
         viewHolder.tvCmtContent.setAutoLinkMask(Linkify.WEB_URLS);
         viewHolder.tvCmtContent.setText(comment.getContent());
         viewHolder.tvUserCmt.setText(comment.getUser().getFirstName() + " " + list.get(i).getUser().getLastName());
@@ -292,7 +297,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvtCmt;
-        TextView tvCmtContent;
+        EmojiTextView tvCmtContent;
         TextView tvUserCmt;
         AppCompatImageButton btnActionCmt;
         TextView btnLikeCmt;
@@ -305,7 +310,7 @@ public class CommentChildrenAdapter extends RecyclerView.Adapter<CommentChildren
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             imgAvtCmt = (ImageView) itemView.findViewById(R.id.imgAvtCmtRep);
-            tvCmtContent = (TextView) itemView.findViewById(R.id.tvCmtContentRep);
+            tvCmtContent = (EmojiTextView) itemView.findViewById(R.id.tvCmtContentRep);
             tvUserCmt =(TextView) itemView.findViewById(R.id.tvUserCmtRep);
             btnActionCmt = (AppCompatImageButton) itemView.findViewById(R.id.btnActionCmtRep);
             btnLikeCmt = (TextView) itemView.findViewById(R.id.tvLikeCmtRep);

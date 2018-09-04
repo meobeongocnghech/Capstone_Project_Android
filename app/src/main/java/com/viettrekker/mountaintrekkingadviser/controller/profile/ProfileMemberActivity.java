@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -161,12 +162,13 @@ public class ProfileMemberActivity extends AppCompatActivity {
                                                     .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                                                     mWebService.invitePlan(token,item.getId(),user.getId(),0,"",0).enqueue(new Callback<Plan>() {
                                                                         @Override
                                                                         public void onResponse(Call<Plan> call, Response<Plan> response) {
                                                                             if (response.code() == 200){
                                                                                 Toast.makeText(ProfileMemberActivity.this,"Mời thành công",Toast.LENGTH_SHORT).show();
-
                                                                             }
                                                                         }
 
@@ -369,18 +371,22 @@ public class ProfileMemberActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK && data != null) {
                 if (pickAvatar) {
                     ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
-                    CropImage.activity(Uri.fromFile(new File(selectionResult.get(0))))
-                            .setAspectRatio(1, 1)
-                            .start(this);
+                    if (selectionResult != null && selectionResult.size() > 0) {
+                        CropImage.activity(Uri.fromFile(new File(selectionResult.get(0))))
+                                .setAspectRatio(1, 1)
+                                .start(this);
+                    }
                 } else {
                     ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
-                    GlideApp.with(this)
-                            .load(selectionResult.get(0))
-                            .placeholder(R.drawable.sea)
-                            .fallback(R.drawable.sea)
-                            .centerCrop()
-                            .into(profile_cover);
-                    newCover = selectionResult.get(0);
+                    if (selectionResult != null && selectionResult.size() > 0) {
+                        GlideApp.with(this)
+                                .load(selectionResult.get(0))
+                                .placeholder(R.drawable.sea)
+                                .fallback(R.drawable.sea)
+                                .centerCrop()
+                                .into(profile_cover);
+                        newCover = selectionResult.get(0);
+                    }
                 }
             }
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {

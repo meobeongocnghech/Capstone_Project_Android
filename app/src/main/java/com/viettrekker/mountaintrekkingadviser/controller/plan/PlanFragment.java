@@ -9,6 +9,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -44,6 +45,8 @@ public class PlanFragment extends Fragment {
     MaterialButton loadMoreMyPlan;
     MaterialButton loadMorePublicPlan;
     NestedScrollView planScrollView;
+    TextView tvNoPlan;
+    int hasNoPlan = 0;
 
     public PlanFragment() {
 
@@ -54,7 +57,9 @@ public class PlanFragment extends Fragment {
     }
 
     public void scrollToTop() {
-        planScrollView.scrollTo(0, 0);
+        planScrollView.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN, 100, 100, 0.5f, 5, 0, 1, 1, 0, 0));
+        planScrollView.fling(0);
+        planScrollView.smoothScrollTo(0, 0);
     }
 
     @Override
@@ -64,6 +69,10 @@ public class PlanFragment extends Fragment {
     }
 
     public void initLoad() {
+        hasNoPlan = 0;
+        if (tvNoPlan != null) {
+            tvNoPlan.setVisibility(View.GONE);
+        }
         APIService mWebService = APIUtils.getWebService();
         myPlanAdapter.resetPageCount();
         mWebService.getListPlan(Session.getToken(getActivity()), 1, 4, "id").enqueue(new Callback<List<Plan>>() {
@@ -83,6 +92,10 @@ public class PlanFragment extends Fragment {
                         myPlanAdapter.setListPlan(plans);
                         myPlanAdapter.notifyDataSetChanged();
                     } else {
+                        hasNoPlan++;
+                        if (hasNoPlan == 2) {
+                            tvNoPlan.setVisibility(View.VISIBLE);
+                        }
                         tvMyPlan.setVisibility(View.GONE);
                         rcvPlanListItem.setVisibility(View.GONE);
                         stopLoading(0);
@@ -142,6 +155,10 @@ public class PlanFragment extends Fragment {
                             publicPlanAdapter.notifyDataSetChanged();
                         }
                     } else {
+                        hasNoPlan++;
+                        if (hasNoPlan == 2) {
+                            tvNoPlan.setVisibility(View.VISIBLE);
+                        }
                         tvPublicPlan.setVisibility(View.GONE);
                         rcvPublicPlan.setVisibility(View.GONE);
                         stopLoading(1);
@@ -168,6 +185,7 @@ public class PlanFragment extends Fragment {
         planScrollView = (NestedScrollView) view.findViewById(R.id.planScrollView);
         tvMyPlan = (TextView) view.findViewById(R.id.tvMyPlan);
         tvPublicPlan = (TextView) view.findViewById(R.id.tvPublicPlan);
+        tvNoPlan = (TextView) view.findViewById(R.id.tvNoPlan);
 
         rcvPlanListItem.setNestedScrollingEnabled(false);
         rcvPlanListItem.setLayoutManager(new LinearLayoutManager(view.getContext()));

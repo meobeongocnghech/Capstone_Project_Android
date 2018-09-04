@@ -1,5 +1,9 @@
-<!-- res/transition/change_image_transform.xml -->
-<!-- (see also Shared Transitions below) -->
-<transitionSet xmlns:android="http://schemas.android.com/apk/res/android">
-    <changeImageTransform/>
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:transitionOrdering="together">
+    <changeClipBounds/>
+    <changeTransform/>
+    <changeBounds/>
 </transitionSet>
